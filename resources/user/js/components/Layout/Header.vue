@@ -8,7 +8,7 @@ defineProps<{
 </script>
 
 <template>
-  <header class="fixed inset-0 bg-white">
+  <header class="sticky inset-0 bg-white">
     <div class="h-16 flex items-center justify-between border border-zinc-200">
       <div>
         <img :src="Logo" alt="" class="h-16">

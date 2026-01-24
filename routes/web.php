@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\ShopController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'index')->name('home.index');
+});
+Route::controller(ShopController::class)->group(function () {
+    Route::get('/shops', 'index')->name('shops.index');
 });
 
 Route::controller(TestController::class)->group(function () {
