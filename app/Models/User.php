@@ -13,7 +13,10 @@ class User extends Authenticatable
     use HasFactory, Notifiable, LaravelPermissionToVueJS;
 
     protected $fillable = [
-        'name',
+        'last_name',
+        'first_name',
+        'last_name_kana',
+        'first_name_kana',
         'email',
         'password',
     ];
@@ -27,4 +30,26 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /* ================================================================================
+                                        アクセサ
+    ================================================================================ */
+
+    public function getFullName(): string
+    {
+        return $this->last_name . ' ' . $this->first_name;
+    }
+
+    public function getFullNameKana(): ?string
+    {
+        return $this->last_name_kana || $this->first_name_kana ? $this->last_name_kana . ' ' . $this->first_name_kana : null;
+    }
+
+    /* ================================================================================
+                                        スコープ
+    ================================================================================ */
+
+    /* ================================================================================
+                                        リレーション
+    ================================================================================ */
 }

@@ -121,7 +121,7 @@ return [
     ],
 
     'ignore_commands' => [
-        //
+        'list',
     ],
 
     /*
@@ -150,8 +150,10 @@ return [
         ],
 
         Watchers\CommandWatcher::class => [
-            'enabled' => env('TELESCOPE_COMMAND_WATCHER', true),
-            'ignore' => [],
+            'enabled' => env('TELESCOPE_COMMAND_WATCHER', true), // TODO: commandを使うときにエラーが大量に定期的に出るからtrueにしたら注意
+            'ignore' => [
+                'list',
+            ],
         ],
 
         Watchers\DumpWatcher::class => [
