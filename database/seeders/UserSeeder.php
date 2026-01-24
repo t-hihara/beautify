@@ -44,7 +44,7 @@ class UserSeeder extends BaseSeeder
 
     private function createAdmin(array &$items): void
     {
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             $items[] = [
                 'last_name'       => "amin_{$i}",
                 'first_name'      => "test",
@@ -60,7 +60,7 @@ class UserSeeder extends BaseSeeder
 
     public function createUsers(array &$items): void
     {
-        for ($i = 1; $i <= 500; $i++) {
+        for ($i = 1; $i <= 5000; $i++) {
             $items[] = [
                 'last_name'       => $this->faker->lastName(),
                 'first_name'      => $this->faker->firstName(),
