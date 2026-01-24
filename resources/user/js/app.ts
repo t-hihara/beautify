@@ -8,6 +8,7 @@ import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { DefineComponent } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
+import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs';
 
 import IndexLayout from '@user/layouts/Index.vue';
 
@@ -23,6 +24,7 @@ createInertiaApp({
   setup({ el, App, props, plugin }) {
     createApp({ render: () => h(App, props) })
       .use(plugin)
+      .use(LaravelPermissionToVueJS)
       .use(ZiggyVue)
       .mount(el);
   }
