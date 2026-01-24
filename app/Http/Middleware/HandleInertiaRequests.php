@@ -7,7 +7,6 @@ use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
 {
-
     public function rootView(Request $request): string
     {
         if ($request->is('admin/*') || $request->is('shop/*')) {
