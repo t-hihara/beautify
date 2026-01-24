@@ -40,7 +40,7 @@
                 "./resources/common/js/*"
             ],
             "ziggy-js": [
-                "./vendor/tightenco/ziggy/src/js/index.js"
+                "./vendor/tightenco/ziggy/src/js"
             ]
         },
         // その他

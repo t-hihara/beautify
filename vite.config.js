@@ -23,6 +23,7 @@ export default defineConfig({
       '@manager': path.resolve(__dirname, './resources/manager/js'),
       '@user': path.resolve(__dirname, './resources/user/js'),
       '@common': path.resolve(__dirname, './resources/common/js'),
+      'ziggy-js': path.resolve(__dirname, './vendor/tightenco/ziggy/src/js/index.js'),
     },
   },
 });
