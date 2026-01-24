@@ -5,7 +5,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        @vite(['resources/css/app.css', 'resources/app.ts']);
+        @vite(['resources/common/css/app.css', 'resources/user/js/app.ts']);
         @routes
         @inertiaHead
     </head>
