@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\TestController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::controller(HomeController::class)->group(function () {
+    Route::get('/', 'index')->name('home.index');
 });
 
 Route::controller(TestController::class)->group(function () {
