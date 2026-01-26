@@ -12,6 +12,7 @@
         "php": "^8.2",
         "ahmedsaoud31/laravel-permission-to-vuejs": "dev-master",
         "inertiajs/inertia-laravel": "^2.0",
+        "laravel-lang/common": "^6.7",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "laravel/ui": "^4.6",
@@ -21,6 +22,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "laravel-lang/starter-kits": "^1.8",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.52",
