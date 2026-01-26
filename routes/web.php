@@ -18,3 +18,6 @@ Route::controller(TestController::class)->group(function () {
     Route::get('/test', 'guestIndex')->name('test.index');
     Route::get('/test_2', 'guestTransition')->name('test.transition');
 });
+
+require __DIR__ . '/admin.php';
+require __DIR__ . '/shop.php';
