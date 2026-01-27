@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Enum\ActiveFlagTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\UseCases\Auth\UserGoogleLoginUseCase;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse as HttpRedirectResponse;
@@ -13,6 +13,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\RedirectResponse as HttpFoundationRedirectResponse;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -53,30 +54,23 @@ class AuthController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function googleCallback(): HttpRedirectResponse
+    public function googleCallback(UserGoogleLoginUseCase $useCase): HttpRedirectResponse
     {
-        $googleUser = Socialite::driver('google')->user();
-        $email      = $googleUser->getEmail();
-        $user       = User::where('email', $email)->first();
+        try {
+            $googleUser = Socialite::driver('google')->user();
+            $result     = $useCase->execute($googleUser);
 
-        if (!$user) {
-            $user = User::create([
-                'last_name'         => $googleUser->user['family_name'] ?? '',
-                'first_name'        => $googleUser->user['given_name'] ?? '',
-                'email'             => $googleUser->email,
-                'email_verified_at' => now(),
-                'google_id'         => $googleUser->id,
-                'active_flag'       => ActiveFlagTypeEnum::ACTIVE,
-            ]);
-            $user->assignRole('user', 'user');
-        } else {
-            if (!$user->hasRole('user', 'user')) {
-                return redirect()->route('user.loginForm')->with('error', 'このアカウントではログインできません。');
+            if (!$result['success']) {
+                return redirect()->route('user.loginForm')
+                    ->withErrors(['email' => $result['error']]);
             }
-        }
 
-        auth()->guard('user')->login($user, false);
-        return redirect($this->redirectTo);
+            return redirect($this->redirectTo);
+        } catch (Throwable $e) {
+            report($e);
+            return redirect()->route('user.loginForm')
+                ->withErrors(['email' => 'Googleログインに失敗しました。']);
+        }
     }
 
     protected function loggedOut(Request $request): HttpRedirectResponse
