@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enum\ActiveFlagTypeEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -22,6 +24,8 @@ class User extends Authenticatable
         'first_name_kana',
         'email',
         'password',
+        'google_id',
+        'active_flag',
     ];
 
     protected $hidden = [
@@ -31,7 +35,8 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
+        'password'          => 'hashed',
+        'active_flag'       => ActiveFlagTypeEnum::class,
     ];
 
     /* ================================================================================

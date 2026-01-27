@@ -1,5 +1,6 @@
 <?php
 
+use App\Enum\ActiveFlagTypeEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,13 +14,15 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('last_name');
-            $table->string('first_name');
-            $table->string('last_name_kana')->nullable();
-            $table->string('first_name_kana')->nullable();
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('last_name')->comment('ユーザー姓');
+            $table->string('first_name')->comment('ユーザー名');
+            $table->string('last_name_kana')->nullable()->comment('ユーザー姓カナ');
+            $table->string('first_name_kana')->nullable()->comment('ユーザー名カナ');
+            $table->string('email')->unique()->comment('メールアドレス');
+            $table->timestamp('email_verified_at')->nullable()->comment('メールアドレス認証');
+            $table->string('password')->nullable()->comment('パスワード');
+            $table->string('google_id')->nullable()->unique()->comment('googleId');
+            $table->enum('active_flag', ActiveFlagTypeEnum::cases())->default('active')->comment('アクティブ状態');
             $table->rememberToken();
             $table->timestamps();
         });
