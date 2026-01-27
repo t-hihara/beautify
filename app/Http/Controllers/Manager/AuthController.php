@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manager;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,7 +19,7 @@ class AuthController extends Controller
         return Inertia::render('Auth/Login');
     }
 
-    public function guard()
+    public function guard(): string
     {
         return auth()->guard(match (request()->segment(1)) {
             'admin' => 'admin',
@@ -38,7 +39,7 @@ class AuthController extends Controller
         };
     }
 
-    protected function attemptLogin(Request $request)
+    protected function attemptLogin(Request $request): bool
     {
         $credentials = $this->credentials($request);
         $guard       = $this->guard();
@@ -52,7 +53,7 @@ class AuthController extends Controller
         return $guard->attempt($credentials, $request->filled('remember'));
     }
 
-    protected function loggedOut(Request $request)
+    protected function loggedOut(Request $request): RedirectResponse
     {
         $guardName = $request->segment(1) ?? 'web';
 
