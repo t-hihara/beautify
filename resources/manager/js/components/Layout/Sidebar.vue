@@ -8,7 +8,7 @@ import { computed, type Component } from "vue";
 import { route } from "ziggy-js";
 
 const { guard } = useGuard();
-const IconMap: Record<string, Component> = {
+const iconMap: Record<string, Component> = {
   dashboard: HomeIcon,
 };
 const menus = computed(() => (guard.value === "admin" ? adminMenu : shopMenu));
@@ -26,9 +26,10 @@ const menus = computed(() => (guard.value === "admin" ? adminMenu : shopMenu));
           <Link
             v-else
             :href="route(menu.route)"
-            class="block px-3 py-2 rounded-md hover:bg-zinc-400/60 transition ease-in-out duration-300"
+            class="px-3 py-2 rounded-md hover:bg-zinc-400/60 transition ease-in-out duration-300 flex items-center gap-2"
           >
-            {{ menu.label }}
+            <component :is="iconMap[menu.icon]" class="size-6" />
+            <span>{{ menu.label }}</span>
           </Link>
         </li>
       </ul>

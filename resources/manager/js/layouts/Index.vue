@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { usePage } from "@inertiajs/vue3";
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import { useGuard } from "../composables/useGuard";
 import type { User } from "@common/@types/inertia";
 
