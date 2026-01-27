@@ -13,6 +13,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles, LaravelPermissionToVueJS;
 
+    protected $appends = ['name', 'name_kana'];
+
     protected $fillable = [
         'last_name',
         'first_name',
@@ -36,12 +38,12 @@ class User extends Authenticatable
                                         アクセサ
     ================================================================================ */
 
-    public function getFullName(): string
+    public function getNameAttribute(): string
     {
         return $this->last_name . ' ' . $this->first_name;
     }
 
-    public function getFullNameKana(): ?string
+    public function getNameKanaAttribute(): ?string
     {
         return $this->last_name_kana || $this->first_name_kana ? $this->last_name_kana . ' ' . $this->first_name_kana : null;
     }

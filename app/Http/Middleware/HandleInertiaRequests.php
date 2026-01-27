@@ -30,7 +30,10 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'guard' => $guard,
             'auth'  => [
-                'user' => $user,
+                'user' => [
+                    'id'   => $user->id,
+                    'name' => $user->name,
+                ],
             ],
             'permissions' => $user?->jsPermissions() ?? null,
             // 'flash'       => [

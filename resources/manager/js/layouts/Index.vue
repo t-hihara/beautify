@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useGuard } from "../composables/useGuard";
 import type { User } from "@common/@types/inertia";
 
@@ -10,6 +10,8 @@ const { guard } = useGuard();
 const page = usePage();
 const isAdmin = computed<boolean>(() => guard.value === "admin");
 const user = computed<User | null>(() => page.props.auth.user || null);
+
+onMounted(() => console.log(user.value));
 </script>
 
 <template>
