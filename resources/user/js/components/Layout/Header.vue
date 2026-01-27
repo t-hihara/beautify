@@ -17,7 +17,9 @@ const submit = (): void => {
   <header class="sticky inset-0 bg-white">
     <div class="h-16 flex items-center justify-between border border-zinc-200">
       <div>
-        <img :src="Logo" alt="" class="h-16" />
+        <Link href="/">
+          <img :src="Logo" alt="" class="h-16" />
+        </Link>
       </div>
       <div class="px-4">
         <div v-if="user" class="flex items-center gap-2">
