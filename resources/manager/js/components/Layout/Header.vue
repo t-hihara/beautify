@@ -14,17 +14,15 @@ const submit = (): void => {
 </script>
 
 <template>
-  <header class="bg-white border border-zinc-200 shadow-sm h-16">
-    <div class="flex justify-end items-center">
-      <template v-if="user">
-        <div class="flex items-center gap-4">
-          <span>{{ user.name }}</span>
-          <form @submit.prevent="submit">
-            <button type="submit" class="px-4 py-2 rounded-md bg-orange-400">ログアウト</button>
-          </form>
-        </div>
-      </template>
-    </div>
+  <header class="px-4 bg-white border border-zinc-200 shadow-sm h-16 flex justify-end items-center">
+    <template v-if="user">
+      <div class="flex items-center gap-4">
+        <span>{{ user.name }}</span>
+        <form @submit.prevent="submit">
+          <button type="submit" class="px-4 py-2 rounded-md bg-orange-400">ログアウト</button>
+        </form>
+      </div>
+    </template>
   </header>
 </template>
 
