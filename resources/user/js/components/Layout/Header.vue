@@ -1,21 +1,29 @@
 <script setup lang="ts">
-import Logo from '@/assets/images/site-logo.png';
+import Logo from "@/assets/images/site-logo.png";
+import { Link } from "@inertiajs/vue3";
+import { route } from "ziggy-js";
 
 defineProps<{
   isAuth: boolean;
   user: any;
-}>()
+}>();
 </script>
 
 <template>
   <header class="sticky inset-0 bg-white">
     <div class="h-16 flex items-center justify-between border border-zinc-200">
       <div>
-        <img :src="Logo" alt="" class="h-16">
+        <img :src="Logo" alt="" class="h-16" />
       </div>
-      <div>
+      <div class="px-4">
         <div v-if="isAuth" class="">aaa</div>
-        <div v-else class="p-3">ログイン</div>
+        <div v-else class="p-3">
+          <Link
+            :href="route('user.loginForm')"
+            class="px-3 py-2 rounded-md bg-orange-500 hover:bg-orange-300 transition ease-in-out duration-300"
+            >ログイン</Link
+          >
+        </div>
       </div>
     </div>
   </header>
