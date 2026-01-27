@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import type { User } from "@common/@types/inertia";
+import { router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
+import type { User } from "@common/@types/inertia";
 
 const { isAdmin } = defineProps<{
   isAdmin: boolean;
@@ -8,12 +9,12 @@ const { isAdmin } = defineProps<{
 }>();
 
 const submit = (): void => {
-  isAdmin ? route("admin.logout") : route("shop.logout");
+  isAdmin ? router.post(route("admin.logout")) : router.post(route("shop.logout"));
 };
 </script>
 
 <template>
-  <header class="bg-white shadow-sm h-16">
+  <header class="bg-white border border-zinc-200 shadow-sm h-16">
     <div class="flex justify-end items-center">
       <template v-if="user">
         <div class="flex items-center gap-4">

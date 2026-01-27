@@ -11,6 +11,7 @@ import { ZiggyVue } from "ziggy-js";
 import LaravelPermissionToVueJS from "laravel-permission-to-vuejs";
 
 import IndexLayout from "./layouts/Index.vue";
+import GuestLayout from "./layouts/Guest.vue";
 
 createInertiaApp({
   resolve: async (name) => {
@@ -18,7 +19,11 @@ createInertiaApp({
       `./pages/${name}.vue`,
       import.meta.glob<DefineComponent>("./pages/**/*.vue"),
     );
-    page.default.layout = IndexLayout;
+    if (name.startsWith("Auth/")) {
+      page.default.layout = GuestLayout;
+    } else {
+      page.default.layout = IndexLayout;
+    }
     return page;
   },
   setup({ el, App, props, plugin }) {
