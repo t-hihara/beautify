@@ -2,6 +2,11 @@
 
 ## ドキュメント一覧
 
+### ナレッジ (knowledge/)
+技術的な概念やプロジェクト内の実装の解説です。
+
+- [PHP Enum 入門ガイド](./knowledge/php-enum-guide.md) — Enum の `cases()` / `::class` の違い、`match` と `$this`、HasOptions の `description` の説明
+
 ### 仕様書 (specification/)
 1. [プロジェクト概要](./specification/01-overview.md)
 2. [要件定義](./specification/02-requirements.md)

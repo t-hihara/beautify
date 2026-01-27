@@ -22,7 +22,8 @@
         "typescript": "^5.9.3",
         "vite": "^7.0.7",
         "vite-svg-loader": "^5.1.0",
-        "vue": "^3.5.27"
+        "vue": "^3.5.27",
+        "vue-toastification": "^2.0.0-rc.5"
     },
     "dependencies": {
         "laravel-permission-to-vuejs": "^3.0.8"
