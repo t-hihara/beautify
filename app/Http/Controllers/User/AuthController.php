@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
@@ -28,10 +29,23 @@ class AuthController extends Controller
 
     public function redirectTo(): string
     {
-        return $this->redirectTo();
+        return $this->redirectTo;
     }
 
-    public function loggedOut(Request $request): RedirectResponse
+    protected function attemptLogin(Request $request): bool
+    {
+        $credentials = $this->credentials($request);
+        $guard       = $this->guard();
+        $user        = User::where('email', $credentials['email'])->first();
+
+        if (!$user || !$user->hasRole('user', 'user')) {
+            return false;
+        }
+
+        return $guard->attempt($credentials, $request->filled('remember'));
+    }
+
+    protected function loggedOut(Request $request): RedirectResponse
     {
         return redirect()->route('user.loginForm');
     }

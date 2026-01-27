@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { usePage } from '@inertiajs/vue3';
-import Header from '@user/components/Layout/Header.vue';
-import { computed } from 'vue';
+import { usePage } from "@inertiajs/vue3";
+import { computed } from "vue";
+import type { User } from "@common/@types/inertia";
+
+import Header from "@user/components/Layout/Header.vue";
 
 const page = usePage();
-const user = computed(() => page.props.auth.user);
-const isAuth = computed(() => !!user.value);
+const user = computed<User | null>(() => page.props.auth.user);
 </script>
 
 <template>
   <div>
-    <Header :is-auth="isAuth" :user="user" />
+    <Header :user="user" />
     <main>
       <slot></slot>
     </main>

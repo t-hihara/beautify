@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Head, useForm, usePage } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 
-import Logo from "@/assets/images/site-logo.png";
+import GoogleLogo from "@/assets/images/Logo/google-icon.svg";
 
 type LoginForm = {
   email: string;
@@ -46,16 +46,25 @@ const submit = (): void => {
               class="px-3 py-2 rounded-md bg-white border border-zinc-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
             />
           </div>
+          <div>
+            <button
+              type="submit"
+              class="w-full bg-white flex items-center justify-center gap-2 px-4 py-3 border border-zinc-300 rounded-full text-sm text-semibold text-zinc-800 hover:bg-zinc-50 transition ease-in-out duration-300"
+            >
+              ログイン
+            </button>
+          </div>
         </form>
 
-        <div class="mt-6">
+        <div class="mt-10">
           <div class="text-center">
             <h2 class="text-2xl font-bold text-zinc-800">他サイトIDでログイン</h2>
           </div>
           <div class="mt-4 w-2/3 mx-auto">
             <button
-              class="w-full bg-white flex items-center justify-center px-4 py-3 border border-zinc-300 rounded-full text-sm text-semibold text-zinc-800 hover:bg-zinc-50 transition ease-in-out duration-300"
+              class="w-full bg-white flex items-center justify-center gap-2 px-4 py-3 border border-zinc-300 rounded-full text-sm text-semibold text-zinc-800 hover:bg-zinc-50 transition ease-in-out duration-300"
             >
+              <google-logo class="size-5" />
               Googleでログイン
             </button>
           </div>
