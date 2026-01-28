@@ -6,6 +6,7 @@ use App\Enum\ActiveFlagTypeEnum;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
+use Spatie\Permission\Models\Role;
 
 class UserGoogleLoginUseCase
 {
@@ -60,7 +61,7 @@ class UserGoogleLoginUseCase
             'active_flag'       => ActiveFlagTypeEnum::ACTIVE,
         ]);
 
-        $user->assignRole('user', 'user');
+        $user->assignRole(Role::findByName('user', 'user'));
 
         return $user;
     }

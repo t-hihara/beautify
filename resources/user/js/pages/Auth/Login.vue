@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, useForm } from "@inertiajs/vue3";
+import { Head, Link, router, useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 
 import GoogleLogo from "@/assets/images/Logo/google-icon.svg";
@@ -16,6 +16,10 @@ const form = useForm<LoginForm>({
 
 const submit = (): void => {
   form.post(route("user.login"));
+};
+
+const googleLogin = (): void => {
+  router.get(route("user.login.google"));
 };
 </script>
 
@@ -61,12 +65,13 @@ const submit = (): void => {
             <h2 class="text-2xl font-bold text-zinc-800">他サイトIDでログイン</h2>
           </div>
           <div class="mt-4 w-2/3 mx-auto">
-            <button
+            <a
+              :href="route('user.login.google')"
               class="w-full bg-white flex items-center justify-center gap-2 px-4 py-3 border border-zinc-300 rounded-full text-sm text-semibold text-zinc-800 hover:bg-zinc-50 transition ease-in-out duration-300"
             >
               <google-logo class="size-5" />
               Googleでログイン
-            </button>
+            </a>
           </div>
         </div>
       </div>
