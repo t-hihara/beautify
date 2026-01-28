@@ -59,7 +59,7 @@ class AuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
             $result     = $useCase->execute($googleUser);
-            \Log::info($result);
+
             if (!$result['success']) {
                 return redirect()->route('user.loginForm')
                     ->withErrors(['email' => $result['error']]);
@@ -68,7 +68,6 @@ class AuthController extends Controller
             return redirect($this->redirectTo);
         } catch (Throwable $e) {
             report($e);
-            \Log::error($e->getMessage());
             return redirect()->route('user.loginForm')
                 ->withErrors(['email' => 'Googleログインに失敗しました。']);
         }

@@ -4,13 +4,16 @@ use App\Http\Controllers\User\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('user.')->group(function () {
-    Route::controller(AuthController::class)->group(function () {
-        Route::get('/login', 'showLoginForm')->name('loginForm');
-        Route::get('/login/google', 'redirectToGoogle')->name('login.google');
-        Route::post('/login', 'login')->name('login');
-        Route::get('/auth/google/callback', 'googleCallback')->name('login.google.callback');
-
-        Route::middleware(['auth:user'])->group(function () {
+    Route::middleware(['guest:user'])->group(function () {
+        Route::controller(AuthController::class)->group(function () {
+            Route::get('/login', 'showLoginForm')->name('loginForm');
+            Route::get('/login/google', 'redirectToGoogle')->name('login.google');
+            Route::post('/login', 'login')->name('login');
+            Route::get('/auth/google/callback', 'googleCallback')->name('login.google.callback');
+        });
+    });
+    Route::middleware(['auth:user'])->group(function () {
+        Route::controller(AuthController::class)->group(function () {
             Route::post('/logout', 'logout')->name('logout');
         });
     });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,13 +20,15 @@ class AuthController extends Controller
         return Inertia::render('Auth/Login');
     }
 
-    public function guard(): string
+    public function guard(): StatefulGuard
     {
-        return auth()->guard(match (request()->segment(1)) {
+        $guard = match (request()->segment(1)) {
             'admin' => 'admin',
             'shop'  => 'shop',
             default => 'web',
-        });
+        };
+
+        return auth()->guard($guard);
     }
 
     public function redirectTo(): string

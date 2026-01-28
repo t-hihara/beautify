@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, Link, router, useForm } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 
 import GoogleLogo from "@/assets/images/Logo/google-icon.svg";
@@ -16,10 +16,6 @@ const form = useForm<LoginForm>({
 
 const submit = (): void => {
   form.post(route("user.login"));
-};
-
-const googleLogin = (): void => {
-  router.get(route("user.login.google"));
 };
 </script>
 
