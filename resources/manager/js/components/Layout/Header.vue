@@ -3,6 +3,8 @@ import { router } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import type { User } from "@common/@types/inertia";
 
+import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
+
 const { isAdmin } = defineProps<{
   isAdmin: boolean;
   user: User | null;
@@ -19,7 +21,7 @@ const submit = (): void => {
       <div class="flex items-center gap-4">
         <span>{{ user.name }}</span>
         <form @submit.prevent="submit">
-          <button type="submit" class="px-4 py-2 rounded-md bg-orange-400">ログアウト</button>
+          <button-submit>ログアウト</button-submit>
         </form>
       </div>
     </template>

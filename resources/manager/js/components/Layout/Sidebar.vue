@@ -15,7 +15,7 @@ const menus = computed(() => (guard.value === "admin" ? adminMenu : shopMenu));
 </script>
 
 <template>
-  <aside class="min-h-screen bg-orange-700 text-white">
+  <aside class="min-h-screen bg-rose-400 text-white">
     <div class="p-4 h-16 flex justify-start items-center border-b border-zinc-300/50">
       <h1 class="text-xl">Beautify</h1>
     </div>
