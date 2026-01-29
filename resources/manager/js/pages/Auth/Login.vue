@@ -4,6 +4,8 @@ import { useGuard } from "@manager/composables/useGuard";
 import { computed } from "vue";
 import { route } from "ziggy-js";
 
+import { ButtonSubmit } from "@common/components/Ui/ButtonIndex";
+
 type LoginForm = {
   email: string;
   password: string;
@@ -31,7 +33,6 @@ const submit = (): void => form.post(route(`${guard.value}.login`));
         <form @submit.prevent="submit">
           <div class="space-y-6">
             <div>
-              <!-- form -->
               <div class="rounded-md shadow-sm -space-y-px">
                 <div>
                   <label for="email" class="sr-only">メールアドレス</label>
@@ -63,15 +64,8 @@ const submit = (): void => form.post(route(`${guard.value}.login`));
                 <span class="text-sm text-red-500">{{ form.errors.password }}</span>
               </div>
             </div>
-            <div>
-              <!-- button -->
-              <button
-                type="submit"
-                :disabled="form.processing"
-                class="group relative w-full flex justify-center py-2 px-4 text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                ログインする
-              </button>
+            <div class="text-center">
+              <button-submit>ログインする</button-submit>
             </div>
           </div>
         </form>

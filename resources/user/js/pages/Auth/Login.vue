@@ -2,7 +2,10 @@
 import { Head, useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 
+import { ButtonLink, ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
 import GoogleLogo from "@/assets/images/Logo/google-icon.svg";
+import FormEmail from "@/common/js/components/Form/FormEmail.vue";
+import FormPassword from "@/common/js/components/Form/FormPassword.vue";
 
 type LoginForm = {
   email: string;
@@ -28,31 +31,26 @@ const submit = (): void => {
           <h2 class="text-2xl font-bold text-zinc-800">ログイン</h2>
         </div>
         <form @submit.prevent="submit" class="space-y-5">
-          <div class="flex flex-col gap-2">
-            <label for="email">メールアドレス</label>
-            <input
-              v-model="form.email"
-              type="email"
-              placeholder="example@email.com"
-              class="px-3 py-2 rounded-md bg-white border border-zinc-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-            />
-          </div>
-          <div class="flex flex-col gap-2">
-            <label for="password">パスワード</label>
-            <input
-              v-model="form.password"
-              type="password"
-              placeholder="password"
-              class="px-3 py-2 rounded-md bg-white border border-zinc-300 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-            />
-          </div>
-          <div>
-            <button
-              type="submit"
-              class="w-full bg-white flex items-center justify-center gap-2 px-4 py-3 border border-zinc-300 rounded-full text-sm text-semibold text-zinc-800 hover:bg-zinc-50 transition ease-in-out duration-300"
-            >
-              ログイン
-            </button>
+          <form-email
+            v-model="form.email"
+            title="メールアドレス"
+            field="email"
+            placeholder="example@email.com"
+            required
+            class="flex flex-col gap-2"
+            :error="form.errors"
+          />
+          <form-password
+            v-model="form.password"
+            title="パスワード"
+            field="password"
+            placeholder="password"
+            required
+            class="flex flex-col gap-2"
+            :error="form.errors"
+          />
+          <div class="w-2/3 mx-auto">
+            <button-submit class="w-full">ログイン</button-submit>
           </div>
         </form>
 
@@ -60,14 +58,15 @@ const submit = (): void => {
           <div class="text-center">
             <h2 class="text-2xl font-bold text-zinc-800">他サイトIDでログイン</h2>
           </div>
-          <div class="mt-4 w-2/3 mx-auto">
-            <a
+          <div class="mt-4 w-2/3 mx-auto rounded-full overflow-hidden">
+            <button-link
               :href="route('user.login.google')"
-              class="w-full bg-white flex items-center justify-center gap-2 px-4 py-3 border border-zinc-300 rounded-full text-sm text-semibold text-zinc-800 hover:bg-zinc-50 transition ease-in-out duration-300"
+              variant="filled"
+              class="flex justify-center items-center gap-2"
             >
               <google-logo class="size-5" />
               Googleでログイン
-            </a>
+            </button-link>
           </div>
         </div>
       </div>
