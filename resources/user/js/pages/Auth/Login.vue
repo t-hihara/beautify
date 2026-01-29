@@ -1,21 +1,29 @@
 <script setup lang="ts">
-import { Head, useForm } from "@inertiajs/vue3";
+import { Head, useForm, usePage } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 
 import { ButtonLink, ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
 import GoogleLogo from "@/assets/images/Logo/google-icon.svg";
 import FormEmail from "@/common/js/components/Form/FormEmail.vue";
 import FormPassword from "@/common/js/components/Form/FormPassword.vue";
+import { computed } from "vue";
 
 type LoginForm = {
   email: string;
   password: string;
 };
 
+const page = usePage();
+
 const form = useForm<LoginForm>({
   email: "",
   password: "",
 });
+
+const errors = computed<Record<string, string>>(() => ({
+  ...(page.props.errors as Record<string, string>),
+  ...form.errors,
+}));
 
 const submit = (): void => {
   form.post(route("user.login"));
@@ -37,8 +45,8 @@ const submit = (): void => {
             field="email"
             placeholder="example@email.com"
             required
-            class="flex flex-col gap-2"
-            :error="form.errors"
+            class="flex flex-col gap-1"
+            :error="errors"
           />
           <form-password
             v-model="form.password"
@@ -46,8 +54,8 @@ const submit = (): void => {
             field="password"
             placeholder="password"
             required
-            class="flex flex-col gap-2"
-            :error="form.errors"
+            class="flex flex-col gap-1"
+            :error="errors"
           />
           <div class="w-2/3 mx-auto">
             <button-submit class="w-full">ログイン</button-submit>
