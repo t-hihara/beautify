@@ -24,7 +24,7 @@ defineEmits<{
     :href="href"
     :is-anchor="isAnchor"
     :disabled="disabled"
-    :class="disabled ? 'bg-zinc-300 text-zinc-800' : 'bg-rose-500 hover:bg-rose-300 text-white hover:text-zinc-800'"
+    :class="disabled ? 'bg-zinc-300 text-zinc-800' : 'bg-rose-400 hover:bg-rose-300 text-white hover:text-zinc-800'"
     class="px-3 py-2"
     @click="$emit('click')"
   >
