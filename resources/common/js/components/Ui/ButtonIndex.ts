@@ -5,3 +5,4 @@ export { default as ButtonTertiary } from "@common/components/Ui/ButtonTertiary.
 export { default as ButtonText } from "@common/components/Ui/ButtonText.vue";
 export { default as ButtonSubmit } from "@common/components/Ui/ButtonSubmit.vue";
 export { default as ButtonLink } from "@common/components/Ui/ButtonLink.vue";
+export { default as TextLink } from "@common/components/Ui/TextLink.vue";

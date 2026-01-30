@@ -2,7 +2,7 @@
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 
-import { ButtonLink, ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
+import { ButtonLink, ButtonSubmit, TextLink } from "@/common/js/components/Ui/ButtonIndex";
 import GoogleLogo from "@/assets/images/Logo/google-icon.svg";
 import FormEmail from "@/common/js/components/Form/FormEmail.vue";
 import FormPassword from "@/common/js/components/Form/FormPassword.vue";
@@ -38,7 +38,7 @@ const submit = (): void => {
         <div class="text-center">
           <h2 class="text-2xl font-bold text-zinc-800">ログイン</h2>
         </div>
-        <form @submit.prevent="submit" class="space-y-5">
+        <form @submit.prevent="submit">
           <form-email
             v-model="form.email"
             title="メールアドレス"
@@ -54,17 +54,22 @@ const submit = (): void => {
             field="password"
             placeholder="password"
             required
-            class="flex flex-col gap-1"
+            class="mt-4 flex flex-col gap-1"
             :error="errors"
           />
-          <div class="w-2/3 mx-auto">
+          <div class="mt-8 w-2/3 mx-auto">
             <button-submit class="w-full">ログイン</button-submit>
           </div>
+          <p class="mt-4 text-center text-sm text-zinc-600">
+            アカウントをお持ちでない方は
+            <text-link href="/">新規登録</text-link>
+          </p>
         </form>
-
-        <div class="mt-10">
-          <div class="text-center">
-            <h2 class="text-2xl font-bold text-zinc-800">他サイトIDでログイン</h2>
+        <div>
+          <div class="flex items-center gap-4">
+            <hr class="text-zinc-400 w-full" />
+            <span>or</span>
+            <hr class="text-zinc-400 w-full" />
           </div>
           <div class="mt-4 w-2/3 mx-auto rounded-full overflow-hidden">
             <button-link

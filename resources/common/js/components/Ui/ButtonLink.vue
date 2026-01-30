@@ -10,7 +10,6 @@ const {
 } = defineProps<{
   href?: string | null;
   isAnchor?: boolean;
-  /** default = テキストリンク風、outline = 枠線のみ、filled = 薄い背景 */
   variant?: "default" | "outline" | "filled";
   disabled?: boolean;
 }>();
