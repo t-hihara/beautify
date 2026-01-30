@@ -10,17 +10,17 @@ const {
 } = defineProps<{
   href?: string | null;
   isAnchor?: boolean;
-  variant?: "default" | "outline" | "filled";
+  variant?: "default" | "filled" | "outline";
   disabled?: boolean;
 }>();
 
 const styleClass = computed(() => {
   if (disabled) return "bg-zinc-300 text-zinc-800";
+  if (variant === "filled") {
+    return "bg-white border border-rose-400 text-zinc-800 hover:bg-zinc-100";
+  }
   if (variant === "outline") {
     return "border border-zinc-300 bg-transparent text-zinc-800 hover:bg-zinc-100";
-  }
-  if (variant === "filled") {
-    return "bg-white text-zinc-800 hover:bg-zinc-100";
   }
   return "text-zinc-800 underline hover:no-underline hover:text-rose-600";
 });

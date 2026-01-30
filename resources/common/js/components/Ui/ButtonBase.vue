@@ -32,7 +32,7 @@ defineEmits<{
     :type="href ? undefined : type"
     :href="!href ? disabled : href"
     :class="disabled ? '' : 'cursor-pointer'"
-    class="rounded-lg transition ease-in-out duration-300"
+    class="block transition ease-in-out duration-300 overflow-hidden"
     @click="!disabled && $emit('click')"
   >
     <slot />

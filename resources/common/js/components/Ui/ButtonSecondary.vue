@@ -25,7 +25,7 @@ defineEmits<{
     :is-anchor="isAnchor"
     :disabled="disabled"
     :class="disabled ? 'bg-zinc-300 text-zinc-800' : 'bg-rose-300 hover-rose-200 text-white hover:text-zinc-800'"
-    class="px-3 py-2"
+    class="px-3 py-2 rounded-lg"
     @click="$emit('click')"
   >
     <slot />

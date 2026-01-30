@@ -18,10 +18,7 @@ const user = computed<User | null>(() => page.props.auth.user);
   <div class="flex min-h-screen flex-col">
     <Header :user="user" />
     <main class="flex min-h-0 flex-1 flex-col overflow-y-auto">
-      <div
-        class="flex min-h-full flex-1 flex-col"
-        :class="{ 'justify-center': centerMain }"
-      >
+      <div class="flex min-h-full flex-1 flex-col" :class="{ 'sm:justify-center': centerMain }">
         <slot />
       </div>
     </main>
