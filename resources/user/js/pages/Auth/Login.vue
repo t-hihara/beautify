@@ -6,7 +6,7 @@ import { route } from "ziggy-js";
 import GoogleLogo from "@/assets/images/Logo/google-icon.svg";
 import FormEmail from "@/common/js/components/Form/FormEmail.vue";
 import FormPassword from "@/common/js/components/Form/FormPassword.vue";
-import { ButtonLink, ButtonPrimary, ButtonSubmit, TextLink } from "@/common/js/components/Ui/ButtonIndex";
+import { ButtonLink, ButtonSubmit, TextLink } from "@/common/js/components/Ui/ButtonIndex";
 
 defineOptions({
   layoutProps: { centerMain: true },
@@ -47,7 +47,7 @@ const submit = (): void => {
 <template>
   <Head title="ログイン" />
   <div class="hidden sm:flex justify-center items-center">
-    <div class="max-w-md w-full bg-zinc-200 rounded-md shadow-xl p-8">
+    <div class="max-w-md w-full bg-zinc-100 rounded-md shadow-xl p-8">
       <div class="space-y-6">
         <div class="text-center">
           <h2 class="text-2xl font-bold text-zinc-800">ログイン</h2>
@@ -76,7 +76,7 @@ const submit = (): void => {
           </div>
           <p class="mt-4 text-center text-sm text-zinc-600">
             アカウントをお持ちでない方は
-            <text-link href="/">新規登録</text-link>
+            <text-link :href="route('user.create')">新規登録</text-link>
           </p>
         </form>
         <div>
@@ -157,7 +157,10 @@ const submit = (): void => {
       <div class="mt-12 py-4 w-full text-center border-t border-zinc-200">
         <h2 class="text-xl font-semibold">初めてご利用の方</h2>
         <div class="mt-2 w-full">
-          <button-link href="/" variant="filled" class="flex justify-center items-center gap-2 rounded-full"
+          <button-link
+            :href="route('user.create')"
+            variant="filled"
+            class="flex justify-center items-center gap-2 rounded-full"
             >新規登録</button-link
           >
         </div>
@@ -167,7 +170,10 @@ const submit = (): void => {
       <div class="w-full text-center">
         <h2 class="text-xl font-semibold">初めてご利用の方</h2>
         <div class="mt-2 w-full space-y-4">
-          <button-link href="/" variant="filled" class="flex justify-center items-center gap-2 rounded-full"
+          <button-link
+            :href="route('user.create')"
+            variant="filled"
+            class="flex justify-center items-center gap-2 rounded-full"
             >メールアドレスで登録</button-link
           >
           <button-link

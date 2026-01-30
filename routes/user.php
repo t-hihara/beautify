@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('user.')->group(function () {
@@ -10,6 +11,11 @@ Route::name('user.')->group(function () {
             Route::get('/login/google', 'redirectToGoogle')->name('login.google');
             Route::post('/login', 'login')->name('login');
             Route::get('/auth/google/callback', 'googleCallback')->name('login.google.callback');
+            Route::get('/verifyEmail', 'verifyEmailSent')->name('verifyEmailSent');
+        });
+        Route::controller(UserController::class)->group(function () {
+            Route::get('/register', 'create')->name('create');
+            Route::post('/register', 'store')->name('store');
         });
     });
     Route::middleware(['auth:user'])->group(function () {

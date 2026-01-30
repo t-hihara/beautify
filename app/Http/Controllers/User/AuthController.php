@@ -77,4 +77,9 @@ class AuthController extends Controller
     {
         return redirect()->route('user.loginForm');
     }
+
+    public function verifyEmailSent(): Response
+    {
+        return Inertia::render('Auth/VerifyEmailSent');
+    }
 }
