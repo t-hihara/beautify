@@ -6,6 +6,10 @@ import type { User } from "@common/@types/inertia";
 import Footer from "@user/components/Layout/Footer.vue";
 import Header from "@user/components/Layout/Header.vue";
 
+defineProps<{
+  centerMain?: boolean;
+}>();
+
 const page = usePage();
 const user = computed<User | null>(() => page.props.auth.user);
 </script>
@@ -13,8 +17,13 @@ const user = computed<User | null>(() => page.props.auth.user);
 <template>
   <div class="flex min-h-screen flex-col">
     <Header :user="user" />
-    <main class="flex-1">
-      <slot></slot>
+    <main class="flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <div
+        class="flex min-h-full flex-1 flex-col"
+        :class="{ 'justify-center': centerMain }"
+      >
+        <slot />
+      </div>
     </main>
     <Footer />
   </div>

@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { Head, useForm, usePage } from "@inertiajs/vue3";
+import { computed } from "vue";
 import { route } from "ziggy-js";
 
-import { ButtonLink, ButtonSubmit, TextLink } from "@/common/js/components/Ui/ButtonIndex";
 import GoogleLogo from "@/assets/images/Logo/google-icon.svg";
 import FormEmail from "@/common/js/components/Form/FormEmail.vue";
 import FormPassword from "@/common/js/components/Form/FormPassword.vue";
-import { computed } from "vue";
+import { ButtonLink, ButtonSubmit, TextLink } from "@/common/js/components/Ui/ButtonIndex";
+
+defineOptions({
+  layoutProps: { centerMain: true },
+});
 
 type LoginForm = {
   email: string;
@@ -32,7 +36,7 @@ const submit = (): void => {
 
 <template>
   <Head title="ログイン" />
-  <div class="min-h-[calc(100vh-4rem)] flex justify-center items-center">
+  <div class="flex justify-center items-center">
     <div class="max-w-md w-full bg-zinc-200 rounded-md shadow-xl p-8">
       <div class="space-y-6">
         <div class="text-center">
