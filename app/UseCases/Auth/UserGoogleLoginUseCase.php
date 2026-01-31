@@ -60,7 +60,7 @@ class UserGoogleLoginUseCase
         ]);
 
         $user->customer()->create([
-            'name' => $user->name,
+            'name'  => $user->name,
             'email' => $user->email,
         ]);
 
