@@ -16,7 +16,6 @@ Route::name('user.')->group(function () {
         Route::controller(EmailVerificationController::class)->group(function () {
             Route::prefix('verify-email')->name('verifyEmail.')->group(function () {
                 Route::get('/', 'verifyEmailSent')->name('sent');
-                Route::get('/success', 'verifyEmailSuccess')->name('success');
                 Route::get('/failed', 'verifyEmailFailed')->name('failed');
             });
             Route::get('/verify-email/{id}/{hash}', 'verifyEmail')->name('verifyEmail')->middleware(['signed']);
@@ -29,6 +28,9 @@ Route::name('user.')->group(function () {
     Route::middleware(['auth:user'])->group(function () {
         Route::controller(AuthController::class)->group(function () {
             Route::post('/logout', 'logout')->name('logout');
+        });
+        Route::controller(EmailVerificationController::class)->group(function () {
+            Route::get('/verify-email/success', 'verifyEmailSuccess')->name('verifyEmail.success');
         });
     });
 });
