@@ -17,13 +17,15 @@ import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
 type UserForm = {
   lastName: string;
   firstName: string;
+  lastNameKana: string;
+  firstNameKana: string;
   email: string;
   password: string;
 };
 
 type CustomerForm = {
   name: string;
-  nameKana: string | null;
+  nameKana: string;
   email: string;
   phone: string;
   dob: string;
@@ -40,18 +42,22 @@ defineProps<{
 }>();
 
 const isSameName = ref<boolean>(false);
+const isSameNameKana = ref<boolean>(false);
+const isSameEmail = ref<boolean>(false);
 const agreedToTerms = ref<boolean>(false);
 
 const form = useForm<Form>({
   user: {
     lastName: "",
     firstName: "",
+    lastNameKana: "",
+    firstNameKana: "",
     email: "",
     password: "",
   },
   customer: {
     name: "",
-    nameKana: null,
+    nameKana: "",
     email: "",
     phone: "",
     dob: "",
@@ -60,6 +66,9 @@ const form = useForm<Form>({
 });
 
 const combinedUserName = computed<string>(() => [form.user.lastName, form.user.firstName].filter(Boolean).join(" "));
+const combinedUserNameKana = computed<string>(() =>
+  [form.user.lastNameKana, form.user.firstNameKana].filter(Boolean).join(" "),
+);
 
 const submit = (): void => {
   form.post(route("user.store"));
@@ -75,18 +84,40 @@ watch(
     if (isSameName.value) form.customer.name = combinedUserName.value;
   },
 );
+
+watch(isSameNameKana, (checked) => {
+  form.customer.nameKana = checked ? combinedUserNameKana.value : "";
+});
+
+watch(
+  () => [form.user.lastNameKana, form.user.firstNameKana],
+  () => {
+    if (isSameNameKana.value) form.customer.nameKana = combinedUserNameKana.value;
+  },
+);
+
+watch(isSameEmail, (checked) => {
+  form.customer.email = checked ? form.user.email : "";
+});
+
+watch(
+  () => form.user.email,
+  () => {
+    if (isSameEmail.value) form.customer.email = form.user.email;
+  },
+);
 </script>
 
 <template>
   <div class="sm:min-w-4xl sm:mx-auto">
     <Head title="会員登録" />
-    <div class="hidden sm:block">
+    <div class="hidden sm:block my-8">
       <Head title="新規会員登録" />
       <h2 class="text-3xl font-semibold">会員登録</h2>
       <form @submit.prevent="submit" class="mt-8">
         <dl class="grid grid-cols-2 rounded-md border border-rose-300">
           <div class="col-span-1 flex items-stretch">
-            <dt class="w-40 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
+            <dt class="w-52 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
               ユーザー姓<span class="text-red-500">※</span>
             </dt>
             <dd class="flex-1 p-4">
@@ -100,7 +131,7 @@ watch(
             </dd>
           </div>
           <div class="col-span-1 flex items-stretch">
-            <dt class="w-40 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
+            <dt class="w-52 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
               ユーザー名<span class="text-red-500">※</span>
             </dt>
             <dd class="flex-1 p-4">
@@ -113,8 +144,50 @@ watch(
               />
             </dd>
           </div>
+          <div class="col-span-1 flex items-stretch border-t border-rose-300">
+            <dt class="w-52 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
+              ユーザー姓(カナ)<span class="text-red-500">※</span>
+            </dt>
+            <dd class="flex-1 p-4">
+              <form-text
+                v-model="form.user.lastNameKana"
+                field="user.lastNameKana"
+                placeholder="ヤマダ"
+                class="w-full"
+                :error="form.errors"
+              />
+            </dd>
+          </div>
+          <div class="col-span-1 flex items-stretch border-t border-rose-300">
+            <dt class="w-52 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
+              ユーザー名(カナ)<span class="text-red-500">※</span>
+            </dt>
+            <dd class="flex-1 p-4">
+              <form-text
+                v-model="form.user.firstNameKana"
+                field="user.firstNameKana"
+                placeholder="タロウ"
+                class="w-full"
+                :error="form.errors"
+              />
+            </dd>
+          </div>
           <div class="col-span-2 flex items-stretch border-t border-rose-300">
-            <dt class="w-40 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
+            <dt class="w-52 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
+              電話番号<span class="text-red-500">※</span>
+            </dt>
+            <dd class="flex-1 p-4">
+              <form-text
+                v-model="form.customer.phone"
+                field="customer.phone"
+                placeholder="09012341234（ハイフンなし）"
+                class="w-full"
+                :error="form.errors"
+              />
+            </dd>
+          </div>
+          <div class="col-span-2 flex items-stretch border-t border-rose-300">
+            <dt class="w-52 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
               メールアドレス<span class="text-red-500">※</span>
             </dt>
             <dd class="flex-1 p-4">
@@ -128,7 +201,7 @@ watch(
             </dd>
           </div>
           <div class="col-span-2 flex items-stretch border-t border-rose-300">
-            <dt class="w-40 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
+            <dt class="w-52 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
               パスワード<span class="text-red-500">※</span>
             </dt>
             <dd class="flex-1 p-4">
@@ -142,7 +215,7 @@ watch(
             </dd>
           </div>
           <div class="col-span-2 flex items-stretch border-t border-rose-300">
-            <dt class="w-40 shrink-0 flex items-center p-4 bg-rose-200 text-zinc-800">サイト表示名</dt>
+            <dt class="w-52 shrink-0 flex items-center p-4 bg-rose-200 text-zinc-800">サイト表示名</dt>
             <dd class="flex-1 p-4">
               <form-text
                 v-model="form.customer.name"
@@ -162,7 +235,49 @@ watch(
             </dd>
           </div>
           <div class="col-span-2 flex items-stretch border-t border-rose-300">
-            <dt class="w-40 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
+            <dt class="w-52 shrink-0 flex items-center p-4 bg-rose-200 text-zinc-800">サイト表示名カナ</dt>
+            <dd class="flex-1 p-4">
+              <form-text
+                v-model="form.customer.nameKana"
+                field="customer.nameKana"
+                placeholder="タロウ"
+                class="w-full"
+                :error="form.errors"
+              />
+              <form-checkbox
+                v-model="isSameNameKana"
+                field="isSameNameKana"
+                title="ユーザー名カナと同じにする"
+                label-position="after"
+                class="mt-2"
+                :is-flex="true"
+              />
+            </dd>
+          </div>
+          <div class="col-span-2 flex items-stretch border-t border-rose-300">
+            <dt class="w-52 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800 whitespace-nowrap">
+              連絡用メールアドレス<span class="text-red-500">※</span>
+            </dt>
+            <dd class="flex-1 p-4">
+              <form-text
+                v-model="form.customer.email"
+                field="customer.email"
+                placeholder="example@email.com"
+                class="w-full"
+                :error="form.errors"
+              />
+              <form-checkbox
+                v-model="isSameEmail"
+                field="isSameEmail"
+                title="メールアドレスと同じにする"
+                label-position="after"
+                class="mt-2"
+                :is-flex="true"
+              />
+            </dd>
+          </div>
+          <div class="col-span-2 flex items-stretch border-t border-rose-300">
+            <dt class="w-52 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
               生年月日<span class="text-red-500">※</span>
             </dt>
             <dd class="flex-1 p-4">
@@ -176,7 +291,7 @@ watch(
             </dd>
           </div>
           <div class="col-span-2 flex items-stretch border-t border-rose-300">
-            <dt class="w-40 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
+            <dt class="w-52 shrink-0 flex items-center gap-2 p-4 bg-rose-200 text-zinc-800">
               性別<span class="text-red-500">※</span>
             </dt>
             <dd class="flex-1 p-4">
@@ -208,11 +323,11 @@ watch(
           />
         </div>
         <div class="mt-4 w-full">
-          <button-submit class="w-1/4 mx-auto" :disabled="!agreedToTerms"> 新規登録 </button-submit>
+          <button-submit class="w-1/4 mx-auto" :disabled="!agreedToTerms || form.processing"> 新規登録 </button-submit>
         </div>
       </form>
     </div>
-    <div class="sm:hidden">
+    <div class="sm:hidden mb-4 flex flex-1 min-h-0 flex-col">
       <div class="bg-rose-400 px-4 py-3 text-center text-white font-medium">新規会員登録</div>
       <div class="stepper">
         <div class="stepper-step stepper-step-first">項目入力</div>
@@ -235,6 +350,33 @@ watch(
             v-model="form.user.firstName"
             field="user.firstName"
             placeholder="太郎"
+            class="w-full px-4"
+            :error="form.errors"
+          />
+          <div class="p-2 bg-zinc-100">
+            <p class="text-sm">ユーザー氏名(カナ)<span class="ml-2 text-red-500">※</span></p>
+          </div>
+          <form-text
+            v-model="form.user.lastNameKana"
+            field="user.lastNameKana"
+            placeholder="ヤマダ"
+            class="w-full px-4"
+            :error="form.errors"
+          />
+          <form-text
+            v-model="form.user.firstNameKana"
+            field="user.firstNameKana"
+            placeholder="タロウ"
+            class="w-full px-4"
+            :error="form.errors"
+          />
+          <div class="p-2 bg-zinc-100">
+            <p class="text-sm">電話番号<span class="ml-2 text-red-500">※</span></p>
+          </div>
+          <form-text
+            v-model="form.customer.phone"
+            field="customer.phone"
+            placeholder="09012341234（ハイフンなし）"
             class="w-full px-4"
             :error="form.errors"
           />
@@ -272,6 +414,42 @@ watch(
             v-model="isSameName"
             field="isSameName"
             title="ユーザー名と同じにする"
+            label-position="after"
+            class="mt-2 px-4"
+            :is-flex="true"
+          />
+          <div class="p-2 bg-zinc-100">
+            <p class="text-sm">サイト表示名(カナ)</p>
+          </div>
+          <form-text
+            v-model="form.customer.nameKana"
+            field="customer.nameKana"
+            placeholder="タロウ"
+            class="w-full px-4"
+            :error="form.errors"
+          />
+          <form-checkbox
+            v-model="isSameNameKana"
+            field="isSameNameKana"
+            title="ユーザー名(カナ)と同じにする"
+            label-position="after"
+            class="mt-2 px-4"
+            :is-flex="true"
+          />
+          <div class="p-2 bg-zinc-100">
+            <p class="text-sm">連絡用メールアドレス<span class="ml-2 text-red-500">※</span></p>
+          </div>
+          <form-text
+            v-model="form.customer.email"
+            field="customer.email"
+            placeholder="example@email.com"
+            class="w-full px-4"
+            :error="form.errors"
+          />
+          <form-checkbox
+            v-model="isSameEmail"
+            field="isSameName"
+            title="メールアドレスと同じにする"
             label-position="after"
             class="mt-2 px-4"
             :is-flex="true"
@@ -319,7 +497,7 @@ watch(
           </div>
         </div>
         <div class="mt-4 w-full">
-          <button-submit class="w-1/4 mx-auto" :disabled="!agreedToTerms"> 新規登録 </button-submit>
+          <button-submit class="w-1/4 mx-auto" :disabled="!agreedToTerms || form.processing"> 新規登録 </button-submit>
         </div>
       </form>
     </div>

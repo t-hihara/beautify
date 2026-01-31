@@ -15,7 +15,7 @@ const submit = (): void => {
 </script>
 
 <template>
-  <header class="sticky inset-0 bg-white">
+  <header class="sticky inset-0 z-20 bg-white">
     <div class="h-16 flex items-center justify-between border border-zinc-200">
       <div>
         <Link href="/">
