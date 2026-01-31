@@ -2,18 +2,19 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-
 use App\Enum\ActiveFlagTypeEnum;
+use App\Notifications\Auth\VerifyEmailNotification;
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use LaravelAndVueJS\Traits\LaravelPermissionToVueJS;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmailContract
 {
-    use HasFactory, Notifiable, HasRoles, LaravelPermissionToVueJS;
+    use HasFactory, Notifiable, MustVerifyEmail, HasRoles, LaravelPermissionToVueJS;
 
     protected $appends = ['name', 'name_kana'];
 
@@ -38,6 +39,11 @@ class User extends Authenticatable
         'password'          => 'hashed',
         'active_flag'       => ActiveFlagTypeEnum::class,
     ];
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new VerifyEmailNotification);
+    }
 
     /* ================================================================================
                                         アクセサ

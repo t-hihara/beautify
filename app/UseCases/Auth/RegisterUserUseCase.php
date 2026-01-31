@@ -16,6 +16,8 @@ class RegisterUserUseCase
 
             $user->assignRole(Role::findByName('user', 'user'));
 
+            $user->sendEmailVerificationNotification();
+
             return $user;
         });
     }

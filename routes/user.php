@@ -11,7 +11,8 @@ Route::name('user.')->group(function () {
             Route::get('/login/google', 'redirectToGoogle')->name('login.google');
             Route::post('/login', 'login')->name('login');
             Route::get('/auth/google/callback', 'googleCallback')->name('login.google.callback');
-            Route::get('/verifyEmail', 'verifyEmailSent')->name('verifyEmailSent');
+            Route::get('/verify-email', 'verifyEmailSent')->name('verifyEmailSent');
+            Route::get('/verify-email/{id}/{hash}', 'verifyEmail')->name('verifyEmail')->middleware(['signed']);
         });
         Route::controller(UserController::class)->group(function () {
             Route::get('/register', 'create')->name('create');

@@ -26,6 +26,7 @@ class UserController extends Controller
             $useCase($payload);
         } catch (Throwable $e) {
             report($e);
+            \Log::error($e->getMessage());
             return back()->with('error', 'アカウント登録に失敗しました。');
         }
 
