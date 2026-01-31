@@ -22,8 +22,6 @@ class UserGoogleLoginUseCase
                 ];
             }
 
-            // TODO: ユーザー情報用テーブルを作成したらここにそのテーブルへのデータ保存ロジックを書く
-
             auth()->guard('user')->login($user);
 
             return [
@@ -59,6 +57,11 @@ class UserGoogleLoginUseCase
             'email_verified_at' => now(),
             'google_id'         => $googleUser->id,
             'active_flag'       => ActiveFlagTypeEnum::ACTIVE,
+        ]);
+
+        $user->customer()->create([
+            'name' => $user->name,
+            'email' => $user->email,
         ]);
 
         $user->assignRole(Role::findByName('user', 'user'));
