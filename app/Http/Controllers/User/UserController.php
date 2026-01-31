@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Enum\GenderTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\FormUserRequest;
 use App\UseCases\Auth\RegisterUserUseCase;
@@ -16,7 +17,9 @@ class UserController extends Controller
 {
     public function create(): Response
     {
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register', [
+            'genders' => GenderTypeEnum::options(),
+        ]);
     }
 
     public function store(FormUserRequest $request, RegisterUserUseCase $useCase): RedirectResponse

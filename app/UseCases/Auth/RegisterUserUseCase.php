@@ -12,7 +12,8 @@ class RegisterUserUseCase
     {
         return DB::transaction(function () use ($data) {
             $user = new User;
-            $user->fill($data)->save();
+            $user->fill($data['user'])->save();
+            $user->customer()->create($data['customer']);
 
             $user->assignRole(Role::findByName('user', 'user'));
 

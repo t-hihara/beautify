@@ -3,3 +3,4 @@ export { default as FormPassword } from "@common/components/Form/FormPassword.vu
 export { default as FormText } from "@common/components/Form/FormText.vue";
 export { default as FormSingleSelect } from "@common/components/Form/FormSingleSelect.vue";
 export { default as FormDateTime } from "@common/components/Form/FormDateTime.vue";
+export { default as FormCheckbox } from "@common/components/Form/FormCheckbox.vue";
