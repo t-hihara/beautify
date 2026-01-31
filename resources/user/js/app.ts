@@ -8,6 +8,8 @@ import { createInertiaApp } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { DefineComponent } from "vue";
 import { ZiggyVue } from "ziggy-js";
+import { VueDatePicker } from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 import LaravelPermissionToVueJS from "laravel-permission-to-vuejs";
 
 import IndexLayout from "@user/layouts/Index.vue";
@@ -27,6 +29,7 @@ createInertiaApp({
       .use(plugin)
       .use(LaravelPermissionToVueJS)
       .use(ZiggyVue)
+      .component("VueDatePicker", VueDatePicker)
       .mount(el);
   },
 });
