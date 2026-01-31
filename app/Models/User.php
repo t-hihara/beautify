@@ -7,6 +7,7 @@ use App\Notifications\Auth\VerifyEmailNotification;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use LaravelAndVueJS\Traits\LaravelPermissionToVueJS;
@@ -66,4 +67,9 @@ class User extends Authenticatable implements MustVerifyEmailContract
     /* ================================================================================
                                         リレーション
     ================================================================================ */
+
+    public function customer(): HasOne
+    {
+        return $this->hasOne(Customer::class);
+    }
 }

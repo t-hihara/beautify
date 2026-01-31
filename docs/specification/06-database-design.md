@@ -105,7 +105,7 @@
 - `id` (bigint, primary key)
 - `shop_id` (bigint, foreign key) - 店舗ID
 - `user_id` (bigint, foreign key, nullable) - ユーザーID（ゲスト予約の場合はnull）
-- `customer_card_id` (bigint, foreign key, nullable) - 顧客カードID
+- `customer_id` (bigint, foreign key, nullable) - 顧客ID（ログインユーザーの顧客プロフィール。ゲスト予約の場合はnull）
 - `menu_id` (bigint, foreign key) - メニューID
 - `staff_id` (bigint, foreign key, nullable) - スタイリストID
 - `reservation_date` (date) - 予約日
@@ -126,7 +126,7 @@
 **リレーション**:
 - `shop` (多対1)
 - `user` (多対1, nullable)
-- `customer_card` (多対1, nullable)
+- `customer` (多対1, nullable)
 - `menu` (多対1)
 - `staff` (多対1, nullable)
 - `coupon` (多対1, nullable)
@@ -294,7 +294,7 @@ shifts
 - `staff.user_id` → `users.id`
 - `reservations.shop_id` → `shops.id`
 - `reservations.user_id` → `users.id`
-- `reservations.customer_card_id` → `customer_cards.id`
+- `reservations.customer_id` → `customers.id`
 - `reservations.menu_id` → `menus.id`
 - `reservations.staff_id` → `staff.id`
 - `reservations.coupon_id` → `coupons.id`
@@ -302,34 +302,38 @@ shifts
 - `shifts.staff_id` → `staff.id`
 - `favorite_shops.user_id` → `users.id`
 - `favorite_shops.shop_id` → `shops.id`
-- `customer_cards.user_id` → `users.id`
-- `customer_cards.shop_id` → `shops.id`
-- `visit_histories.customer_card_id` → `customer_cards.id`
+- `customers.user_id` → `users.id`
+- `visit_histories.customer_id` → `customers.id`
 - `visit_histories.reservation_id` → `reservations.id`
-- `points.customer_card_id` → `customer_cards.id`
-- `points.user_id` → `users.id`
-- `points.shop_id` → `shops.id`
+- `points.customer_id` → `customers.id`
+- `points.reservation_id` → `reservations.id`
 - `coupons.shop_id` → `shops.id`
-- `coupons.customer_card_id` → `customer_cards.id`
+- `coupons.customer_id` → `customers.id`
 - `coupon_usages.coupon_id` → `coupons.id`
 - `coupon_usages.reservation_id` → `reservations.id`
 - `reviews.user_id` → `users.id`
-- `reviews.customer_card_id` → `customer_cards.id`
+- `reviews.customer_id` → `customers.id`
 - `reviews.shop_id` → `shops.id`
 - `reviews.staff_id` → `staff.id`
 - `waitlists.shop_id` → `shops.id`
 - `waitlists.user_id` → `users.id`
+- `waitlists.customer_id` → `customers.id`
 - `waitlists.menu_id` → `menus.id`
 - `waitlists.staff_id` → `staff.id`
 - `counseling_sheets.reservation_id` → `reservations.id`
+- `counseling_sheets.customer_id` → `customers.id`
 - `treatment_photos.reservation_id` → `reservations.id`
+- `treatment_photos.customer_id` → `customers.id`
 - `inventory_items.shop_id` → `shops.id`
 - `inventory_transactions.inventory_item_id` → `inventory_items.id`
 - `sales.shop_id` → `shops.id`
 - `sales.reservation_id` → `reservations.id`
+- `sales.customer_id` → `customers.id`
 - `sales.staff_id` → `staff.id`
 - `staff_performances.staff_id` → `staff.id`
 - `staff_performances.shop_id` → `shops.id`
+- `notifications.user_id` → `users.id`
+- `notifications.customer_id` → `customers.id`
 
 ### カスケード削除
 - 店舗削除時: メニュー、スタッフ、予約、シフトも削除（または制約エラー）
@@ -337,55 +341,54 @@ shifts
 
 ---
 
-### 11. customer_cards（顧客カード）
-顧客情報を管理するテーブル
+### 11. customers（顧客）
+ユーザーに1対1で紐づく顧客プロフィール。名前・連絡先・誕生日・性別など、認証とは別に管理する顧客情報。
 
 **カラム**:
 - `id` (bigint, primary key)
-- `user_id` (bigint, foreign key, nullable) - ユーザーID（登録ユーザーの場合）
-- `shop_id` (bigint, foreign key) - 店舗ID
+- `user_id` (bigint, foreign key, unique) - ユーザーID（1ユーザー1顧客）
 - `name` (string) - 顧客名
 - `phone` (string, nullable) - 電話番号
-- `email` (string, nullable) - メールアドレス
+- `email` (string, nullable) - メールアドレス（ユーザーのログイン用と別に持つ場合はここ）
 - `birthday` (date, nullable) - 誕生日
-- `gender` (string, nullable) - 性別
+- `gender` (string, nullable) - 性別（male, female, other, prefer_not_to_say など）
 - `hair_type` (string, nullable) - 髪質（細い、太い、くせ毛、直毛、硬い、柔らかいなど）
 - `allergies` (json, nullable) - アレルギー情報（カラー剤、パーマ剤など）
 - `preferences` (json, nullable) - 好み・要望（希望スタイル、カラー希望、パーマ希望など）
-- `visit_count` (integer, default: 0) - 来店回数
-- `total_amount` (decimal, default: 0) - 総利用金額
-- `member_rank` (string, nullable) - 会員ランク
 - `notes` (text, nullable) - 備考
 - `created_at` (timestamp)
 - `updated_at` (timestamp)
 
 **リレーション**:
-- `user` (多対1, nullable)
-- `shop` (多対1)
+- `user` (1対1)
+- `reservations` (1対多)
 - `visit_histories` (1対多)
 - `points` (1対多)
-- `coupons` (1対多)
+- `reviews` (1対多)
+
+**ユニーク制約**:
+- `user_id`
 
 ---
 
 ### 12. visit_histories（来店履歴）
-顧客の来店履歴を管理するテーブル
+顧客の来店履歴を管理するテーブル。予約に紐づく来店記録。
 
 **カラム**:
 - `id` (bigint, primary key)
-- `customer_card_id` (bigint, foreign key) - 顧客カードID
+- `customer_id` (bigint, foreign key) - 顧客ID
 - `reservation_id` (bigint, foreign key, nullable) - 予約ID
 - `visit_date` (date) - 来店日
 - `menu_id` (bigint, foreign key, nullable) - メニューID
 - `staff_id` (bigint, foreign key, nullable) - スタイリストID
 - `amount` (decimal) - 利用金額
-- `points_earned` (integer, default: 0) - 獲得ポイント
+- `points_earned` (integer, default: 0) - 当該来店で付与したポイント
 - `notes` (text, nullable) - 備考
 - `created_at` (timestamp)
 - `updated_at` (timestamp)
 
 **リレーション**:
-- `customer_card` (多対1)
+- `customer` (多対1)
 - `reservation` (多対1, nullable)
 - `menu` (多対1, nullable)
 - `staff` (多対1, nullable)
@@ -393,13 +396,12 @@ shifts
 ---
 
 ### 13. points（ポイント）
-ポイント情報を管理するテーブル
+ポイントの付与・使用履歴。**予約に対して付与**（来店時など）、使用時は予約に紐づけて記録する。
 
 **カラム**:
 - `id` (bigint, primary key)
-- `customer_card_id` (bigint, foreign key) - 顧客カードID
-- `user_id` (bigint, foreign key, nullable) - ユーザーID
-- `shop_id` (bigint, foreign key) - 店舗ID
+- `customer_id` (bigint, foreign key) - 顧客ID（付与先・使用元）
+- `reservation_id` (bigint, foreign key, nullable) - 予約ID（付与元の予約、または使用した予約）
 - `points` (integer) - ポイント数（付与は正、使用は負）
 - `type` (string) - タイプ（earned, used, expired）
 - `description` (string, nullable) - 説明
@@ -408,13 +410,13 @@ shifts
 - `updated_at` (timestamp)
 
 **リレーション**:
-- `customer_card` (多対1)
-- `user` (多対1, nullable)
-- `shop` (多対1)
+- `customer` (多対1)
+- `reservation` (多対1, nullable)
 
 **インデックス**:
-- `customer_card_id`, `type`
-- `user_id`, `type`
+- `customer_id`, `type`
+- `reservation_id` - 予約ごとの付与・使用検索
+- `expires_at` - 有効期限切れポイント検索
 
 ---
 
@@ -424,7 +426,7 @@ shifts
 **カラム**:
 - `id` (bigint, primary key)
 - `shop_id` (bigint, foreign key) - 店舗ID
-- `customer_card_id` (bigint, foreign key, nullable) - 顧客カードID（個別発行の場合）
+- `customer_id` (bigint, foreign key, nullable) - 顧客ID（個別発行の場合）
 - `code` (string, unique) - クーポンコード
 - `name` (string) - クーポン名
 - `description` (text, nullable) - 説明
@@ -442,7 +444,7 @@ shifts
 
 **リレーション**:
 - `shop` (多対1)
-- `customer_card` (多対1, nullable)
+- `customer` (多対1, nullable)
 - `coupon_usages` (1対多)
 
 ---
@@ -454,7 +456,7 @@ shifts
 - `id` (bigint, primary key)
 - `coupon_id` (bigint, foreign key) - クーポンID
 - `reservation_id` (bigint, foreign key, nullable) - 予約ID
-- `customer_card_id` (bigint, foreign key, nullable) - 顧客カードID
+- `customer_id` (bigint, foreign key, nullable) - 顧客ID
 - `discount_amount` (decimal) - 割引額
 - `used_at` (timestamp) - 使用日時
 - `created_at` (timestamp)
@@ -463,7 +465,7 @@ shifts
 **リレーション**:
 - `coupon` (多対1)
 - `reservation` (多対1, nullable)
-- `customer_card` (多対1, nullable)
+- `customer` (多対1, nullable)
 
 ---
 
@@ -473,7 +475,7 @@ shifts
 **カラム**:
 - `id` (bigint, primary key)
 - `user_id` (bigint, foreign key, nullable) - ユーザーID
-- `customer_card_id` (bigint, foreign key, nullable) - 顧客カードID
+- `customer_id` (bigint, foreign key, nullable) - 顧客ID
 - `shop_id` (bigint, foreign key) - 店舗ID
 - `staff_id` (bigint, foreign key, nullable) - スタイリストID
 - `reservation_id` (bigint, foreign key, nullable) - 予約ID
@@ -489,7 +491,7 @@ shifts
 
 **リレーション**:
 - `user` (多対1, nullable)
-- `customer_card` (多対1, nullable)
+- `customer` (多対1, nullable)
 - `shop` (多対1)
 - `staff` (多対1, nullable)
 - `reservation` (多対1, nullable)
@@ -526,7 +528,7 @@ shifts
 - `id` (bigint, primary key)
 - `shop_id` (bigint, foreign key) - 店舗ID
 - `user_id` (bigint, foreign key, nullable) - ユーザーID
-- `customer_card_id` (bigint, foreign key, nullable) - 顧客カードID
+- `customer_id` (bigint, foreign key, nullable) - 顧客ID
 - `menu_id` (bigint, foreign key) - メニューID
 - `staff_id` (bigint, foreign key, nullable) - スタイリストID
 - `desired_date` (date) - 希望日
@@ -541,7 +543,7 @@ shifts
 **リレーション**:
 - `shop` (多対1)
 - `user` (多対1, nullable)
-- `customer_card` (多対1, nullable)
+- `customer` (多対1, nullable)
 - `menu` (多対1)
 - `staff` (多対1, nullable)
 
@@ -557,7 +559,7 @@ shifts
 **カラム**:
 - `id` (bigint, primary key)
 - `reservation_id` (bigint, foreign key, nullable) - 予約ID
-- `customer_card_id` (bigint, foreign key, nullable) - 顧客カードID
+- `customer_id` (bigint, foreign key, nullable) - 顧客ID
 - `user_id` (bigint, foreign key, nullable) - ユーザーID
 - `desired_style` (text, nullable) - 希望スタイル（ショート、ボブ、ロング、希望の長さなど）
 - `color_preference` (text, nullable) - カラー希望（明るく、暗く、トーンなど）
@@ -573,7 +575,7 @@ shifts
 
 **リレーション**:
 - `reservation` (多対1, nullable)
-- `customer_card` (多対1, nullable)
+- `customer` (多対1, nullable)
 - `user` (多対1, nullable)
 
 ---
@@ -584,7 +586,7 @@ shifts
 **カラム**:
 - `id` (bigint, primary key)
 - `reservation_id` (bigint, foreign key, nullable) - 予約ID
-- `customer_card_id` (bigint, foreign key, nullable) - 顧客カードID
+- `customer_id` (bigint, foreign key, nullable) - 顧客ID
 - `user_id` (bigint, foreign key, nullable) - ユーザーID
 - `photo_type` (string) - 写真タイプ（cut_before, cut_after, color_before, color_after, perm_before, perm_afterなど）
 - `image_path` (string) - 画像パス
@@ -595,7 +597,7 @@ shifts
 
 **リレーション**:
 - `reservation` (多対1, nullable)
-- `customer_card` (多対1, nullable)
+- `customer` (多対1, nullable)
 - `user` (多対1, nullable)
 
 ---
@@ -651,7 +653,7 @@ shifts
 - `id` (bigint, primary key)
 - `shop_id` (bigint, foreign key) - 店舗ID
 - `reservation_id` (bigint, foreign key, nullable) - 予約ID
-- `customer_card_id` (bigint, foreign key, nullable) - 顧客カードID
+- `customer_id` (bigint, foreign key, nullable) - 顧客ID
 - `staff_id` (bigint, foreign key, nullable) - スタイリストID
 - `menu_id` (bigint, foreign key, nullable) - メニューID
 - `amount` (decimal) - 売上金額
@@ -668,7 +670,7 @@ shifts
 **リレーション**:
 - `shop` (多対1)
 - `reservation` (多対1, nullable)
-- `customer_card` (多対1, nullable)
+- `customer` (多対1, nullable)
 - `staff` (多対1, nullable)
 - `menu` (多対1, nullable)
 
@@ -713,7 +715,7 @@ shifts
 **カラム**:
 - `id` (bigint, primary key)
 - `user_id` (bigint, foreign key, nullable) - ユーザーID
-- `customer_card_id` (bigint, foreign key, nullable) - 顧客カードID
+- `customer_id` (bigint, foreign key, nullable) - 顧客ID
 - `type` (string) - 通知タイプ（reservation, point, coupon, reviewなど）
 - `title` (string) - タイトル
 - `message` (text) - メッセージ
@@ -726,11 +728,11 @@ shifts
 
 **リレーション**:
 - `user` (多対1, nullable)
-- `customer_card` (多対1, nullable)
+- `customer` (多対1, nullable)
 
 **インデックス**:
 - `user_id`, `is_read`
-- `customer_card_id`, `is_read`
+- `customer_id`, `is_read`
 - `type`, `created_at`
 
 ---
@@ -739,20 +741,24 @@ shifts
 
 ```
 users
+  ├── customer (1対1, オプション) … 顧客プロフィール
   ├── reservations (1対多)
   ├── favorite_shops (多対多)
-  ├── customer_cards (1対1, オプション)
-  ├── points (1対多)
   ├── reviews (1対多)
   └── notifications (1対多)
+
+customers
+  ├── user (1対1)
+  ├── reservations (1対多)
+  ├── visit_histories (1対多)
+  ├── points (1対多) … 予約ごとの付与・使用
+  └── reviews (1対多)
 
 shops
   ├── menus (1対多)
   ├── staff (1対多)
   ├── reservations (1対多)
   ├── shifts (1対多)
-  ├── customer_cards (1対多)
-  ├── points (1対多)
   ├── coupons (1対多)
   ├── reviews (1対多)
   ├── waitlists (1対多)
@@ -760,22 +766,16 @@ shops
   ├── sales (1対多)
   └── shop_managers (多対多)
 
-customer_cards
-  ├── user (多対1, オプション)
-  ├── shop (多対1)
-  ├── visit_histories (1対多)
-  ├── points (1対多)
-  ├── coupons (1対多)
-  └── reviews (1対多)
-
 reservations
   ├── shop (多対1)
   ├── user (多対1, オプション)
+  ├── customer (多対1, オプション)
   ├── menu (多対1)
   ├── staff (多対1, オプション)
   ├── visit_histories (1対1, オプション)
   ├── counseling_sheets (1対1, オプション)
   ├── treatment_photos (1対多)
+  ├── points (1対多) … 当該予約での付与・使用
   └── sales (1対1, オプション)
 
 staff
@@ -794,12 +794,12 @@ staff
 ## 追加のインデックス戦略
 
 ### 新規追加テーブルのインデックス
-1. **customer_cards テーブル**
-   - `shop_id`, `member_rank` - ランク別顧客検索
-   - `user_id` - ユーザーとの紐付け検索
+1. **customers テーブル**
+   - `user_id` (unique) - ユーザーとの1対1紐付け
 
 2. **points テーブル**
-   - `customer_card_id`, `type` - ポイント履歴検索
+   - `customer_id`, `type` - 顧客ごとのポイント履歴検索
+   - `reservation_id` - 予約ごとの付与・使用検索
    - `expires_at` - 有効期限切れポイント検索
 
 3. **coupons テーブル**
@@ -827,6 +827,5 @@ staff
 - `menu_categories` - メニューカテゴリー
 - `payments` - 決済情報（詳細）
 - `holidays` - 店舗の休業日管理
-- `member_ranks` - 会員ランク設定
-- `point_rules` - ポイント付与ルール設定
+- `point_rules` - ポイント付与ルール設定（予約・来店時の付与率など）
 - `campaigns` - キャンペーン管理
