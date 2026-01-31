@@ -30,7 +30,8 @@ defineEmits<{
   <component
     :is="component"
     :type="href ? undefined : type"
-    :href="!href ? disabled : href"
+    :href="href ?? undefined"
+    :disabled="!href ? disabled : undefined"
     :class="disabled ? '' : 'cursor-pointer'"
     class="block transition ease-in-out duration-300 overflow-hidden"
     @click="!disabled && $emit('click')"
