@@ -30,6 +30,6 @@ class UserController extends Controller
             return back()->with('error', 'アカウント登録に失敗しました。');
         }
 
-        return redirect()->route('user.verifyEmailSent');
+        return redirect()->route('user.verifyEmail.sent');
     }
 }
