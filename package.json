@@ -11,6 +11,7 @@
         "@heroicons/vue": "^2.2.0",
         "@inertiajs/vue3": "^2.3.11",
         "@tailwindcss/vite": "^4.0.0",
+        "@types/luxon": "^3.7.1",
         "@vitejs/plugin-vue": "^6.0.3",
         "@vuepic/vue-datepicker": "^12.1.0",
         "axios": "^1.11.0",
