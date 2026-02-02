@@ -10,7 +10,7 @@ defineOptions({
   layoutProps: { centerMain: true },
 });
 
-defineProps<{
+const { token, email } = defineProps<{
   token: string;
   email: string | null;
 }>();
@@ -24,8 +24,8 @@ type ResetPasswordForm = {
 
 const page = usePage();
 const form = useForm<ResetPasswordForm>({
-  token: page.props.token as string,
-  email: (page.props.email as string) ?? "",
+  token: token,
+  email: email ?? "",
   password: "",
   passwordConfirmation: "",
 });
@@ -47,9 +47,7 @@ const submit = (): void => {
       <div class="space-y-6">
         <div class="text-center">
           <h2 class="text-2xl font-bold text-zinc-800">パスワードの再設定</h2>
-          <p class="mt-2 text-sm text-zinc-600">
-            新しいパスワードを入力してください。
-          </p>
+          <p class="mt-2 text-sm text-zinc-600">新しいパスワードを入力してください。</p>
         </div>
         <form @submit.prevent="submit">
           <form-password
@@ -83,9 +81,7 @@ const submit = (): void => {
   <div class="sm:hidden px-4 py-6">
     <div class="text-center mb-6">
       <h2 class="text-xl font-bold text-zinc-800">パスワードの再設定</h2>
-      <p class="mt-2 text-sm text-zinc-600">
-        新しいパスワードを入力してください。
-      </p>
+      <p class="mt-2 text-sm text-zinc-600">新しいパスワードを入力してください。</p>
     </div>
     <form @submit.prevent="submit">
       <form-password
