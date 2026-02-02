@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Enum\ActiveFlagTypeEnum;
+use App\Notifications\Auth\ResetPasswordNotification;
 use App\Notifications\Auth\VerifyEmailNotification;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -46,6 +48,11 @@ class User extends Authenticatable implements MustVerifyEmailContract
         $this->notify(new VerifyEmailNotification);
     }
 
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
     /* ================================================================================
                                         アクセサ
     ================================================================================ */
@@ -63,6 +70,15 @@ class User extends Authenticatable implements MustVerifyEmailContract
     /* ================================================================================
                                         スコープ
     ================================================================================ */
+
+    public function scopeByEmail(Builder $query, ?string $email): Builder
+    {
+        if ($email) {
+            return $query->where('email', $email);
+        }
+
+        return $query;
+    }
 
     /* ================================================================================
                                         リレーション

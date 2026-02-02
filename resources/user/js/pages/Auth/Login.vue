@@ -71,6 +71,9 @@ const submit = (): void => {
             class="mt-4 flex flex-col gap-1"
             :error="errors"
           />
+          <p class="mt-4 text-end text-sm text-zinc-600">
+            <text-link :href="route('user.password.request')">パスワードを忘れた方</text-link>
+          </p>
           <div class="mt-8 w-2/3 mx-auto">
             <button-submit class="w-full">ログイン</button-submit>
           </div>
@@ -133,7 +136,9 @@ const submit = (): void => {
           :error="errors"
         />
         <div class="mt-4">
-          <text-link href="/" class="block text-xs text-end">パスワードをお忘れの方</text-link>
+          <text-link :href="route('user.password.request')" class="block text-xs text-end text-zinc-600"
+            >パスワードを忘れた方</text-link
+          >
           <button-submit class="w-full mt-4">ログイン</button-submit>
         </div>
       </form>

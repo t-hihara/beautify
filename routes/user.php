@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\User\AuthController;
 use App\Http\Controllers\User\EmailVerificationController;
+use App\Http\Controllers\User\ResetPasswordController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,13 @@ Route::name('user.')->group(function () {
                 Route::get('/failed', 'verifyEmailFailed')->name('failed');
             });
             Route::get('/verify-email/{id}/{hash}', 'verifyEmail')->name('verifyEmail')->middleware(['signed']);
+        });
+        Route::controller(ResetPasswordController::class)->group(function () {
+            Route::get('/forget-password', 'showForgotForm')->name('password.request');
+            Route::post('/forgot-password', 'sendResetLink')->name('password.email');
+            Route::get('/forgot-password/sent', 'forgotPasswordSent')->name('password.sent');
+            Route::get('/reset-password/{token}', 'showResetForm')->name('password.reset');
+            Route::post('/reset-password', 'reset')->name('password.update');
         });
         Route::controller(UserController::class)->group(function () {
             Route::get('/register', 'create')->name('create');
