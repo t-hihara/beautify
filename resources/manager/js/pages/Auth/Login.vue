@@ -64,7 +64,7 @@ const submit = (): void => form.post(route(`${guard.value}.login`));
                 <span class="text-sm text-red-500">{{ form.errors.password }}</span>
               </div>
             </div>
-            <div class="text-center">
+            <div class="flex justify-center">
               <button-submit>ログインする</button-submit>
             </div>
           </div>

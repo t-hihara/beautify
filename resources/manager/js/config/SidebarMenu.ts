@@ -20,6 +20,13 @@ export const adminMenu: MenuItem[] = [
     route: "admin.dashboard",
     children: [],
   },
+  {
+    id: 99,
+    label: "ログ管理",
+    icon: "log",
+    route: "admin.logs.index",
+    children: [],
+  },
 ];
 
 export const shopMenu: MenuItem[] = [

@@ -18,7 +18,7 @@ const user = computed<User | null>(() => page.props.auth.user || null);
     <Sidebar class="col-span-2" />
     <div class="col-span-10">
       <Header :is-admin="isAdmin" :user="user" />
-      <main>
+      <main class="px-8 py-12">
         <slot></slot>
       </main>
     </div>
