@@ -42,6 +42,7 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
       {{ title }}<span v-if="required" class="text-red-500">※</span>
     </label>
     <vue-date-picker
+      no-today
       auto-apply
       :model-value="modelValue"
       :min-date="minDate ?? undefined"
