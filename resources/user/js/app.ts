@@ -11,6 +11,8 @@ import { ZiggyVue } from "ziggy-js";
 import { VueDatePicker } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 import LaravelPermissionToVueJS from "laravel-permission-to-vuejs";
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
 
 import IndexLayout from "@user/layouts/Index.vue";
 
@@ -21,7 +23,7 @@ createInertiaApp({
       import.meta.glob<DefineComponent>("./pages/**/*.vue"),
     );
     const layoutProps = (page.default as { layoutProps?: Record<string, unknown> }).layoutProps ?? {};
-    page.default.layout = (_h: typeof h, child: unknown) => h(IndexLayout, layoutProps, () => child);
+    page.default.layout = (_h: typeof h, child: unknown) => h(IndexLayout, layoutProps, { default: () => child });
     return page;
   },
   setup({ el, App, props, plugin }) {
@@ -29,6 +31,13 @@ createInertiaApp({
       .use(plugin)
       .use(LaravelPermissionToVueJS)
       .use(ZiggyVue)
+      .use(Toast, {
+        timeout: 3000,
+        position: "top-right",
+        closeOnClick: true,
+        pauseOnFocusLoss: true,
+        pauseOnHover: true,
+      })
       .component("VueDatePicker", VueDatePicker)
       .mount(el);
   },

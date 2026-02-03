@@ -62,7 +62,7 @@ const submit = (): void => {
           <form-password
             v-model="form.passwordConfirmation"
             title="新しいパスワード（確認）"
-            field="password_confirmation"
+            field="passwordConfirmation"
             placeholder=""
             required
             class="mt-4 flex flex-col gap-1"

@@ -10,15 +10,13 @@ defineOptions({
 <template>
   <div class="w-full max-w-md mx-auto">
     <Head title="パスワード再設定用のメールを送信しました" />
-    <div class="bg-zinc-100 rounded-lg shadow p-8 text-center space-y-6">
+    <div class="sm:bg-zinc-100 sm:rounded-lg sm:shadow p-8 text-center space-y-6">
       <h2 class="text-2xl font-bold text-zinc-800">送信しました</h2>
       <p class="text-zinc-600 text-sm leading-relaxed">
         ご入力いただいたメールアドレスに、パスワード再設定用のリンクを送信しました。<br />
         メール内のリンクをクリックして、新しいパスワードを設定してください。
       </p>
-      <p class="text-zinc-500 text-xs">
-        メールが届かない場合は、迷惑メールフォルダをご確認ください。
-      </p>
+      <p class="text-zinc-500 text-xs">メールが届かない場合は、迷惑メールフォルダをご確認ください。</p>
       <div class="pt-4 space-y-2">
         <Link
           :href="route('user.loginForm')"

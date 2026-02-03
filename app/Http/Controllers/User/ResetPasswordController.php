@@ -58,14 +58,14 @@ class ResetPasswordController extends Controller
         $status = $useCase($data);
 
         if ($status === Password::INVALID_TOKEN) {
-            return back()->withErrors(['email' => 'このリンクは無効または期限切れです。']);
+            return back()->withErrors(['password' => 'このリンクは無効または期限切れです。']);
         }
 
         if ($status === Password::INVALID_USER) {
-            return back()->withErrors(['email' => 'このメールアドレスは登録されていません。']);
+            return back()->withErrors(['password' => 'このメールアドレスは登録されていません。']);
         }
 
         return redirect()->route('user.loginForm')
-            ->with('status', 'パスワードを変更しました。');
+            ->with('success', 'パスワードを変更しました。');
     }
 }
