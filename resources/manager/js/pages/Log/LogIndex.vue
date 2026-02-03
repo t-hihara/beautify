@@ -1,5 +1,18 @@
 <script setup lang="ts">
-import { Head } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
+import { DateTime } from "luxon";
+import { route } from "ziggy-js";
+import { useGuard } from "@manager/composables/useGuard";
+
+import { SearchText, SearchDateTime } from "@/common/js/components/Form/SearchIndex";
+import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
+
+type Filter = {
+  name: string;
+  event: string;
+  fromDate: string;
+  toDate: string;
+};
 
 type Log = {
   id: number;
@@ -9,9 +22,32 @@ type Log = {
   createdAt: string;
 };
 
-defineProps<{
+type SearchForm = {
+  name: string;
+  event: string;
+  fromDate: string;
+  toDate: string;
+};
+
+const { guard } = useGuard();
+const { filters } = defineProps<{
+  filters: Filter;
   logs: Log[];
 }>();
+
+const searchForm = useForm<SearchForm>({
+  name: filters.name || "",
+  event: filters.event || "",
+  fromDate: filters.fromDate || DateTime.now().toISODate(),
+  toDate: filters.toDate || "",
+});
+
+const search = (): void => {
+  searchForm.get(route(`${guard.value}.logs.index`), {
+    preserveState: true,
+    preserveScroll: true,
+  });
+};
 </script>
 
 <template>
@@ -19,6 +55,20 @@ defineProps<{
     <Head title="ログ一覧" />
     <div class="">
       <h2 class="text-3xl">ログ一覧</h2>
+    </div>
+    <div class="mt-8 p-6 bg-white rounded-lg shadow-sm">
+      <div class="grid grid-cols-4 gap-4">
+        <search-text v-model="searchForm.name" field="name" title="実行者名" placeholder="実行者名で検索" />
+        <search-text v-model="searchForm.event" field="event" title="イベント名" placeholder="イベント名で検索" />
+        <div class="col-span-2">
+          <search-date-time v-model="searchForm.fromDate" field="fromDate" title="作成日(開始)" />
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-zinc-200 flex justify-end items-center gap-2">
+        <form @submit.prevent="search">
+          <button-submit :disabled="searchForm.processing">検索する</button-submit>
+        </form>
+      </div>
     </div>
     <div class="mt-4 bg-white shadow-sm rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-zinc-300 text-sm">
