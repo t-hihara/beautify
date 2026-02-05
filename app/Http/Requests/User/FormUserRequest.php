@@ -24,6 +24,7 @@ class FormUserRequest extends FormRequest
     }
     public function rules(): array
     {
+        \Log::info(request()->toArray());
         $rules = [
             'user.lastName'      => ['required', 'string', 'max:20'],
             'user.firstName'     => ['required', 'string', 'max:20'],

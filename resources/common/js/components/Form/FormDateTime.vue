@@ -68,6 +68,9 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
       @update:model-value="(v) => $emit('update:modelValue', formatDateTime(v, mode))"
       @date-click=""
     />
+    <div v-if="error?.[field]" class="mt-0.5">
+      <span class="text-xs text-red-600">{{ error[field] }}</span>
+    </div>
   </div>
 </template>
 

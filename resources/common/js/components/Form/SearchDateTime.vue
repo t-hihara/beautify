@@ -12,7 +12,7 @@ const {
   multiCalendars = 0,
   mode = "date",
 } = defineProps<{
-  modelValue: string;
+  modelValue: string | null;
   field: string;
   title?: string;
   required?: boolean;
@@ -25,13 +25,16 @@ const {
 }>();
 
 defineEmits<{
-  "update:modelValue": [value: string];
+  "update:modelValue": [value: string | null];
 }>();
 
-const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string => {
+const formatDateTime = (date: Date | null, mode: "date" | "time" | "datetime"): string | null => {
+  if (date === null) return null;
+
   const dt = DateTime.fromJSDate(date);
   if (mode === "date") return dt.toFormat("yyyy-MM-dd");
   if (mode === "time") return dt.toFormat("HH:mm");
+
   return dt.toFormat("yyyy-MM-dd HH:mm");
 };
 </script>
@@ -69,6 +72,9 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
       @update:model-value="(v) => $emit('update:modelValue', formatDateTime(v, mode))"
       @date-click=""
     />
+    <div v-if="error?.[field]" class="mt-0.5">
+      <span class="text-xs text-red-600">{{ error[field] }}</span>
+    </div>
   </div>
 </template>
 

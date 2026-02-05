@@ -4,24 +4,26 @@ namespace App\Http\Requests\Manager\Search;
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class SearchLogRequest extends FormRequest
 {
     public function prepareForValidation(): void
     {
-        if (!request()->filled('fromDate')) {
+        if (!request()->has('fromDate')) {
             $this->merge([
-                'fromDate' => Carbon::now()->format('Y-m-d'),
+                'fromDate' => Carbon::now()->subMonth()->format('Y-m-d'),
             ]);
         }
     }
 
     public function rules(): array
     {
+        \Log::info(request()->toArray());
         return [
             'name'     => ['nullable', 'string'],
             'event'    => ['nullable', 'string'],
-            'fromDate' => ['nullable', 'date'],
+            'fromDate' => ['required', 'date'],
             'toDate'   => ['nullable', 'date'],
         ];
     }
@@ -33,6 +35,23 @@ class SearchLogRequest extends FormRequest
             'event'    => 'アクション名',
             'fromDate' => '作成日(開始)',
             'toDate'   => '作成日(終了)'
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                $from = $this->input('fromDate');
+                $to = $this->input('toDate');
+                if (!$from || !$to) {
+                    return;
+                }
+
+                if (Carbon::parse($to)->gt(Carbon::parse($from))->addMonth()) {
+                    $validator->errors()->add('toDate', '作成日(終了)は、作成日(開始)から1ヶ月以内に設定してください。');
+                }
+            }
         ];
     }
 }
