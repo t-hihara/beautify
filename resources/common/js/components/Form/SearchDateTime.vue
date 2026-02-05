@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { usePage } from "@inertiajs/vue3";
 import { VueDatePicker } from "@vuepic/vue-datepicker";
 import { DateTime } from "luxon";
 
@@ -28,6 +29,8 @@ defineEmits<{
   "update:modelValue": [value: string | null];
 }>();
 
+const holidays = usePage().props.japaneseHolidays ?? [];
+
 const formatDateTime = (date: Date | null, mode: "date" | "time" | "datetime"): string | null => {
   if (date === null) return null;
 
@@ -36,6 +39,19 @@ const formatDateTime = (date: Date | null, mode: "date" | "time" | "datetime"): 
   if (mode === "time") return dt.toFormat("HH:mm");
 
   return dt.toFormat("yyyy-MM-dd HH:mm");
+};
+
+const dayClass = (date: Date): string => {
+  const d = date.getDay();
+  const ymd = DateTime.fromJSDate(date).toFormat("yyyy-MM-dd");
+  const isHoliday = holidays.includes(ymd);
+
+  const classes: string[] = [];
+  if (d === 0) classes.push("dp__day_sunday");
+  if (d === 6) classes.push("dp__day_saturday");
+  if (isHoliday) classes.push("dp__day_holiday");
+
+  return classes.join(" ");
 };
 </script>
 
@@ -61,14 +77,7 @@ const formatDateTime = (date: Date | null, mode: "date" | "time" | "datetime"): 
         showNow: false,
         showPreview: false,
       }"
-      :ui="{
-        dayClass: (date) => {
-          const d = date.getDay();
-          if (d === 0) return 'dp__day_sunday';
-          if (d === 6) return 'dp__day_saturday';
-          return '';
-        },
-      }"
+      :ui="{ dayClass }"
       @update:model-value="(v) => $emit('update:modelValue', formatDateTime(v, mode))"
       @date-click=""
     />
@@ -101,6 +110,9 @@ const formatDateTime = (date: Date | null, mode: "date" | "time" | "datetime"): 
   color: #2563eb;
 }
 .form-date-time-input :deep(.dp__day_sunday) {
+  color: #ec4899;
+}
+.form-date-time-input :deep(.dp__day_holiday) {
   color: #ec4899;
 }
 </style>

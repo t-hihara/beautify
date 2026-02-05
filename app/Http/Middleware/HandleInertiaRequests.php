@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Holiday\JapaneseHolidayService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -41,6 +42,7 @@ class HandleInertiaRequests extends Middleware
                 'error'   => $request->session()->pull('error'),
                 'warning' => $request->session()->pull('warning'),
             ],
+            'japaneseHolidays' => (new JapaneseHolidayService())(now()->year),
         ];
     }
 
