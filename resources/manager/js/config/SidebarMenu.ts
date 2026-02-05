@@ -2,7 +2,7 @@ type MenuItem = {
   id: number;
   label: string;
   icon: string;
-  route: string;
+  route?: string;
   children: SubMenuItem[];
 };
 
@@ -19,6 +19,23 @@ export const adminMenu: MenuItem[] = [
     icon: "dashboard",
     route: "admin.dashboard",
     children: [],
+  },
+  {
+    id: 2,
+    label: "店舗管理",
+    icon: "shop",
+    children: [
+      {
+        id: 1,
+        label: "店舗一覧",
+        route: "admin.shops.index",
+      },
+      {
+        id: 2,
+        label: "店舗登録",
+        route: "admin.shops.index",
+      },
+    ],
   },
   {
     id: 99,
