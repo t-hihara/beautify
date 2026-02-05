@@ -19,7 +19,6 @@ class SearchLogRequest extends FormRequest
 
     public function rules(): array
     {
-        \Log::info(request()->toArray());
         return [
             'name'     => ['nullable', 'string'],
             'event'    => ['nullable', 'string'],
@@ -48,7 +47,7 @@ class SearchLogRequest extends FormRequest
                     return;
                 }
 
-                if (Carbon::parse($to)->gt(Carbon::parse($from))->addMonth()) {
+                if (Carbon::parse($to)->gt(Carbon::parse($from)->addMonth())) {
                     $validator->errors()->add('toDate', '作成日(終了)は、作成日(開始)から1ヶ月以内に設定してください。');
                 }
             }
