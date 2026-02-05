@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enum\ActiveFlagTypeEnum;
+use App\Models\Traits\LogsActivity;
 use App\Notifications\Auth\ResetPasswordNotification;
 use App\Notifications\Auth\VerifyEmailNotification;
 use Illuminate\Auth\MustVerifyEmail;
@@ -17,7 +18,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmailContract
 {
-    use HasFactory, Notifiable, MustVerifyEmail, HasRoles, LaravelPermissionToVueJS;
+    use HasFactory, Notifiable, MustVerifyEmail, HasRoles, LaravelPermissionToVueJS, LogsActivity;
 
     protected $appends = ['name', 'name_kana'];
 
@@ -51,6 +52,11 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public function getDescriptionValue(): string
+    {
+        return "ユーザーID「{$this->id}」";
     }
 
     /* ================================================================================

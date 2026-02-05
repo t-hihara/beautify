@@ -25,10 +25,10 @@ trait LogsActivity
     {
         $value = $this->getDescriptionValue();
         return match ($event) {
-            'create' => "{$value}を作成しました。",
-            'update' => "{$value}を更新しました。",
-            'delete' => "{$value}を更新しました。",
-            default => "{$value}に{$event}が発生しました。",
+            'created' => "{$value}を作成しました。",
+            'updated' => "{$value}を更新しました。",
+            'deleted' => "{$value}を更新しました。",
+            default   => "{$value}に{$event}が発生しました。",
         };
     }
 }
