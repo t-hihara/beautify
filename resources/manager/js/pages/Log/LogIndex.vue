@@ -109,11 +109,11 @@ const search = (): void => {
         <tbody class="divide-y divide-zinc-300 text-zinc-600">
           <template v-if="logs.length > 0">
             <tr v-for="log in logs" :key="log.id">
-              <th class="px-4 py-3">{{ log.id }}</th>
-              <th class="px-4 py-3">{{ log.causer ?? "----" }}</th>
-              <th class="px-4 py-3">{{ log.event }}</th>
-              <th class="px-4 py-3">{{ log.description }}</th>
-              <th class="px-4 py-3">{{ log.createdAt }}</th>
+              <td class="px-4 py-3">{{ log.id }}</td>
+              <td class="px-4 py-3">{{ log.causer ?? "----" }}</td>
+              <td class="px-4 py-3">{{ log.event }}</td>
+              <td class="px-4 py-3">{{ log.description }}</td>
+              <td class="px-4 py-3">{{ log.createdAt }}</td>
             </tr>
           </template>
           <template v-else>
