@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
 
         try {
             $this->call([
+                PrefectureSeeder::class,
+                ShopSeeder::class,
                 UserSeeder::class,
                 RoleAndPermissionSeeder::class,
                 CustomerSeeder::class,
