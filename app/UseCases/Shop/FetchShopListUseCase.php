@@ -34,7 +34,7 @@ class FetchShopListUseCase
 
         return [
             'filters'     => $filters,
-            'activeFlag'  => ActiveFlagTypeEnum::options(),
+            'activeFlags'  => ActiveFlagTypeEnum::options(),
             'prefectures' => Prefecture::get(['id', 'name']),
             'shops'       => $shops->items(),
             'links'       => $shops->linkCollection(),
