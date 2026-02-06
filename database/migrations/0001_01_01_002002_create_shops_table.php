@@ -16,14 +16,16 @@ return new class extends Migration
             $table->id();
             $table->string('name')->comment('店舗名');
             $table->string('email')->unique()->comment('店舗メールアドレス');
-            $table->string('phone')->comment('店舗電話番号');
+            $table->string('phone')->comment('店舗電話番号')->index();
             $table->foreignId('prefecture_id')->constrained();
             $table->string('zipcode', 7)->comment('郵便番号');
             $table->string('address')->comment('住所');
             $table->string('building')->nullable()->comment('番地・建物名');
             $table->text('description')->nullable()->comment('店舗説明');
-            $table->enum('active_flag', ActiveFlagTypeEnum::cases())->comment('営業状態');
+            $table->enum('active_flag', ActiveFlagTypeEnum::cases())->comment('営業状態')->index();
             $table->timestamps();
+
+            $table->index(['active_flag', 'prefecture_id']);
         });
     }
 
