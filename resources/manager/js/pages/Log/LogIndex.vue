@@ -6,6 +6,8 @@ import { useGuard } from "@manager/composables/useGuard";
 
 import { SearchText, SearchDateTime } from "@/common/js/components/Form/SearchIndex";
 import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
+import Pagination from "@manager/components/Ui/Pagination.vue";
+import { PaginationLinkType, PaginationType } from "@/common/js/lib";
 
 type Filter = {
   name: string;
@@ -33,6 +35,8 @@ const { guard } = useGuard();
 const { filters } = defineProps<{
   filters: Filter;
   logs: Log[];
+  links: PaginationLinkType[];
+  pagination: PaginationType;
 }>();
 
 const searchForm = useForm<SearchForm>({
@@ -124,5 +128,6 @@ const search = (): void => {
         </tbody>
       </table>
     </div>
+    <pagination :links="links" :pagination="pagination" class="mt-4" />
   </div>
 </template>

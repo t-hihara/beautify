@@ -47,11 +47,11 @@ const linkByPage = (page: number) => links.find((l) => l.label === String(page))
 </script>
 
 <template>
-  <div class="flex items-center justify-between">
+  <div v-if="pagination.lastPage !== 1" class="flex items-center justify-between">
     <div>
       <span class="text-sm text-zinc-600"
-        >全{{ pagination.total }} 件中{{ (pagination.currentPage - 1) * 10 + 1 }} ~
-        {{ Math.min(pagination.currentPage * 10, pagination.total) }}件を表示中</span
+        >全 {{ pagination.total }} 件中 {{ (pagination.currentPage - 1) * 10 + 1 }} ~
+        {{ Math.min(pagination.currentPage * 10, pagination.total) }} 件を表示中</span
       >
     </div>
     <nav class="flex -space-x-px">
