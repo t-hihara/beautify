@@ -3,12 +3,19 @@
 namespace App\UseCases\Shop;
 
 use App\Models\Shop;
+use App\Utilities\RecursiveCovert;
 
 class FetchShopListUseCase
 {
-    public function __invoke(): array
+    public function __invoke(array $filters): array
     {
+        $convert = RecursiveCovert::_convert($filters, 'snake');
+
         $shops = Shop::with(['prefecture'])
+            ->byName($convert['name'] ?? null)
+            ->byEmail($convert['email'] ?? null)
+            ->byPhone($convert['phone'] ?? null)
+            ->byActiveFlag($convert['active_flag'] ?? null)
             ->paginate(20)
             ->through(fn($shop) => [
                 'id'          => $shop->id,
