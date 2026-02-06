@@ -27,8 +27,8 @@ class FetchShopListUseCase
             'shops'      => $shops->items(),
             'links'      => $shops->linkCollection(),
             'pagination' => [
-                'currentPage' => $shop->currentPage(),
-                'lastPage'    => $shop->lastPage(),
+                'currentPage' => $shops->currentPage(),
+                'lastPage'    => $shops->lastPage(),
                 'prev'        => $shops->previousPageUrl(),
                 'next'        => $shops->nextPageUrl(),
                 'total'       => $shops->total(),

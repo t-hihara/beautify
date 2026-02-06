@@ -12,7 +12,7 @@ class ShopController extends Controller
 {
     public function index(FetchShopListUseCase $useCase): Response
     {
-        $data = $useCase;
+        $data = $useCase();
         return Inertia::render('Shop/ShopList', $data);
     }
 }

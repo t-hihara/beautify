@@ -3,7 +3,7 @@
 use App\Http\Controllers\Manager\ActivityLogController;
 use App\Http\Controllers\Manager\AdminDashboardController;
 use App\Http\Controllers\Manager\AuthController;
-use App\Http\Controllers\Public\ShopController;
+use App\Http\Controllers\Manager\ShopController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->group(function () {

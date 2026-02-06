@@ -24,7 +24,7 @@ class Shop extends Model
         'active_flag',
     ];
 
-    protected $cases = [
+    protected $casts = [
         'active_flag' => ActiveFlagTypeEnum::class,
     ];
 
