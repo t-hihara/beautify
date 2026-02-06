@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption, ListboxLabel } from "@headlessui/vue";
 import { ChevronDownIcon } from "@heroicons/vue/24/outline";
-import type { Enum } from "@common/lib";
+import type { EnumType } from "@common/lib";
 import { computed } from "vue";
 
 const {
@@ -13,7 +13,7 @@ const {
   field: string;
   title?: string;
   required?: boolean;
-  items: Enum[];
+  items: EnumType[];
   error?: Record<string, string>;
 }>();
 

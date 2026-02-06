@@ -2,7 +2,7 @@
 import { Head, useForm } from "@inertiajs/vue3";
 import { computed, ref, watch } from "vue";
 import { route } from "ziggy-js";
-import type { Enum } from "@/common/js/lib";
+import type { EnumType } from "@/common/js/lib";
 
 import {
   FormCheckbox,
@@ -38,7 +38,7 @@ type Form = {
 };
 
 defineProps<{
-  genders: Enum[];
+  genders: EnumType[];
 }>();
 
 const isSameName = ref<boolean>(false);

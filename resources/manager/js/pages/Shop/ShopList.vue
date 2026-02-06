@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { Head } from "@inertiajs/vue3";
+import { HomeIcon, PhoneArrowUpRightIcon, EnvelopeIcon } from "@heroicons/vue/24/outline";
+import type { PaginationType, PaginationLinkType } from "@/common/js/lib";
+
+import Pagination from "@manager/components/Ui/Pagination.vue";
 
 type Shop = {
   id: number;
@@ -16,6 +20,8 @@ type Shop = {
 
 defineProps<{
   shops: Shop[];
+  links: PaginationLinkType[];
+  pagination: PaginationType;
 }>();
 </script>
 
@@ -29,19 +35,12 @@ defineProps<{
             <th scope="col" class="px-4 py-3">ID</th>
             <th scope="col" class="px-4 py-3">店舗名</th>
             <th scope="col" class="px-4 py-3">
-              <div class="flex flex-col items-center">
+              <div class="flex flex-col">
                 <span>メールアドレス</span>
                 <span>電話場号</span>
               </div>
             </th>
-            <th scope="col" class="px-4 py-3">
-              <div class="flex flex-col items-center">
-                <span>郵便番号</span>
-                <span>都道府県</span>
-                <span>住所</span>
-                <span>番地・建物名</span>
-              </div>
-            </th>
+            <th scope="col" class="px-4 py-3">店舗住所</th>
             <th scope="col" class="px-4 py-3">運営状態</th>
             <th class="px-4 py-3"></th>
           </tr>
@@ -52,17 +51,21 @@ defineProps<{
               <td class="px-4 py-3">{{ shop.id }}</td>
               <td class="px-4 py-3">{{ shop.name }}</td>
               <td class="px-4 py-3">
-                <div class="flex flex-col items-center">
-                  <span>{{ shop.email }}</span>
-                  <span>{{ shop.phone }}</span>
+                <div class="flex flex-col">
+                  <span class="flex items-center gap-1"><envelope-icon class="size-3 mt-0.5" />{{ shop.email }}</span>
+                  <span class="flex items-center gap-1"
+                    ><phone-arrow-up-right-icon class="size-3 mt-0.5" />{{ shop.phone }}</span
+                  >
                 </div>
               </td>
               <td class="px-4 py-3">
-                <div class="flex flex-col items-center">
-                  <span class="text-xs">{{ shop.zipcode }}</span>
-                  <span class="text-xs">{{ shop.prefecture }}</span>
-                  <span class="text-xs">{{ shop.address }}</span>
-                  <span class="text-xs">{{ shop.building ?? "----" }}</span>
+                <div class="flex flex-col">
+                  <span class="text-xs">〒{{ shop.zipcode }}</span>
+                  <span class="text-xs flex items-center gap-0.5"
+                    ><home-icon class="size-3" />{{ shop.prefecture }}</span
+                  >
+                  <span class="text-xs indent-3.5">{{ shop.address }}</span>
+                  <span class="text-xs indent-3.5">{{ shop.building ?? "----" }}</span>
                 </div>
               </td>
               <td class="px-4 py-3">{{ shop.activeFlag }}</td>
@@ -77,5 +80,6 @@ defineProps<{
         </tbody>
       </table>
     </div>
+    <pagination :links="links" :pagination="pagination" class="mt-4" />
   </div>
 </template>
