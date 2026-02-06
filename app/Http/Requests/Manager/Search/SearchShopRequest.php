@@ -11,20 +11,24 @@ class SearchShopRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'       => ['nullable', 'string'],
-            'email'      => ['nullable', 'email'],
-            'phone'      => ['nullable', 'string'],
-            'activeFlag' => ['nullable', Rule::enum(ActiveFlagTypeEnum::class)],
+            'name'          => ['nullable', 'string'],
+            'email'         => ['nullable', 'email'],
+            'phone'         => ['nullable', 'string'],
+            'prefectures'   => ['nullable', 'array'],
+            'prefectures.*' => ['nullable', 'integer', 'exists:prefectures,id'],
+            'activeFlag'    => ['nullable', Rule::enum(ActiveFlagTypeEnum::class)],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'name'       => '店舗名',
-            'email'      => 'メールアドレス',
-            'phone'      => '電話番号',
-            'activeFlag' => '運営状態',
+            'name'          => '店舗名',
+            'email'         => 'メールアドレス',
+            'phone'         => '電話番号',
+            'prefectures'   => '都道府県',
+            'prefectures.*' => '都道府県名',
+            'activeFlag'    => '運営状態',
         ];
     }
 }

@@ -53,6 +53,11 @@ class Shop extends Model
         return $query->when($phone, fn(Builder $q) => $q->where('phone', $phone));
     }
 
+    public function byPrefectures(Builder $query, ?array $prefectures): Builder
+    {
+        return $query->when($prefectures, fn(Builder $q) => $q->whereIn('prefecture_id', $prefectures));
+    }
+
     public function byActiveFlag(Builder $query, ?string $activeFlag): Builder
     {
         return $query->when($activeFlag, fn(Builder $q) => $q->where('active_flag', $activeFlag));

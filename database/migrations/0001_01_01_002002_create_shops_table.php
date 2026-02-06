@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('address')->comment('住所');
             $table->string('building')->nullable()->comment('番地・建物名');
             $table->text('description')->nullable()->comment('店舗説明');
-            $table->enum('active_flag', ActiveFlagTypeEnum::cases())->comment('営業状態')->index();
+            $table->enum('active_flag', ActiveFlagTypeEnum::cases())->comment('営業状態');
             $table->timestamps();
 
             $table->index(['active_flag', 'prefecture_id']);
