@@ -2,6 +2,8 @@
 
 namespace App\UseCases\Shop;
 
+use App\Enum\ActiveFlagTypeEnum;
+use App\Models\Prefecture;
 use App\Models\Shop;
 use App\Utilities\RecursiveCovert;
 
@@ -31,9 +33,12 @@ class FetchShopListUseCase
             ]);
 
         return [
-            'shops'      => $shops->items(),
-            'links'      => $shops->linkCollection(),
-            'pagination' => [
+            'filters'     => $filters,
+            'activeFlag'  => ActiveFlagTypeEnum::options(),
+            'prefectures' => Prefecture::get(['id', 'name']),
+            'shops'       => $shops->items(),
+            'links'       => $shops->linkCollection(),
+            'pagination'  => [
                 'currentPage' => $shops->currentPage(),
                 'lastPage'    => $shops->lastPage(),
                 'prev'        => $shops->previousPageUrl(),
