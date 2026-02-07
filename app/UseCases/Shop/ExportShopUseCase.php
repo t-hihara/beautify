@@ -29,7 +29,7 @@ class ExportShopUseCase
                 'file_type' => $type,
                 'file_path' => $filepath,
                 'status'    => ExportFileStatusTypeEnum::PENDING,
-                'filters'   => json_encode($convert),
+                'filters'   => $convert,
             ]);
             $excelType = match (strtolower($type)) {
                 'xlsx'  => ExcelType::XLSX,

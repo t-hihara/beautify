@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('file_path')->comment('ファイルパス');
             $table->unsignedBigInteger('file_size')->default(0)->comment('ファイルサイズ');
             $table->enum('status', ExportFileStatusTypeEnum::cases())->default(ExportFileStatusTypeEnum::PENDING)->comment('ステータス');
-            $table->text('error_message')->nullable()->comment('エラーメッセージ');
             $table->json('filters')->comment('検索条件');
+            $table->text('error_message')->nullable()->comment('エラーメッセージ');
             $table->timestamps();
             $table->index(['user_id', 'created_at']);
         });

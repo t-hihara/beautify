@@ -20,6 +20,7 @@ class ExportFile extends Model
     ];
 
     protected $casts = [
-        'status' => ExportFileStatusTypeEnum::class,
+        'status'  => ExportFileStatusTypeEnum::class,
+        'filters' => 'array',
     ];
 }
