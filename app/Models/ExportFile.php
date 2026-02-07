@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\ExportFileStatusTypeEnum;
 use App\Models\Traits\LogsActivity;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,8 +25,9 @@ class ExportFile extends Model
     ];
 
     protected $casts = [
-        'status'  => ExportFileStatusTypeEnum::class,
-        'filters' => 'array',
+        'status'     => ExportFileStatusTypeEnum::class,
+        'filters'    => 'array',
+        'created_at' => 'datetime',
     ];
 
     public function getDescriptionValue(): string
@@ -36,6 +38,11 @@ class ExportFile extends Model
     /* ================================================================================
                                         アクセサ
     ================================================================================ */
+
+    public function getCreatedAtAttribute($value): string
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
 
     /* ================================================================================
                                         スコープ
