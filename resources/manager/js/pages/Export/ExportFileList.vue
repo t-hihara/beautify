@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { Head, useForm } from "@inertiajs/vue3";
+import { computed, watch } from "vue";
+import { debounce } from "lodash";
+import { route } from "ziggy-js";
 import { SearchText, SearchDateTime, SearchSingleSelect } from "@/common/js/components/Form/SearchIndex";
 import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
-import { computed } from "vue";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -63,8 +65,18 @@ const statusClass = computed(() => (status: string): string => {
 });
 
 const search = (): void => {
-  //
+  searchForm.get(route("admin.exports.index"), {
+    preserveState: true,
+    preserveScroll: true,
+  });
 };
+
+watch(
+  () => searchForm.data(),
+  debounce(() => {
+    if (!searchForm.processing) search();
+  }, 300),
+);
 </script>
 
 <template>
