@@ -17,6 +17,7 @@ class FetchShopListUseCase
             ->byName($convert['name'] ?? null)
             ->byEmail($convert['email'] ?? null)
             ->byPhone($convert['phone'] ?? null)
+            ->byPrefectures($convert['prefecture_ids'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
             ->paginate(20)
             ->through(fn($shop) => [
