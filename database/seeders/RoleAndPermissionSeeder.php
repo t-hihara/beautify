@@ -78,6 +78,7 @@ class RoleAndPermissionSeeder extends BaseSeeder
         return [
             'view.shops',
             'manage.shops',
+            'export.shops',
             'view.staffs',
             'manage.staffs',
             'view.reservations',
