@@ -17,8 +17,6 @@ class RoleAndPermissionSeeder extends BaseSeeder
 
     public function run(): void
     {
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
-
         $this->initialize();
 
         $assignItems     = [];
@@ -50,20 +48,6 @@ class RoleAndPermissionSeeder extends BaseSeeder
         $this->assignRoles($assignItems);
 
         $this->insertData('model_has_roles', $assignItems);
-
-        // $adminRole = Role::findByName('admin', 'admin');
-        // $userRole  = Role::findByName('user', 'user');
-
-        // $admins = User::where('email', 'like', 'admin_%@test.com')->get();
-        // $users  = User::where('email', 'like', 'user_%@test.com')->get();
-
-        // foreach ($admins as $admin) {
-        //     $admin->assignRole($adminRole);   // モデルを渡すので guard=admin のロールがそのまま使われる
-        // }
-
-        // foreach ($users as $user) {
-        //     $user->assignRole($userRole);     // guard=user のロールが使われる
-        // }
 
         $this->finalize('RoleAndPermissions', [
             'permissions' => count($permissions),
@@ -142,5 +126,22 @@ class RoleAndPermissionSeeder extends BaseSeeder
                     $this->users++;
                 }
             });
+    }
+
+    private function sample()
+    {
+        // $adminRole = Role::findByName('admin', 'admin');
+        // $userRole  = Role::findByName('user', 'user');
+
+        // $admins = User::where('email', 'like', 'admin_%@test.com')->get();
+        // $users  = User::where('email', 'like', 'user_%@test.com')->get();
+
+        // foreach ($admins as $admin) {
+        //     $admin->assignRole($adminRole);   // モデルを渡すので guard=admin のロールがそのまま使われる
+        // }
+
+        // foreach ($users as $user) {
+        //     $user->assignRole($userRole);     // guard=user のロールが使われる
+        // }
     }
 }
