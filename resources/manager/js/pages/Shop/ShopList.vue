@@ -96,6 +96,7 @@ watch(
           v-model="searchForm.prefectureIds"
           title="都道府県"
           field="prefectureIds"
+          show-clear
           :items="prefectures"
         />
       </div>

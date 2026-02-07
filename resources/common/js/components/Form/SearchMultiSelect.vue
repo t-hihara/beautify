@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption, ListboxLabel } from "@headlessui/vue";
 import { ChevronDownIcon, CheckIcon } from "@heroicons/vue/24/outline";
-import { computed } from "vue";
 import type { EnumType } from "@common/lib";
 
 const {
   modelValue,
   items,
   required = false,
+  showClear = false,
 } = defineProps<{
   modelValue: (string | number)[];
   field: string;
   title?: string;
   required?: boolean;
+  showClear?: boolean;
   items: EnumType[];
   error?: Record<string, string>;
 }>();
@@ -46,10 +48,23 @@ const selectedItems = computed(() => items.filter((item) => modelValue.includes(
           :class="[error?.[field] ? 'border-red-600' : 'border-zinc-300', title ? 'mt-1' : '']"
           class="w-full h-10 px-3 py-2 bg-white rounded-lg shadow-sm border cursor-pointer flex items-center justify-between focus:outline-none focus:ring-rose-300 focus:border-rose-300"
         >
-          <span class="line-clamp-1">{{
+          <span class="line-clamp-1 min-w-0 flex-1 text-left">{{
             selectedItems.length > 0 ? selectedItems.map((item) => item.name).join(", ") : "すべて"
           }}</span>
-          <chevron-down-icon class="size-4 transition-transform duration-200" :class="{ 'rotate-180': open }" />
+          <template v-if="showClear">
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                class="px-2 py-1 rounded-lg border border-zinc-300 hover:bg-zinc-200 transition ease-in-out duration-300 text-xs cursor-pointer"
+                @click="$emit('update:modelValue', [])"
+              >
+                クリア
+              </button>
+              <chevron-down-icon
+                class="size-4 transition-transform duration-200"
+                :class="{ 'rotate-180': open }"
+              /></div
+          ></template>
         </listbox-button>
         <transition enter-active-class="animate-fade-in" leave-active-class="animate-fade-out">
           <listbox-options
