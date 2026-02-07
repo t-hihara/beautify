@@ -18,6 +18,7 @@
         "concurrently": "^9.0.1",
         "laravel-permission-to-vuejs": "^3.0.8",
         "laravel-vite-plugin": "^2.0.0",
+        "lodash": "^4.17.23",
         "luxon": "^3.7.2",
         "prettier": "^3.8.1",
         "qs-esm": "^7.0.3",
@@ -26,6 +27,7 @@
         "vite": "^7.0.7",
         "vite-svg-loader": "^5.1.0",
         "vue": "^3.5.27",
+        "vue-lodash": "^2.1.2",
         "vue-toastification": "^2.0.0-rc.5"
     }
 }
