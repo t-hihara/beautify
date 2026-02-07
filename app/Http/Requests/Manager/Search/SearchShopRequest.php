@@ -8,14 +8,6 @@ use Illuminate\Validation\Rule;
 
 class SearchShopRequest extends FormRequest
 {
-    public function prepareForValidation()
-    {
-        if (!$this->has('perPage')) {
-            $this->merge([
-                'perPage' => 20,
-            ]);
-        }
-    }
     public function rules(): array
     {
         return [

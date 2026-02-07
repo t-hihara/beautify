@@ -19,7 +19,8 @@ class FetchShopListUseCase
             ->byPhone($convert['phone'] ?? null)
             ->byPrefectures($convert['prefecture_ids'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
-            ->paginate($convert['per_page'])
+            ->orderBy('id')
+            ->paginate($convert['per_page'] ?? 10)
             ->through(fn($shop) => [
                 'id'          => $shop->id,
                 'name'        => $shop->name,
