@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\AuthenticateGuard;
+use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Foundation\Application;
@@ -22,7 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->alias([
             'guest'              => RedirectIfAuthenticated::class,
-            'auth'               => AuthenticateGuard::class,
+            'auth'               => Authenticate::class,
             'role'               => RoleMiddleware::class,
             'permission'         => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,
