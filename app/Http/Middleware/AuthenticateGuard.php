@@ -2,22 +2,24 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
+use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
-class AuthenticateGuard
+class AuthenticateGuard extends Authenticate
 {
-    public function handle(Request $request, Closure $next, string $guard): Response
+    protected function redirectTo(Request $request): ?string
     {
-        if (!auth()->guard($guard)->check()) {
-            return match ($guard) {
-                'admin' => redirect()->route('admin.loginForm'),
-                'shop'  => redirect()->route('shop.loginForm'),
-                'user'  => redirect()->route('home.index'),
-                default => redirect()->route('home.index'),
-            };
+        if ($request->expectsJson()) {
+            return null;
         }
-        return $next($request);
+
+        if ($request->is('admin/*')) {
+            return route('admin.loginForm');
+        }
+        if ($request->is('shop/*')) {
+            return route('shop.loginForm');
+        }
+
+        return route('home.index');
     }
 }
