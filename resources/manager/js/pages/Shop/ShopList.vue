@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { Head, useForm } from "@inertiajs/vue3";
+import { Head, router, useForm } from "@inertiajs/vue3";
 import { watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { HomeIcon, PhoneArrowUpRightIcon, EnvelopeIcon } from "@heroicons/vue/24/outline";
+import { FolderArrowDownIcon } from "@heroicons/vue/24/solid";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
+import { ButtonPrimary } from "@/common/js/components/Ui/ButtonIndex";
 import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 
@@ -71,6 +73,10 @@ const search = (): void => {
   });
 };
 
+const exportFile = (type: "excel" | "csv"): void => {
+  type === "excel" ? router.get(route("admin.shops.excel")) : router.get(route("admin.shops.csv"));
+};
+
 watch(
   () => searchForm.data(),
   debounce(() => {
@@ -111,8 +117,22 @@ watch(
         />
       </div>
     </div>
-    <div class="mt-6 max-w-28">
-      <search-single-select v-model="searchForm.perPage" title="表示件数" field="perPage" :items="PER_PAGE_OPTIONS" />
+    <div class="mt-6 flex items-end justify-between">
+      <search-single-select
+        v-model="searchForm.perPage"
+        title="表示件数"
+        field="perPage"
+        :items="PER_PAGE_OPTIONS"
+        class="max-w-28"
+      />
+      <div class="flex items-center gap-2">
+        <button-primary @click="exportFile('excel')" class="flex items-center gap-2"
+          ><folder-arrow-down-icon class="size-4" />Excel</button-primary
+        >
+        <button-primary @click="exportFile('csv')" class="flex items-center gap-2"
+          ><folder-arrow-down-icon class="size-4" />CSV</button-primary
+        >
+      </div>
     </div>
     <div class="mt-4 bg-white shadow-sm rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-zinc-300 text-sm">
