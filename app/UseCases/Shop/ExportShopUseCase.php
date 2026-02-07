@@ -17,7 +17,7 @@ class ExportShopUseCase
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
-        return DB::transaction(function () use ($userId, $convert) {
+        return DB::transaction(function () use ($userId, $convert, $type) {
             $datetime = Carbon::now()->format('Y-m-d_H:i:s');
             $filename = 'shop_' . Str::random(20) . '_' . $datetime . '.' . $type;
             $filepath = 'exports/' . $filename;
@@ -29,7 +29,7 @@ class ExportShopUseCase
                 'file_type' => $type,
                 'file_path' => $filepath,
                 'status'    => ExportFileStatusTypeEnum::PENDING,
-                'filters'   => $filters,
+                'filters'   => json_encode($convert),
             ]);
             $excelType = match (strtolower($type)) {
                 'xlsx'  => ExcelType::XLSX,

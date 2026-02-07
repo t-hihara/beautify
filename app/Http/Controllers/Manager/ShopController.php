@@ -30,7 +30,7 @@ class ShopController extends Controller
     ): RedirectResponse {
         try {
             $validated = $request->validated();
-            $useCase(auth()->id, $validated, 'xlsx');
+            $useCase(auth()->id(), $validated, 'xlsx');
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', 'Excelエクスポートに失敗しました。');
@@ -45,7 +45,7 @@ class ShopController extends Controller
     ): RedirectResponse {
         try {
             $validated = $request->validated();
-            $useCase(auth()->id, $validated, 'csv');
+            $useCase(auth()->id(), $validated, 'csv');
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', 'CSVエクスポートに失敗しました。');
