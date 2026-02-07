@@ -21,7 +21,7 @@ type FilterType = {
   email: string;
   phone: string;
   prefectureIds: number[];
-  activeFlag: string;
+  activeFlag: string | null;
   perPage: number;
 };
 
@@ -43,7 +43,7 @@ type SearchFormType = {
   email: string;
   phone: string;
   prefectureIds: number[];
-  activeFlag: string;
+  activeFlag: string | null;
   perPage: number;
 };
 
@@ -61,8 +61,8 @@ const searchForm = useForm<SearchFormType>({
   email: filters.email || "",
   phone: filters.phone || "",
   prefectureIds: filters.prefectureIds || [],
-  activeFlag: filters.activeFlag || "",
-  perPage: filters.perPage || 20,
+  activeFlag: filters.activeFlag || null,
+  perPage: filters.perPage || 10,
 });
 
 const search = (): void => {
@@ -100,6 +100,7 @@ watch(
           v-model="searchForm.activeFlag"
           title="運営状態"
           field="activeFlag"
+          show-all
           :items="activeFlags"
         />
         <search-multi-select
