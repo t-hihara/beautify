@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
                 UserSeeder::class,
                 RoleAndPermissionSeeder::class,
                 CustomerSeeder::class,
+                ExportFileSeeder::class,
             ]);
         } finally {
             Schema::enableForeignKeyConstraints();
