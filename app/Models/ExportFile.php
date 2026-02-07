@@ -9,11 +9,11 @@ class ExportFile extends Model
 {
     protected $fillable = [
         'user_id',
-        'type',
-        'format',
+        'subject',
         'filename',
+        'file_type',
         'file_path',
-        'size',
+        'file_size',
         'status',
         'filters',
         'error_message',

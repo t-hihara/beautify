@@ -18,7 +18,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::prefix('shops')->name('shops.')->controller(ShopController::class)->group(function () {
-            Route::get('/', 'index')->name('index');
+            Route::middleware(['permission:view.shops'])->get('/', 'index')->name('index');
+            Route::middleware(['permission:export.shops'])->group(function () {
+                Route::get('/export/excel', 'exportExcel')->name('excel');
+                Route::get('/export/csv', 'exportCsv')->name('csv');
+            });
         });
         Route::prefix('logs')->name('logs.')->controller(ActivityLogController::class)->group(function () {
             Route::get('/', 'index')->name('index');
