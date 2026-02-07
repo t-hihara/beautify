@@ -74,7 +74,7 @@ const search = (): void => {
 };
 
 const exportFile = (type: "excel" | "csv"): void => {
-  type === "excel" ? router.get(route("admin.shops.excel")) : router.get(route("admin.shops.csv"));
+  type === "excel" ? searchForm.get(route("admin.shops.excel")) : searchForm.get(route("admin.shops.csv"));
 };
 
 watch(
