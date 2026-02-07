@@ -3,7 +3,9 @@ import { Head, useForm } from "@inertiajs/vue3";
 import { computed, watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
+import { useGuard } from "@manager/composables/useGuard";
 import { SearchText, SearchDateTime, SearchSingleSelect } from "@/common/js/components/Form/SearchIndex";
+import { TextLink } from "@/common/js/components/Ui/ButtonIndex";
 import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
 
 const PER_PAGE_OPTIONS = [
@@ -35,6 +37,7 @@ type SearchFormType = {
   perPage: number;
 };
 
+const { guard } = useGuard();
 const { filters } = defineProps<{
   filters: FilterType;
   files: FileType[];
@@ -65,10 +68,14 @@ const statusClass = computed(() => (status: string): string => {
 });
 
 const search = (): void => {
-  searchForm.get(route("admin.exports.index"), {
+  searchForm.get(route(`${guard.value}.exports.index`), {
     preserveState: true,
     preserveScroll: true,
   });
+};
+
+const downloadFile = (fileId: number): void => {
+  window.location.href = route(`${guard.value}.exports.download`);
 };
 
 watch(
@@ -133,7 +140,14 @@ watch(
           <template v-if="files.length > 0">
             <tr v-for="file in files" :key="file.id">
               <td class="px-4 py-3">{{ file.subject }}</td>
-              <td class="px-4 py-3">{{ file.filename }}</td>
+              <td class="px-4 py-3 font-semibold">
+                <text-link
+                  :href="route(`${guard}.exports.download`, file.id)"
+                  :is-anchor="true"
+                  class="font-semibold"
+                  >{{ file.filename }}</text-link
+                >
+              </td>
               <td class="px-4 py-3 text-center">
                 <span
                   :class="statusClass(file.status)"
