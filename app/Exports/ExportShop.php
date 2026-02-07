@@ -23,11 +23,11 @@ class ExportShop implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithH
     public function query(): Builder
     {
         return Shop::with(['prefecture'])
-            ->byName($this->filters['name'])
-            ->byEmail($this->filters['email'])
-            ->byPhone($this->filters['phone'])
-            ->byPrefectures($this->filters['prefecture_ids'])
-            ->byActiveFlag($this->filters['active_flag'])
+            ->byName($this->filters['name'] ?? null)
+            ->byEmail($this->filters['email'] ?? null)
+            ->byPhone($this->filters['phone'] ?? null)
+            ->byPrefectures($this->filters['prefecture_ids'] ?? null)
+            ->byActiveFlag($this->filters['active_flag'] ?? null)
             ->orderBy('id');
     }
 
