@@ -167,6 +167,6 @@ watch(
         </tbody>
       </table>
     </div>
-    <pagination :links="links" :pagination="pagination" class="mt-4" />
+    <pagination :links="links" :pagination="pagination" :per-page="filters.perPage" class="mt-4" />
   </div>
 </template>
