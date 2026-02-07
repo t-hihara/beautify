@@ -33,16 +33,9 @@ class ActivityLog extends Activity
 
     public function scopeByDuration(Builder $query, ?string $from, ?string $to): Builder
     {
-        if ($from && $to) {
-            return $query->whereBetween('created_at', [$from, $to]);
-        }
-        if ($from) {
-            return $query->where('created_at', '>=', $from);
-        }
-        if ($to) {
-            return $query->where('created_at', '<=', $to);
-        }
-
-        return $query;
+        return $query
+            ->when($from && $to, fn(Builder $q) => $q->whereBetween('created_at', [$from, $to]))
+            ->when($from && !$to, fn(Builder $q) => $q->where('created_at', '>=', $from))
+            ->when(!$from && $to, fn(Builder $q) => $q->where('created_at', '<=', $to));
     }
 }

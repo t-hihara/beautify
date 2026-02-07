@@ -33,8 +33,8 @@ class SearchLogRequest extends FormRequest
         return [
             'name'     => '実行者名',
             'event'    => 'アクション名',
-            'fromDate' => '作成日(開始)',
-            'toDate'   => '作成日(終了)',
+            'fromDate' => '作成日(from)',
+            'toDate'   => '作成日(to)',
             'perPage'  => '表示件数',
         ];
     }
@@ -44,13 +44,11 @@ class SearchLogRequest extends FormRequest
         return [
             function (Validator $validator) {
                 $from = $this->input('fromDate');
-                $to = $this->input('toDate');
-                if (!$from || !$to) {
-                    return;
-                }
+                $to   = $this->input('toDate');
+                if (!$from || !$to) return;
 
                 if (Carbon::parse($to)->gt(Carbon::parse($from)->addMonth())) {
-                    $validator->errors()->add('toDate', '作成日(終了)は、作成日(開始)から1ヶ月以内に設定してください。');
+                    $validator->errors()->add('toDate', '作成日(to)は、作成日(開始)から1ヶ月以内に設定してください。');
                 }
             }
         ];

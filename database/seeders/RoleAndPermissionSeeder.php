@@ -63,6 +63,8 @@ class RoleAndPermissionSeeder extends BaseSeeder
             'view.shops',
             'manage.shops',
             'export.shops',
+            'view.exports',
+            'manage.exports',
             'view.staffs',
             'manage.staffs',
             'view.reservations',
@@ -85,7 +87,8 @@ class RoleAndPermissionSeeder extends BaseSeeder
         return [
             'admin' => $this->permissions(),
             'staff_owner' => [
-                //
+                'view.exports',
+                'manage.exports',
             ],
             'staff' => [
                 //
@@ -99,9 +102,9 @@ class RoleAndPermissionSeeder extends BaseSeeder
 
     private function assignRoles(&$items): void
     {
-        $adminRole = Role::findByName('admin', 'admin');
-        $userRole  = Role::findByName('user', 'user');
-        $modelType = User::class;
+        $adminRole      = Role::findByName('admin', 'admin');
+        $userRole       = Role::findByName('user', 'user');
+        $modelType      = User::class;
 
         User::where('email', 'like', 'admin_%@test.com')
             ->chunkById(self::CHUNK_SIZE, function ($admins) use ($adminRole, $modelType, &$items) {
