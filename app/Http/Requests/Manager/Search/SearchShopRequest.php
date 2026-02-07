@@ -12,7 +12,7 @@ class SearchShopRequest extends FormRequest
     {
         return [
             'name'             => ['nullable', 'string'],
-            'email'            => ['nullable', 'email'],
+            'email'            => ['nullable', 'string'],
             'phone'            => ['nullable', 'string'],
             'prefectureIds'    => ['nullable', 'array'],
             'prefecturesIds.*' => ['nullable', 'integer', 'exists:prefectures,id'],
