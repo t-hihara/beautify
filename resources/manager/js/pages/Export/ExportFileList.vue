@@ -124,7 +124,7 @@ watch(
           <tr>
             <th scope="col" class="px-4 py-3">対象</th>
             <th scope="col" class="px-4 py-3">ファイル名</th>
-            <th scope="col" class="px-4 py-3">ステータス</th>
+            <th scope="col" class="px-4 py-3 text-center">ステータス</th>
             <th scope="col" class="px-4 py-3">作成日</th>
             <th class="px-4 py-3"></th>
           </tr>
@@ -134,7 +134,7 @@ watch(
             <tr v-for="file in files" :key="file.id">
               <td class="px-4 py-3">{{ file.subject }}</td>
               <td class="px-4 py-3">{{ file.filename }}</td>
-              <td class="px-4 py-3">
+              <td class="px-4 py-3 text-center">
                 <span
                   :class="statusClass(file.status)"
                   class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
