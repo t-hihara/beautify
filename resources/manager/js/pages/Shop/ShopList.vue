@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, router, useForm } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import { watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";

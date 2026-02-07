@@ -38,6 +38,13 @@ export const adminMenu: MenuItem[] = [
     ],
   },
   {
+    id: 98,
+    label: "出力ファイル管理",
+    icon: "export",
+    route: "admin.exports.index",
+    children: [],
+  },
+  {
     id: 99,
     label: "ログ管理",
     icon: "log",

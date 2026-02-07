@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import { Link } from "@inertiajs/vue3";
+import { computed, type Component } from "vue";
+import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
 import { adminMenu, shopMenu } from "@manager/config/SidebarMenu";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
-import { BuildingStorefrontIcon, HomeIcon, DocumentDuplicateIcon, ChevronDownIcon } from "@heroicons/vue/24/outline";
-import { computed, type Component } from "vue";
-import { route } from "ziggy-js";
+import {
+  BuildingStorefrontIcon,
+  HomeIcon,
+  DocumentDuplicateIcon,
+  FolderIcon,
+  ChevronDownIcon,
+} from "@heroicons/vue/24/outline";
 
 const { guard } = useGuard();
 const iconMap: Record<string, Component> = {
   dashboard: HomeIcon,
   shop: BuildingStorefrontIcon,
+  export: FolderIcon,
   log: DocumentDuplicateIcon,
 };
 const menus = computed(() => (guard.value === "admin" ? adminMenu : shopMenu));
