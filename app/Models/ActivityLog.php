@@ -21,14 +21,14 @@ class ActivityLog extends Activity
 
     public function scopeByName(Builder $query, ?string $name): Builder
     {
-        if ($name) {
-            return $query->whereHas('causer', function ($q) use ($name) {
-                $q->where('last_name', 'like', "%$name%")
-                    ->orWhere('first_name', 'like', "%$name%");
+        return $query->when($name, function (Builder $q) use ($name) {
+            $like = "%$name%";
+            return $q->whereHas('causer', function (Builder $q2) use ($like) {
+                $q2->where('last_name', 'like', $like)
+                    ->orWhere('first_name', 'like', $like)
+                    ->orWhereRaw('CONCAT(last_name, first_name) LIKE ?', [$like]);
             });
-        }
-
-        return $query;
+        });
     }
 
     public function scopeByDuration(Builder $query, ?string $from, ?string $to): Builder
