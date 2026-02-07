@@ -55,7 +55,7 @@ class ExportFile extends Model
         return $query->when('subject', fn($q) => $q->where('subject', 'like', "%$subject%"));
     }
 
-    public function scopeByDuration(Builder $query, ?string $from): Builder
+    public function scopeByDuration(Builder $query, ?string $from, ?string $to): Builder
     {
         return $query
             ->when($from && $to, fn(Builder $q) => $q->whereBetween('created_at', [$from, $to]))

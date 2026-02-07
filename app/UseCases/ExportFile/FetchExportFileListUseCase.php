@@ -14,7 +14,7 @@ class FetchExportFileListUseCase
         $files = ExportFile::byUserId($userId)
             ->bySubject($convert['subject'] ?? null)
             ->byDuration($convert['from_date'] ?? null, $convert['to_date'] ?? null)
-            ->paginate($convert['per_page'])
+            ->paginate($convert['per_page'] ?? 10)
             ->through(fn($file) => [
                 'id'        => $file->id,
                 'subject'   => $file->subject,

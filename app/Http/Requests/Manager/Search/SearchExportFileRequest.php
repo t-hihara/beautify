@@ -14,6 +14,7 @@ class SearchExportFileRequest extends FormRequest
             'subject'  => ['nullable', 'string'],
             'fromDate' => ['nullable', 'date'],
             'toDate'   => ['nullable', 'date'],
+            'perPage'  => ['nullable', 'integer'],
         ];
     }
 
@@ -23,6 +24,7 @@ class SearchExportFileRequest extends FormRequest
             'subject'  => '対象名',
             'fromDate' => '作成日(from)',
             'toDate'   => '作成日(to)',
+            'perPage'  => '表示件数',
         ];
     }
 
