@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { Head, useForm } from "@inertiajs/vue3";
-import { computed, watch } from "vue";
+import { Head, router, useForm } from "@inertiajs/vue3";
+import { computed, ref, watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
 import { SearchText, SearchDateTime, SearchSingleSelect } from "@/common/js/components/Form/SearchIndex";
-import { TextLink } from "@/common/js/components/Ui/ButtonIndex";
+import { ButtonPrimary, ButtonSecondary, ButtonIconDanger, TextLink } from "@/common/js/components/Ui/ButtonIndex";
+import { TrashIcon } from "@heroicons/vue/24/solid";
 import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
+import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -52,6 +54,9 @@ const searchForm = useForm<SearchFormType>({
   perPage: filters.perPage || 10,
 });
 
+const showDeleteModal = ref<boolean>(false);
+const targetFile = ref<FileType | null>(null);
+
 const statusClass = computed(() => (status: string): string => {
   switch (status) {
     case "準備中":
@@ -74,8 +79,30 @@ const search = (): void => {
   });
 };
 
-const downloadFile = (fileId: number): void => {
-  window.location.href = route(`${guard.value}.exports.download`);
+const deleteFile = (fileId: number): void => {
+  router.delete(route(`${guard.value}.exports.delete`, fileId), {
+    preserveState: true,
+    preserveScroll: true,
+    onSuccess: () => {
+      closeDialogModal();
+    },
+  });
+};
+
+const openDeleteModal = (file: FileType): void => {
+  targetFile.value = file;
+  showDeleteModal.value = true;
+};
+
+const closeDialogModal = (): void => {
+  showDeleteModal.value = false;
+  targetFile.value = null;
+};
+
+const confirmDelete = (): void => {
+  if (!targetFile.value) return;
+
+  deleteFile(targetFile.value.id);
 };
 
 watch(
@@ -156,7 +183,9 @@ watch(
                 >
               </td>
               <td class="px-4 py-3">{{ file.createdAt }}</td>
-              <td class="px-4 py-3"></td>
+              <td class="px-4 py-3">
+                <button-icon-danger @click="openDeleteModal(file)"><trash-icon class="size-4" /></button-icon-danger>
+              </td>
             </tr>
           </template>
           <template v-else>
@@ -167,5 +196,21 @@ watch(
         </tbody>
       </table>
     </div>
+
+    <dialog-modal
+      v-model="showDeleteModal"
+      title="ファイル削除"
+      show-close
+      dialog-class="max-w-sm w-full"
+      @close="closeDialogModal"
+    >
+      <div class="mt-4">
+        <p>該当のファイルを削除しますか？</p>
+        <div class="mt-4 flex justify-center items-center gap-4">
+          <button-secondary @click="closeDialogModal">キャンセル</button-secondary>
+          <button-primary @click="confirmDelete">削除する</button-primary>
+        </div>
+      </div>
+    </dialog-modal>
   </div>
 </template>

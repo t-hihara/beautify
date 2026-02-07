@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manager;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Search\SearchExportFileRequest;
 use App\Models\ExportFile;
+use App\UseCases\ExportFile\DeleteExportFileUseCase;
 use App\UseCases\ExportFile\DownloadExportFileUseCase;
 use App\UseCases\ExportFile\FetchExportFileListUseCase;
 use Illuminate\Http\RedirectResponse;
@@ -30,12 +31,26 @@ class ExportFileController extends Controller
     public function download(
         ExportFile $exportFile,
         DownloadExportFileUseCase $useCase
-    ): StreamedResponse|RedirectResponse {
+    ): StreamedResponse {
         try {
             return $useCase($exportFile);
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', 'ダウンロードに失敗しました。');
         }
+    }
+
+    public function destroy(
+        ExportFile $exportFile,
+        DeleteExportFileUseCase $useCase
+    ): RedirectResponse {
+        try {
+            $useCase($exportFile);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '削除に失敗しました。');
+        }
+
+        return back()->with('success', '削除に成功しました。');
     }
 }
