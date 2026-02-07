@@ -8,6 +8,14 @@ use Illuminate\Validation\Rule;
 
 class SearchShopRequest extends FormRequest
 {
+    public function prepareForValidation()
+    {
+        if (!$this->has('perPage')) {
+            $this->merge([
+                'perPage' => 20,
+            ]);
+        }
+    }
     public function rules(): array
     {
         return [
@@ -17,6 +25,7 @@ class SearchShopRequest extends FormRequest
             'prefectureIds'    => ['nullable', 'array'],
             'prefecturesIds.*' => ['nullable', 'integer', 'exists:prefectures,id'],
             'activeFlag'       => ['nullable', Rule::enum(ActiveFlagTypeEnum::class)],
+            'perPage'          => ['nullable', 'integer'],
         ];
     }
 
@@ -29,6 +38,7 @@ class SearchShopRequest extends FormRequest
             'prefecturesIds'   => '都道府県',
             'prefecturesIds.*' => '都道府県名',
             'activeFlag'       => '運営状態',
+            'perPage'          => '表示件数',
         ];
     }
 }
