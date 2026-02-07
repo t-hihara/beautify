@@ -3,20 +3,27 @@ import { Head, useForm } from "@inertiajs/vue3";
 import { DateTime } from "luxon";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
-
-import { SearchText, SearchDateTime } from "@/common/js/components/Form/SearchIndex";
+import { SearchText, SearchDateTime, SearchSingleSelect } from "@/common/js/components/Form/SearchIndex";
 import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
+import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
-import { PaginationLinkType, PaginationType } from "@/common/js/lib";
 
-type Filter = {
+const PER_PAGE_OPTIONS = [
+  { id: 10, name: "10件" },
+  { id: 20, name: "20件" },
+  { id: 50, name: "50件" },
+  { id: 100, name: "100件" },
+];
+
+type FilterType = {
   name: string;
   event: string;
   fromDate: string;
   toDate: string;
+  perPage: number;
 };
 
-type Log = {
+type LogType = {
   id: number;
   description: string;
   event: string;
@@ -24,26 +31,28 @@ type Log = {
   createdAt: string;
 };
 
-type SearchForm = {
+type SearchFormType = {
   name: string;
   event: string;
   fromDate: string | null;
   toDate: string | null;
+  perPage: number;
 };
 
 const { guard } = useGuard();
 const { filters } = defineProps<{
-  filters: Filter;
-  logs: Log[];
+  filters: FilterType;
+  logs: LogType[];
   links: PaginationLinkType[];
   pagination: PaginationType;
 }>();
 
-const searchForm = useForm<SearchForm>({
+const searchForm = useForm<SearchFormType>({
   name: filters.name || "",
   event: filters.event || "",
   fromDate: filters.fromDate || DateTime.now().minus({ month: 1 }).toISODate(),
   toDate: filters.toDate || null,
+  perPage: filters.perPage || 10,
 });
 
 const search = (): void => {
@@ -99,6 +108,9 @@ const search = (): void => {
         </form>
       </div>
     </div>
+    <div class="mt-6 max-w-28">
+      <search-single-select v-model="searchForm.perPage" title="表示件数" field="perPage" :items="PER_PAGE_OPTIONS" />
+    </div>
     <div class="mt-4 bg-white shadow-sm rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-zinc-300 text-sm">
         <thead class="bg-zinc-200 font-medium text-zinc-600 text-left align-bottom tracking-wider">
@@ -128,6 +140,6 @@ const search = (): void => {
         </tbody>
       </table>
     </div>
-    <pagination :links="links" :pagination="pagination" class="mt-4" />
+    <pagination :links="links" :pagination="pagination" :per-page="filters.perPage" class="mt-4" />
   </div>
 </template>

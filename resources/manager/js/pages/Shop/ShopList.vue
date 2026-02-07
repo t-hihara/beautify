@@ -4,9 +4,8 @@ import { watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { HomeIcon, PhoneArrowUpRightIcon, EnvelopeIcon } from "@heroicons/vue/24/outline";
-import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
-
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
+import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 
 const PER_PAGE_OPTIONS = [

@@ -24,6 +24,7 @@ class SearchLogRequest extends FormRequest
             'event'    => ['nullable', 'string'],
             'fromDate' => ['required', 'date'],
             'toDate'   => ['nullable', 'date'],
+            'perPage'  => ['nullable', 'integer'],
         ];
     }
 
@@ -33,7 +34,8 @@ class SearchLogRequest extends FormRequest
             'name'     => '実行者名',
             'event'    => 'アクション名',
             'fromDate' => '作成日(開始)',
-            'toDate'   => '作成日(終了)'
+            'toDate'   => '作成日(終了)',
+            'perPage'  => '表示件数',
         ];
     }
 

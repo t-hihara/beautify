@@ -10,10 +10,11 @@ class FetchLogListUseCase
     public function __invoke(array $filters): array
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
+
         $logs = ActivityLog::with(['causer', 'subject'])
             ->byName($convert['name'] ?? null)
             ->byDuration($convert['from_date'] ?? null, $convert['to_date'] ?? null)
-            ->paginate(20)
+            ->paginate($convert['per_page'] ?? 10)
             ->through(fn($log) => [
                 'id'          => $log->id,
                 'description' => $log->description,
