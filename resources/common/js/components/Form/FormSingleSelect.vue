@@ -9,7 +9,7 @@ const {
   items,
   required = false,
 } = defineProps<{
-  modelValue: string | number;
+  modelValue: string | number | null;
   field: string;
   title?: string;
   required?: boolean;
@@ -18,7 +18,7 @@ const {
 }>();
 
 defineEmits<{
-  "update:modelValue": [value: string | number];
+  "update:modelValue": [value: string | number | null];
 }>();
 
 const selectedItem = computed(() => items.find((item) => item.id === modelValue));

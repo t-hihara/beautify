@@ -10,7 +10,7 @@ class FetchShopForEditUseCase
 {
     public function __invoke(Shop $shop): array
     {
-        $shop->load(['prefecture', 'businessHours']);
+        $shop->load(['businessHours']);
 
         return [
             'shop' => [
@@ -18,12 +18,12 @@ class FetchShopForEditUseCase
                 'name'          => $shop->name,
                 'email'         => $shop->email,
                 'phone'         => $shop->phone,
-                'prefecture'    => $shop->prefecture->name,
+                'prefectureId'  => $shop->prefecture_id,
                 'zipcode'       => $shop->zipcode,
                 'address'       => $shop->address,
                 'building'      => $shop->building,
                 'description'   => $shop->description,
-                'activeFlag'    => $shop->active_flag->description(),
+                'activeFlag'    => $shop->active_flag->value,
                 'businessHours' => $shop->businessHours->map(fn($businessHour) => [
                     'id'        => $businessHour->id,
                     'dayOfWeek' => $businessHour->day_of_week->description(),
