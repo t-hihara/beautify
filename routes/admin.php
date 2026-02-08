@@ -20,6 +20,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::prefix('shops')->name('shops.')->controller(ShopController::class)->group(function () {
             Route::middleware(['permission:view.shops'])->get('/', 'index')->name('index');
+            Route::middleware(['permission:manage.shops'])->group(function () {
+                Route::get('/{shop}/edit', 'edit')->name('edit');
+            });
             Route::middleware(['permission:export.shops'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
                 Route::get('/export/csv', 'exportCsv')->name('csv');
