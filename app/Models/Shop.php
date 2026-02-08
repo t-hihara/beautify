@@ -71,6 +71,11 @@ class Shop extends Model
                                         リレーション
     ================================================================================ */
 
+    public function businessHours(): HasMany
+    {
+        return $this->hasMany(ShopBusinessHour::class);
+    }
+
     public function shopImages(): HasMany
     {
         return $this->hasMany(ShopImage::class);

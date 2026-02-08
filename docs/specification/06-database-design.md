@@ -25,27 +25,66 @@
 
 ---
 
-### 2. shops（店舗）
-店舗情報を管理するテーブル
+### 1.1 prefectures（都道府県）
+都道府県マスタ。店舗の住所で参照する。（設計はマイグレーション `create_prefectures_table` を正とする）
 
 **カラム**:
 - `id` (bigint, primary key)
-- `name` (string) - 店舗名
-- `description` (text, nullable) - 説明
-- `address` (string) - 住所
-- `phone` (string) - 電話番号
-- `email` (string, nullable) - メールアドレス
-- `image_path` (string, nullable) - 画像パス
-- `opening_hours` (json, nullable) - 営業時間
-- `is_active` (boolean, default: true) - 公開状態
+- `name` (string) - 都道府県名
 - `created_at` (timestamp)
 - `updated_at` (timestamp)
 
 **リレーション**:
+- `shops` (1対多)
+
+---
+
+### 2. shops（店舗）
+店舗情報を管理するテーブル。（設計はマイグレーション `create_shops_table` を正とする）
+
+**カラム**:
+- `id` (bigint, primary key)
+- `name` (string) - 店舗名
+- `email` (string, unique) - 店舗メールアドレス
+- `phone` (string) - 店舗電話番号
+- `prefecture_id` (bigint, foreign key) - 都道府県ID
+- `zipcode` (string, 7) - 郵便番号
+- `address` (string) - 住所
+- `building` (string, nullable) - 番地・建物名
+- `description` (text, nullable) - 店舗説明
+- `active_flag` (enum) - 営業状態（`active` / `inactive`。ActiveFlagTypeEnum に準拠）
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+**インデックス**:
+- `phone` - 電話番号検索
+- `active_flag`, `prefecture_id` - 営業中・都道府県での絞り込み
+
+**リレーション**:
+- `prefecture` (多対1) - 都道府県
+- `shop_images` (1対多) - 店舗画像
 - `menus` (1対多)
 - `staff` (1対多)
 - `reservations` (1対多)
 - `shop_managers` (多対多) - 店舗店長との関連
+
+---
+
+### 2.1 shop_images（店舗画像）
+店舗に紐づく画像を管理するテーブル。（設計はマイグレーション `create_shop_images_table` を正とする）
+
+**カラム**:
+- `id` (bigint, primary key)
+- `shop_id` (bigint, foreign key, cascade on delete) - 店舗ID
+- `file_path` (string) - ファイルパス
+- `filename` (string) - ファイル名
+- `mime_type` (string) - ファイル拡張子（MIME タイプ）
+- `file_size` (unsigned bigint) - ファイルサイズ
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+**リレーション**:
+- `shop` (多対1)
 
 ---
 
@@ -235,6 +274,8 @@ users
   └── staff (1対1, オプション)
 
 shops
+  ├── prefecture (多対1)
+  ├── shop_images (1対多)
   ├── menus (1対多)
   ├── staff (1対多)
   ├── reservations (1対多)
@@ -269,19 +310,23 @@ shifts
 ## インデックス戦略
 
 ### 主要なインデックス
-1. **reservations テーブル**
+1. **shops テーブル**
+   - `phone` - 電話番号検索
+   - `active_flag`, `prefecture_id` - 営業状態・都道府県での絞り込み
+
+2. **reservations テーブル**
    - `shop_id`, `reservation_date`, `reservation_time` - 予約検索の高速化
    - `user_id`, `reservation_date` - ユーザーの予約履歴検索
    - `status` - ステータスでのフィルタリング
 
-2. **shifts テーブル**
+3. **shifts テーブル**
    - `shop_id`, `shift_date` - 店舗のシフト検索
    - `staff_id`, `shift_date` - スタッフのシフト検索
 
-3. **menus テーブル**
+4. **menus テーブル**
    - `shop_id`, `is_active` - 店舗の公開メニュー検索
 
-4. **staff テーブル**
+5. **staff テーブル**
    - `shop_id`, `is_active` - 店舗の有効スタッフ検索
 
 ---
@@ -289,6 +334,8 @@ shifts
 ## データ整合性
 
 ### 外部キー制約
+- `shops.prefecture_id` → `prefectures.id`
+- `shop_images.shop_id` → `shops.id`（cascade on delete）
 - `menus.shop_id` → `shops.id`
 - `staff.shop_id` → `shops.id`
 - `staff.user_id` → `users.id`
@@ -755,6 +802,8 @@ customers
   └── reviews (1対多)
 
 shops
+  ├── prefecture (多対1)
+  ├── shop_images (1対多)
   ├── menus (1対多)
   ├── staff (1対多)
   ├── reservations (1対多)

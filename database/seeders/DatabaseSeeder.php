@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             $this->call([
                 PrefectureSeeder::class,
                 ShopSeeder::class,
+                ShopBusinessHourSeeder::class,
                 ShopImageSeeder::class,
                 UserSeeder::class,
                 RoleAndPermissionSeeder::class,
