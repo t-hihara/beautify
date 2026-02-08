@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\DayOfWeekTypeEnum;
 use App\Models\Shop;
 use Carbon\Carbon;
@@ -13,15 +14,9 @@ class ShopBusinessHourSeeder extends BaseSeeder
     private const CHUNK_SIZE = 1000;
     private Carbon $now;
 
-    private const TIME_PATTERNS = [
-        ['09:00', '18:00'],
-        ['10:00', '19:00'],
-        ['11:00', '20:00'],
-    ];
-
     public function __construct()
     {
-        $this->now   = now();
+        $this->now = now();
     }
 
     public function run(): void
@@ -34,17 +29,19 @@ class ShopBusinessHourSeeder extends BaseSeeder
 
         Shop::chunkById(self::CHUNK_SIZE, function ($shops) use (&$items, $presets, $days) {
             foreach ($shops as $shop) {
-                $preset = $presets[$shop->id % count($presets)];
+                $preset = $shop->active_flag === ActiveFlagTypeEnum::ACTIVE
+                    ? $presets[$shop->id % count($presets)]
+                    : self::presetAllNull();
 
                 foreach ($days as $i => $day) {
                     $time = $preset[$i] ?? null;
                     $items[] = [
-                        'shop_id' => $shop->id,
+                        'shop_id'     => $shop->id,
                         'day_of_week' => $day->value,
-                        'open_time' => $time ? $time[0] : null,
-                        'close_time' => $time ? $time[1] : null,
-                        'created_at' => $this->now,
-                        'updated_at' => $this->now,
+                        'open_time'   => $time ? $time[0] : null,
+                        'close_time'  => $time ? $time[1] : null,
+                        'created_at'  => $this->now,
+                        'updated_at'  => $this->now,
                     ];
                 }
             }
@@ -86,6 +83,11 @@ class ShopBusinessHourSeeder extends BaseSeeder
     private static function presetIrregular(): array
     {
         return array_fill(0, 7, ['10:00', '19:00']);
+    }
+
+    private static function presetAllNull(): array
+    {
+        return array_fill(0, 7, null);
     }
 
     private static function presets(): array
