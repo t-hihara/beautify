@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 import { computed, type Component } from "vue";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
@@ -13,6 +13,8 @@ import {
   ChevronDownIcon,
 } from "@heroicons/vue/24/outline";
 
+const page = usePage();
+const unloadedExportFileCount = computed(() => page.props.unloadedExportFileCount);
 const { guard } = useGuard();
 const iconMap: Record<string, Component> = {
   dashboard: HomeIcon,
@@ -50,10 +52,18 @@ const menus = computed(() => (guard.value === "admin" ? adminMenu : shopMenu));
           <Link
             v-else
             :href="route(menu.route ?? '')"
-            class="px-3 py-2 rounded-md hover:bg-zinc-300/60 transition ease-in-out duration-300 flex items-center gap-2"
+            class="flex w-full items-center justify-between px-3 py-2 rounded-md hover:bg-zinc-300/60 transition ease-in-out duration-300"
           >
-            <component :is="iconMap[menu.icon]" class="size-6" />
-            <span>{{ menu.label }}</span>
+            <div class="flex items-center gap-2">
+              <component :is="iconMap[menu.icon]" class="size-5" />
+              <span>{{ menu.label }}</span>
+            </div>
+            <div
+              v-if="menu.icon === 'export' && unloadedExportFileCount > 0"
+              class="min-w-5 min-h-5 p-1 text-xs font-semibold leading-none px-1.5 py-0.5 rounded-full bg-white/90 text-rose-600 flex items-center justify-center"
+            >
+              {{ unloadedExportFileCount }}
+            </div>
           </Link>
         </li>
       </ul>

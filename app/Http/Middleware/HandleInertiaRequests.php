@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\Export\ExportFileService;
 use App\Services\Holiday\JapaneseHolidayService;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -43,6 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'warning' => $request->session()->pull('warning'),
             ],
             'japaneseHolidays' => (new JapaneseHolidayService())(now()->year),
+            'unloadedExportFileCount' => $user ? (new ExportFileService())->getUnloadedFileCount($user->id) : 0,
         ];
     }
 

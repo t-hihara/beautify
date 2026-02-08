@@ -12,6 +12,7 @@ declare module "@inertiajs/core" {
       warning: string | null;
     };
     japaneseHolidays: string[];
+    unloadedExportFileCount: number;
   }
 }
 

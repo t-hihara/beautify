@@ -8,6 +8,7 @@ import { SearchText, SearchDateTime, SearchSingleSelect } from "@/common/js/comp
 import { ButtonPrimary, ButtonSecondary, ButtonIconDanger } from "@/common/js/components/Ui/ButtonIndex";
 import { TrashIcon } from "@heroicons/vue/24/solid";
 import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
+import Pagination from "@manager/components/Ui/Pagination.vue";
 import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
 
 const PER_PAGE_OPTIONS = [
@@ -217,6 +218,7 @@ watch(
         </tbody>
       </table>
     </div>
+    <pagination :links="links" :pagination="pagination" :per-page="filters.perPage" class="mt-4" />
 
     <dialog-modal
       v-model="showDeleteModal"
