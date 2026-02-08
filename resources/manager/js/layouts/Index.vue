@@ -1,17 +1,32 @@
 <script setup lang="ts">
 import { usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
-import { useGuard } from "../composables/useGuard";
+import { computed, onMounted, onUnmounted } from "vue";
+import { useGuard } from "@manager/composables/useGuard";
+import { useUnloadedExportFileCount } from "@manager/composables/useUnloadedExportFileCount";
 import type { User } from "@common/@types/inertia";
 
 import Header from "@manager/components/Layout/Header.vue";
 import Sidebar from "@manager/components/Layout/Sidebar.vue";
 import FlashMessage from "@common/components/Layout/FlashMessage.vue";
 
-const { guard } = useGuard();
 const page = usePage();
+const guard = useGuard();
 const isAdmin = computed<boolean>(() => guard.value === "admin");
 const user = computed<User | null>(() => page.props.auth.user || null);
+
+const { refresh } = useUnloadedExportFileCount();
+
+onMounted(() => {
+  const onVisible = (): void => {
+    if (document.visibilityState === "visible") refresh();
+  };
+
+  document.addEventListener("visibilitychange", onVisible);
+
+  onUnmounted(() => {
+    document.removeEventListener("visibilitychange", onVisible);
+  });
+});
 </script>
 
 <template>

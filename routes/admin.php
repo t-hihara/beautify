@@ -29,7 +29,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::middleware('permission:view.logs')->get('/', 'index')->name('index');
         });
         Route::prefix('exports')->name('exports.')->controller(ExportFileController::class)->group(function () {
-            Route::middleware('permission:view.exports')->get('/', 'index')->name('index');
+            Route::middleware('permission:view.exports')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/unloaded-count', 'unloadedCount')->name('unloaded-count');
+            });
             Route::middleware('permission:manage.exports')->group(function () {
                 Route::get('/download/{exportFile}', 'download')->name('download');
                 Route::delete('/download/{exportFile}', 'destroy')->name('delete');

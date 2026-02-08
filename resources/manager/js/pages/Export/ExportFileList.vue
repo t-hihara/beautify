@@ -41,7 +41,7 @@ type SearchFormType = {
   perPage: number;
 };
 
-const { guard } = useGuard();
+const guard = useGuard();
 const { filters } = defineProps<{
   filters: FilterType;
   files: FileType[];

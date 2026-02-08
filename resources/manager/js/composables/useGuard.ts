@@ -5,7 +5,5 @@ export const useGuard = () => {
   const page = usePage();
   const guard = computed(() => page.props.guard as "admin" | "shop");
 
-  return {
-    guard,
-  };
+  return guard;
 };

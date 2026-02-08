@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Manager;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Search\SearchExportFileRequest;
 use App\Models\ExportFile;
+use App\Services\Export\ExportFileService;
 use App\UseCases\ExportFile\DeleteExportFileUseCase;
 use App\UseCases\ExportFile\DownloadExportFileUseCase;
 use App\UseCases\ExportFile\FetchExportFileListUseCase;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -38,6 +40,14 @@ class ExportFileController extends Controller
             report($e);
             return back()->with('error', 'ダウンロードに失敗しました。');
         }
+    }
+
+    public function unloadedCount(): JsonResponse
+    {
+        $userId = auth(request()->attributes->get('auth_guard'))->id();
+        $count  = (new ExportFileService())->getUnloadedFileCount($userId);
+
+        return response()->json(['unloadedExportFileCount' => $count]);
     }
 
     public function destroy(

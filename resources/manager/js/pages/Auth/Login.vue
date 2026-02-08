@@ -11,7 +11,7 @@ type LoginForm = {
   password: string;
 };
 
-const { guard } = useGuard();
+const guard = useGuard();
 const isAdmin = computed((): boolean => guard.value === "admin");
 
 const form = useForm<LoginForm>({

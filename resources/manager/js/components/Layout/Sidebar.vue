@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { Link, usePage } from "@inertiajs/vue3";
+import { Link } from "@inertiajs/vue3";
 import { computed, type Component } from "vue";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
+import { useUnloadedExportFileCount } from "@manager/composables/useUnloadedExportFileCount";
 import { adminMenu, shopMenu } from "@manager/config/SidebarMenu";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 import {
@@ -13,9 +14,8 @@ import {
   ChevronDownIcon,
 } from "@heroicons/vue/24/outline";
 
-const page = usePage();
-const unloadedExportFileCount = computed(() => page.props.unloadedExportFileCount);
-const { guard } = useGuard();
+const { count: unloadedExportFileCount } = useUnloadedExportFileCount();
+const guard = useGuard();
 const iconMap: Record<string, Component> = {
   dashboard: HomeIcon,
   shop: BuildingStorefrontIcon,
