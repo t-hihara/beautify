@@ -5,7 +5,7 @@ import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
 import { SearchText, SearchDateTime, SearchSingleSelect } from "@/common/js/components/Form/SearchIndex";
-import { ButtonPrimary, ButtonSecondary, ButtonIconDanger, TextLink } from "@/common/js/components/Ui/ButtonIndex";
+import { ButtonPrimary, ButtonSecondary, ButtonIconDanger } from "@/common/js/components/Ui/ButtonIndex";
 import { TrashIcon } from "@heroicons/vue/24/solid";
 import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
 import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
