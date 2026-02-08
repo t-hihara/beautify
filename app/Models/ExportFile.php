@@ -22,12 +22,14 @@ class ExportFile extends Model
         'status',
         'filters',
         'error_message',
+        'downloaded_at',
     ];
 
     protected $casts = [
-        'status'     => ExportFileStatusTypeEnum::class,
-        'filters'    => 'array',
-        'created_at' => 'datetime',
+        'status'        => ExportFileStatusTypeEnum::class,
+        'filters'       => 'array',
+        'downloaded_at' => 'datetime',
+        'created_at'    => 'datetime',
     ];
 
     public function getDescriptionValue(): string
@@ -40,6 +42,11 @@ class ExportFile extends Model
     ================================================================================ */
 
     public function getCreatedAtAttribute($value): string
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+    public function getDownloadedAtAttribute($value): string
     {
         return Carbon::parse($value)->format('Y-m-d H:i:s');
     }

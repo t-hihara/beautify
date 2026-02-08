@@ -34,14 +34,16 @@ class ExportFileSeeder extends BaseSeeder
             ->chunkById(self::CHUNK_SIZE, function ($users) use (&$items) {
                 foreach ($users as $user) {
                     for ($i = 1; $i <= rand(5, 20); $i++) {
+                        $isCompleted = $this->faker->boolean(60);
                         $items[] = [
                             'user_id'   => $user->id,
                             'subject'   => 'shop',
                             'file_type' => 'csv',
                             'file_path' => Str::random(20),
                             'filename'  => Str::random(20),
-                            'status'    => $this->faker->boolean(60) ? ExportFileStatusTypeEnum::COMPLETED : ExportFileStatusTypeEnum::FAILED,
+                            'status'    => $isCompleted ? ExportFileStatusTypeEnum::COMPLETED : ExportFileStatusTypeEnum::FAILED,
                             'filters'   => json_encode([]),
+                            'downloaded_at' => $isCompleted && $this->faker->boolean(40) ? $this->faker->dateTimeBetween($this->now->copy()->subMonth()->format('Y-m-d H:i:s')) : null,
                         ];
                     }
                 }

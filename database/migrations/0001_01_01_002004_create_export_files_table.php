@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('status', ExportFileStatusTypeEnum::cases())->default(ExportFileStatusTypeEnum::PENDING)->comment('ステータス');
             $table->json('filters')->comment('検索条件');
             $table->text('error_message')->nullable()->comment('エラーメッセージ');
+            $table->timestamp('downloaded_at')->nullable()->comment('ダウンロード日');
             $table->timestamps();
             $table->index(['user_id', 'created_at']);
         });
