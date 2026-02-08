@@ -26,7 +26,7 @@ class FetchShopForEditUseCase
                 'activeFlag'    => $shop->active_flag->value,
                 'businessHours' => $shop->businessHours->map(fn($businessHour) => [
                     'id'        => $businessHour->id,
-                    'dayOfWeek' => $businessHour->day_of_week->description(),
+                    'dayOfWeek' => $businessHour->day_of_week->value,
                     'openTime'  => $businessHour->open_time,
                     'closeTime' => $businessHour->close_time,
                 ]),
