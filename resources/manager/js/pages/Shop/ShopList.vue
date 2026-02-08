@@ -37,6 +37,14 @@ type ShopType = {
   building: string | null;
   description: string | null;
   activeFlag: string;
+  businessHours: BusinessHour[];
+};
+
+type BusinessHour = {
+  id: number;
+  dayOfWeek: string;
+  openTime: string | null;
+  closeTime: string | null;
 };
 
 type SearchFormType = {
@@ -147,6 +155,7 @@ watch(
               </div>
             </th>
             <th scope="col" class="px-4 py-3">店舗住所</th>
+            <th scope="col" class="px-4 py-3">営業時間</th>
             <th scope="col" class="px-4 py-3 text-center">運営状態</th>
             <th class="px-4 py-3"></th>
           </tr>
@@ -172,6 +181,17 @@ watch(
                   >
                   <span class="text-xs indent-3.5">{{ shop.address }}</span>
                   <span class="text-xs indent-3.5">{{ shop.building ?? "----" }}</span>
+                </div>
+              </td>
+              <td class="px-4 py-3 space-y-0.5">
+                <div v-for="businessHour in shop.businessHours" :key="businessHour.id" class="flex items-center gap-2">
+                  <span class="text-xs">{{ businessHour.dayOfWeek }}</span>
+                  <template v-if="businessHour.openTime && businessHour.closeTime">
+                    <span class="text-xs">{{ businessHour.openTime }} ~ {{ businessHour.closeTime }}</span>
+                  </template>
+                  <template v-else>
+                    <span class="text-xs text-rose-600">休業日</span>
+                  </template>
                 </div>
               </td>
               <td class="px-4 py-3 text-center">{{ shop.activeFlag }}</td>
