@@ -82,7 +82,7 @@ const form = useForm<FormType>({
     <div class="mt-6">
       <form @submit.prevent="">
         <div class="px-3 py-1 rounded-md bg-zinc-200">
-          <p class="text-sm">店舗情報</p>
+          <p>店舗情報</p>
         </div>
         <div class="mt-3 grid grid-cols-2 gap-6">
           <form-text
