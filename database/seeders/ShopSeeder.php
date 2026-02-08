@@ -50,7 +50,7 @@ class ShopSeeder extends BaseSeeder
         $this->insertData('shops', $items);
 
         $this->finalize('ShopSeeder', [
-            '店舗' => count($items) . '数'
+            '店舗数' => count($items)
         ]);
     }
 }

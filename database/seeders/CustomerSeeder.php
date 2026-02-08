@@ -48,7 +48,7 @@ class CustomerSeeder extends BaseSeeder
         $this->insertData('customers', $items);
 
         $this->finalize('CustomerSeeder', [
-            '顧客' => count($items) . '数'
+            '顧客数' => count($items)
         ]);
     }
 }

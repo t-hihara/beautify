@@ -64,7 +64,7 @@ class PrefectureSeeder extends BaseSeeder
         $this->insertData('prefectures', $items);
 
         $this->finalize('PrefectureSeeder', [
-            '都道府県' => count($items) . '数'
+            '都道府県' => count($items)
         ]);
     }
 }

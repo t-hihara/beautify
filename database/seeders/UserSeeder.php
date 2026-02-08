@@ -33,7 +33,7 @@ class UserSeeder extends BaseSeeder
         $this->insertData('users', $items);
 
         $this->finalize('UserSeeder', [
-            'ユーザー数' => count($items) . '数'
+            'ユーザー数' => count($items)
         ]);
     }
 

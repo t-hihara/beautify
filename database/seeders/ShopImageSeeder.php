@@ -42,7 +42,7 @@ class ShopImageSeeder extends BaseSeeder
         $this->insertData('shop_images', $items);
 
         $this->finalize('ShopImageSeeder', [
-            '店舗画像' => count($items) . '数'
+            '店舗画像数' => count($items)
         ]);
     }
 }

@@ -50,7 +50,7 @@ class ExportFileSeeder extends BaseSeeder
         $this->insertData('export_files', $items);
 
         $this->finalize('ExportFileSeeder', [
-            '出力ファイル' => count($items) . '数',
+            '出力ファイル数' => count($items)
         ]);
     }
 }
