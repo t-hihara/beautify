@@ -4,9 +4,9 @@ import { watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { HomeIcon, PhoneArrowUpRightIcon, EnvelopeIcon } from "@heroicons/vue/24/outline";
-import { FolderArrowDownIcon } from "@heroicons/vue/24/solid";
+import { FolderArrowDownIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
-import { ButtonPrimary } from "@/common/js/components/Ui/ButtonIndex";
+import { ButtonPrimary, ButtonIcon } from "@/common/js/components/Ui/ButtonIndex";
 import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 
@@ -195,7 +195,13 @@ watch(
                 </div>
               </td>
               <td class="px-4 py-3 text-center">{{ shop.activeFlag }}</td>
-              <td class="px-4 py-3"></td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-2">
+                  <button-icon :href="route('admin.shops.edit', shop.id)"
+                    ><pencil-square-icon class="size-6"
+                  /></button-icon>
+                </div>
+              </td>
             </tr>
           </template>
           <template v-else>
