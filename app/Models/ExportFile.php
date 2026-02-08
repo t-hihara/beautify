@@ -46,9 +46,9 @@ class ExportFile extends Model
         return Carbon::parse($value)->format('Y-m-d H:i:s');
     }
 
-    public function getDownloadedAtAttribute($value): string
+    public function getDownloadedAtAttribute($value): ?string
     {
-        return Carbon::parse($value)->format('Y-m-d H:i:s');
+        return $value ? Carbon::parse($value)->format('Y-m-d H:i:s') : null;
     }
 
     /* ================================================================================

@@ -29,6 +29,7 @@ type FileType = {
   subject: string;
   filename: string;
   status: string;
+  downloadedAt: string;
   createdAt: string;
 };
 
@@ -105,6 +106,20 @@ const confirmDelete = (): void => {
   deleteFile(targetFile.value.id);
 };
 
+const downloadFile = async (fileId: number, filename: string): Promise<void> => {
+  const result = await fetch(route(`${guard.value}.exports.download`, fileId), { credentials: "include" });
+  if (!result.ok) return;
+
+  const blob = await result.blob();
+  const blobUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = blobUrl;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(blobUrl);
+  router.reload();
+};
+
 watch(
   () => searchForm.data(),
   debounce(() => {
@@ -159,6 +174,7 @@ watch(
             <th scope="col" class="px-4 py-3">対象</th>
             <th scope="col" class="px-4 py-3">ファイル名</th>
             <th scope="col" class="px-4 py-3 text-center">ステータス</th>
+            <th scope="col" class="px-4 py-3">DL済み</th>
             <th scope="col" class="px-4 py-3">作成日</th>
             <th class="px-4 py-3"></th>
           </tr>
@@ -167,13 +183,17 @@ watch(
           <template v-if="files.length > 0">
             <tr v-for="file in files" :key="file.id">
               <td class="px-4 py-3">{{ file.subject }}</td>
-              <td class="px-4 py-3 font-semibold">
-                <text-link
-                  :href="route(`${guard}.exports.download`, file.id)"
-                  :is-anchor="true"
-                  class="font-semibold"
-                  >{{ file.filename }}</text-link
+              <td class="px-4 py-3">
+                <button
+                  v-if="file.status === '完了'"
+                  type="button"
+                  class="text-left cursor-pointer"
+                  :class="file.downloadedAt ? '' : 'font-semibold underline'"
+                  @click="downloadFile(file.id, file.filename)"
                 >
+                  {{ file.filename }}
+                </button>
+                <span v-else>{{ file.filename }}</span>
               </td>
               <td class="px-4 py-3 text-center">
                 <span
@@ -182,6 +202,7 @@ watch(
                   >{{ file.status }}</span
                 >
               </td>
+              <td class="px-4 py-3">{{ file.downloadedAt ? "DL済み" : "" }}</td>
               <td class="px-4 py-3">{{ file.createdAt }}</td>
               <td class="px-4 py-3">
                 <button-icon-danger @click="openDeleteModal(file)"><trash-icon class="size-4" /></button-icon-danger>

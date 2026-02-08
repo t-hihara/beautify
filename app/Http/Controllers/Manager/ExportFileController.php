@@ -31,7 +31,7 @@ class ExportFileController extends Controller
     public function download(
         ExportFile $exportFile,
         DownloadExportFileUseCase $useCase
-    ): StreamedResponse {
+    ): StreamedResponse|RedirectResponse {
         try {
             return $useCase($exportFile);
         } catch (Throwable $e) {

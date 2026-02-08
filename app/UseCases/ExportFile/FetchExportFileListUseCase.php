@@ -16,11 +16,12 @@ class FetchExportFileListUseCase
             ->byDuration($convert['from_date'] ?? null, $convert['to_date'] ?? null)
             ->paginate($convert['per_page'] ?? 10)
             ->through(fn($file) => [
-                'id'        => $file->id,
-                'subject'   => $file->subject,
-                'filename'  => $file->filename,
-                'status'    => $file->status->description(),
-                'createdAt' => $file->created_at,
+                'id'           => $file->id,
+                'subject'      => $file->subject,
+                'filename'     => $file->filename,
+                'status'       => $file->status->description(),
+                'downloadedAt' => $file->downloaded_at,
+                'createdAt'    => $file->created_at,
             ]);
 
         return [
