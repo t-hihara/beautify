@@ -79,7 +79,7 @@ const handleModelUpdate = (value: Date | string | null): void => {
         showCancel: false,
         showNow: false,
         showPreview: false,
-        ...(mode === 'time' && { selectButtonLabel: '確定' }),
+        ...(mode === 'time' && { selectBtnLabel: '確定' }),
       }"
       :ui="{
         dayClass: (date) => {
@@ -136,5 +136,10 @@ const handleModelUpdate = (value: Date | string | null): void => {
   align-items: center;
   justify-content: center;
   min-width: 1.25rem;
+}
+.form-date-time-input :deep(.dp__action_select) {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 </style>
