@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { Head, useForm } from "@inertiajs/vue3";
 import type { EnumType } from "@/common/js/lib";
-import { FormText, FormEmail, FormSingleSelect, FormTextarea } from "@/common/js/components/Form/FormIndex";
-import { computed } from "vue";
+import {
+  FormText,
+  FormEmail,
+  FormSingleSelect,
+  FormTextarea,
+  FormDateTime,
+} from "@/common/js/components/Form/FormIndex";
 
 type ShopType = {
   id: number;
@@ -21,6 +26,7 @@ type ShopType = {
 type BusinessHour = {
   id?: number;
   dayOfWeek: string;
+  label: string;
   openTime: string | null;
   closeTime: string | null;
 };
@@ -47,16 +53,15 @@ const { shop } = defineProps<{
   prefectures: EnumType[];
 }>();
 
-const DAY_ORDER = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"] as const;
-const DAY_LABELS: Record<string, string> = {
-  sunday: "日",
-  monday: "月",
-  tuesday: "火",
-  wednesday: "水",
-  thursday: "木",
-  friday: "金",
-  saturday: "土",
-};
+const DEFAULT_BUSINESS_HOURS: BusinessHour[] = [
+  { dayOfWeek: "monday", label: "月", openTime: null, closeTime: null },
+  { dayOfWeek: "tuesday", label: "火", openTime: null, closeTime: null },
+  { dayOfWeek: "wednesday", label: "水", openTime: null, closeTime: null },
+  { dayOfWeek: "thursday", label: "木", openTime: null, closeTime: null },
+  { dayOfWeek: "friday", label: "金", openTime: null, closeTime: null },
+  { dayOfWeek: "saturday", label: "土", openTime: null, closeTime: null },
+  { dayOfWeek: "sunday", label: "日", openTime: null, closeTime: null },
+];
 
 const form = useForm<FormType>({
   shop: {
@@ -70,27 +75,9 @@ const form = useForm<FormType>({
     building: shop?.building || null,
     description: shop?.description || null,
     activeFlag: shop?.activeFlag || "active",
-    businessHours: shop?.businessHours
-      ? shop.businessHours
-      : [
-          { dayOfWeek: "sunday", openTime: null, closeTime: null },
-          { dayOfWeek: "monday", openTime: null, closeTime: null },
-          { dayOfWeek: "tuesday", openTime: null, closeTime: null },
-          { dayOfWeek: "wednesday", openTime: null, closeTime: null },
-          { dayOfWeek: "thursday", openTime: null, closeTime: null },
-          { dayOfWeek: "friday", openTime: null, closeTime: null },
-          { dayOfWeek: "saturday", openTime: null, closeTime: null },
-        ],
+    businessHours: shop?.businessHours ?? DEFAULT_BUSINESS_HOURS,
   },
 });
-
-const businessHoursByDay = computed(() =>
-  DAY_ORDER.map((dayKey) => ({
-    dayKey,
-    label: DAY_LABELS[dayKey],
-    bh: form.shop.businessHours.find((h) => h.dayOfWeek === dayKey)!,
-  }))
-);
 </script>
 
 <template>
@@ -102,7 +89,7 @@ const businessHoursByDay = computed(() =>
     <div class="mt-6">
       <form @submit.prevent="">
         <div class="px-3 py-1 rounded-md bg-zinc-200">
-          <p>店舗情報</p>
+          <p class="text-sm font-semibold text-zinc-800">店舗情報</p>
         </div>
         <div class="mt-3 grid grid-cols-2 gap-6">
           <form-text
@@ -170,26 +157,33 @@ const businessHoursByDay = computed(() =>
             :error="form.errors"
           />
         </div>
-
-        <div class="mt-8 rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-          <p class="text-sm font-medium text-zinc-700">営業時間</p>
+        <div class="mt-8 rounded-lg">
+          <div class="px-3 py-1 rounded-md bg-zinc-200">
+            <p class="text-sm font-semibold text-zinc-800">営業時間</p>
+          </div>
           <div class="mt-3 grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
             <div
-              v-for="row in businessHoursByDay"
-              :key="row.dayKey"
+              v-for="(bh, index) in form.shop.businessHours"
+              :key="bh.dayOfWeek"
               class="flex items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 shadow-sm"
             >
-              <span class="w-5 shrink-0 font-medium text-zinc-600">{{ row.label }}</span>
-              <input
-                v-model="row.bh.openTime"
-                type="time"
-                class="min-w-0 flex-1 rounded border border-zinc-300 bg-white px-2 py-1.5 text-sm"
+              <span class="w-5 shrink-0 font-medium text-zinc-600">{{ bh.label }}</span>
+              <form-date-time
+                v-model="bh.openTime"
+                mode="time"
+                inputmode="text"
+                time-picker
+                format="HH:mm"
+                :field="`shop.businessHours.${index}.openTime`"
               />
               <span class="shrink-0 text-zinc-400">～</span>
-              <input
-                v-model="row.bh.closeTime"
-                type="time"
-                class="min-w-0 flex-1 rounded border border-zinc-300 bg-white px-2 py-1.5 text-sm"
+              <form-date-time
+                v-model="bh.closeTime"
+                mode="time"
+                inputmode="text"
+                time-picker
+                format="HH:mm"
+                :field="`shop.businessHours.${index}.closeTime`"
               />
             </div>
           </div>

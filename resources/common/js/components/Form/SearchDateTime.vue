@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { usePage } from "@inertiajs/vue3";
 import { VueDatePicker } from "@vuepic/vue-datepicker";
 import { DateTime } from "luxon";
+import { XMarkIcon } from "@heroicons/vue/24/outline";
 
 type Mode = "date" | "time" | "datetime";
 
@@ -12,6 +12,7 @@ const {
   format = "yyyy年MM月dd日",
   multiCalendars = 0,
   mode = "date",
+  inputmode = "none",
 } = defineProps<{
   modelValue: string | null;
   field: string;
@@ -23,35 +24,18 @@ const {
   format?: string;
   multiCalendars?: number;
   mode?: Mode;
+  inputmode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal";
 }>();
 
 defineEmits<{
   "update:modelValue": [value: string | null];
 }>();
 
-const holidays = usePage().props.japaneseHolidays ?? [];
-
-const formatDateTime = (date: Date | null, mode: "date" | "time" | "datetime"): string | null => {
-  if (date === null) return null;
-
+const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string => {
   const dt = DateTime.fromJSDate(date);
   if (mode === "date") return dt.toFormat("yyyy-MM-dd");
   if (mode === "time") return dt.toFormat("HH:mm");
-
   return dt.toFormat("yyyy-MM-dd HH:mm");
-};
-
-const dayClass = (date: Date): string => {
-  const d = date.getDay();
-  const ymd = DateTime.fromJSDate(date).toFormat("yyyy-MM-dd");
-  const isHoliday = holidays.includes(ymd);
-
-  const classes: string[] = [];
-  if (d === 0) classes.push("dp__day_sunday");
-  if (d === 6) classes.push("dp__day_saturday");
-  if (isHoliday) classes.push("dp__day_holiday");
-
-  return classes.join(" ");
 };
 </script>
 
@@ -63,24 +47,42 @@ const dayClass = (date: Date): string => {
     <vue-date-picker
       no-today
       auto-apply
-      :class="title ? 'mt-1' : ''"
       :model-value="modelValue"
+      :model-type="timePicker ? format : undefined"
+      :text-input="timePicker ? true : false"
       :min-date="minDate ?? undefined"
       :time-picker="timePicker"
       :time-config="{ enableTimePicker: timePicker }"
       :formats="{ input: format }"
       :multi-calendars="multiCalendars"
       :week-start="0"
+      :input-attrs="{
+        clearable: true,
+        inputmode: inputmode,
+      }"
       :action-row="{
         showSelect: false,
         showCancel: false,
         showNow: false,
         showPreview: false,
       }"
-      :ui="{ dayClass }"
+      :ui="{
+        dayClass: (date) => {
+          const d = date.getDay();
+          if (d === 0) return 'dp__day_sunday';
+          if (d === 6) return 'dp__day_saturday';
+          return '';
+        },
+      }"
       @update:model-value="(v) => $emit('update:modelValue', formatDateTime(v, mode))"
       @date-click=""
-    />
+    >
+      <template #clear-icon>
+        <button type="button" class="form-date-time-input__clear" @click="$emit('update:modelValue', null)">
+          <x-mark-icon class="size-4" />
+        </button>
+      </template>
+    </vue-date-picker>
     <div v-if="error?.[field]" class="mt-0.5">
       <span class="text-xs text-red-600">{{ error[field] }}</span>
     </div>
@@ -112,7 +114,12 @@ const dayClass = (date: Date): string => {
 .form-date-time-input :deep(.dp__day_sunday) {
   color: #ec4899;
 }
-.form-date-time-input :deep(.dp__day_holiday) {
-  color: #ec4899;
+.form-date-time-input :deep(.form-date-time-input__clear) {
+  padding: 0 4px 0 8px;
+  margin-left: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
 }
 </style>

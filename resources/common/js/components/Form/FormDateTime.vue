@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { VueDatePicker } from "@vuepic/vue-datepicker";
 import { DateTime } from "luxon";
+import { XMarkIcon } from "@heroicons/vue/24/outline";
 
 type Mode = "date" | "time" | "datetime";
 
@@ -11,8 +12,9 @@ const {
   format = "yyyy年MM月dd日",
   multiCalendars = 0,
   mode = "date",
+  inputmode = "none",
 } = defineProps<{
-  modelValue: string;
+  modelValue: string | null;
   field: string;
   title?: string;
   required?: boolean;
@@ -22,10 +24,11 @@ const {
   format?: string;
   multiCalendars?: number;
   mode?: Mode;
+  inputmode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal";
 }>();
 
 defineEmits<{
-  "update:modelValue": [value: string];
+  "update:modelValue": [value: string | null];
 }>();
 
 const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string => {
@@ -45,12 +48,18 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
       no-today
       auto-apply
       :model-value="modelValue"
+      :model-type="timePicker ? format : undefined"
+      :text-input="timePicker ? true : false"
       :min-date="minDate ?? undefined"
       :time-picker="timePicker"
       :time-config="{ enableTimePicker: timePicker }"
       :formats="{ input: format }"
       :multi-calendars="multiCalendars"
       :week-start="0"
+      :input-attrs="{
+        clearable: true,
+        inputmode: inputmode,
+      }"
       :action-row="{
         showSelect: false,
         showCancel: false,
@@ -67,7 +76,13 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
       }"
       @update:model-value="(v) => $emit('update:modelValue', formatDateTime(v, mode))"
       @date-click=""
-    />
+    >
+      <template #clear-icon>
+        <button type="button" class="form-date-time-input__clear" @click="$emit('update:modelValue', null)">
+          <x-mark-icon class="size-4" />
+        </button>
+      </template>
+    </vue-date-picker>
     <div v-if="error?.[field]" class="mt-0.5">
       <span class="text-xs text-red-600">{{ error[field] }}</span>
     </div>
@@ -98,5 +113,13 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
 }
 .form-date-time-input :deep(.dp__day_sunday) {
   color: #ec4899;
+}
+.form-date-time-input :deep(.form-date-time-input__clear) {
+  padding: 0 4px 0 8px;
+  margin-left: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
 }
 </style>
