@@ -9,6 +9,7 @@ const {
   required = false,
   minDate = new Date(),
   timePicker = false,
+  autoApply = false,
   format = "yyyy年MM月dd日",
   multiCalendars = 0,
   mode = "date",
@@ -21,13 +22,14 @@ const {
   error?: Record<string, string>;
   minDate?: Date | null;
   timePicker?: boolean;
+  autoApply?: boolean;
   format?: string;
   multiCalendars?: number;
   mode?: Mode;
   inputmode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal";
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   "update:modelValue": [value: string | null];
 }>();
 
@@ -36,6 +38,18 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
   if (mode === "date") return dt.toFormat("yyyy-MM-dd");
   if (mode === "time") return dt.toFormat("HH:mm");
   return dt.toFormat("yyyy-MM-dd HH:mm");
+};
+
+const emitValue = (v: Date | string | null): void => {
+  if (v == null) {
+    emit("update:modelValue", null);
+    return;
+  }
+  if (mode === "time" && typeof v === "string") {
+    emit("update:modelValue", v);
+    return;
+  }
+  emit("update:modelValue", formatDateTime(v as Date, mode));
 };
 </script>
 
@@ -46,7 +60,7 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
     </label>
     <vue-date-picker
       no-today
-      auto-apply
+      :auto-apply="autoApply"
       :model-value="modelValue"
       :model-type="timePicker ? format : undefined"
       :text-input="timePicker ? true : false"
@@ -61,10 +75,11 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
         inputmode: inputmode,
       }"
       :action-row="{
-        showSelect: false,
+        showSelect: mode === 'time',
         showCancel: false,
         showNow: false,
         showPreview: false,
+        ...(mode === 'time' && { selectButtonLabel: '確定' }),
       }"
       :ui="{
         dayClass: (date) => {
@@ -74,7 +89,7 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
           return '';
         },
       }"
-      @update:model-value="(v) => $emit('update:modelValue', formatDateTime(v, mode))"
+      @update:model-value="emitValue"
       @date-click=""
     >
       <template #clear-icon>
