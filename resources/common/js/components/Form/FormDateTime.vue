@@ -40,16 +40,16 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
   return dt.toFormat("yyyy-MM-dd HH:mm");
 };
 
-const emitValue = (v: Date | string | null): void => {
-  if (v == null) {
+const handleModelUpdate = (value: Date | string | null): void => {
+  if (value == null) {
     emit("update:modelValue", null);
     return;
   }
-  if (mode === "time" && typeof v === "string") {
-    emit("update:modelValue", v);
+  if (mode === "time" && typeof value === "string") {
+    emit("update:modelValue", value);
     return;
   }
-  emit("update:modelValue", formatDateTime(v as Date, mode));
+  emit("update:modelValue", formatDateTime(value as Date, mode));
 };
 </script>
 
@@ -89,7 +89,7 @@ const emitValue = (v: Date | string | null): void => {
           return '';
         },
       }"
-      @update:model-value="emitValue"
+      @update:model-value="handleModelUpdate"
       @date-click=""
     >
       <template #clear-icon>
