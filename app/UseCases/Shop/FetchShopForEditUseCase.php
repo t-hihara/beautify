@@ -22,20 +22,6 @@ class FetchShopForEditUseCase
     public function __invoke(Shop $shop): array
     {
         $shop->load(['businessHours']);
-        $byDay = $shop->businessHours->keyBy(fn($h) => $h->day_of_week->value);
-
-        $businessHours = [];
-        foreach (self::DAY_ORDER as $day) {
-            $h = $byDay->get($day->value);
-            $businessHours[] = [
-                'id'        => $h?->id,
-                'dayOfWeek' => $day->value,
-                'label'     => $day->description(),
-                'openTime'  => $h?->open_time,
-                'closeTime' => $h?->close_time,
-            ];
-        }
-
         return [
             'shop' => [
                 'id'            => $shop->id,
@@ -48,7 +34,14 @@ class FetchShopForEditUseCase
                 'building'      => $shop->building,
                 'description'   => $shop->description,
                 'activeFlag'    => $shop->active_flag->value,
-                'businessHours' => $businessHours,
+                'updatedAt'     => $shop->updated_at,
+                'businessHours' => $shop->businessHours->map(fn($businessHour) => [
+                    'id'         => $businessHour->id,
+                    'dayOfWeek'  => $businessHour->day_of_week->value,
+                    'label'      => $businessHour->day_of_week->description(),
+                    'open_time'  => $businessHour->open_time,
+                    'close_time' => $businessHour->close_time,
+                ]),
             ],
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'prefectures' => Prefecture::get(['id', 'name']),
