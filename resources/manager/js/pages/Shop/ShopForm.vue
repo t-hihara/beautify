@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { Head, useForm } from "@inertiajs/vue3";
+import { route } from "ziggy-js";
 import type { EnumType } from "@/common/js/lib";
 import {
   FormText,
@@ -22,6 +23,7 @@ type ShopType = {
   building: string | null;
   description: string | null;
   activeFlag: string;
+  updatedAt?: string;
   businessHours: BusinessHour[];
 };
 
@@ -45,6 +47,7 @@ type FormType = {
     building: string | null;
     description: string | null;
     activeFlag: string;
+    updatedAt?: string;
     businessHours: BusinessHour[];
   };
 };
@@ -77,16 +80,31 @@ const form = useForm<FormType>({
     building: shop?.building || null,
     description: shop?.description || null,
     activeFlag: shop?.activeFlag || "active",
+    updatedAt: shop?.updatedAt || undefined,
     businessHours: shop?.businessHours ?? DEFAULT_BUSINESS_HOURS,
   },
 });
 
-const activeFlag = computed({
+const isEdit = computed<boolean>(() => route().current("admin.shops.edit"));
+
+const activeFlag = computed<boolean>({
   get: () => form.shop.activeFlag === "active",
   set: (v: boolean) => {
     form.shop.activeFlag = v ? "active" : "inactive";
   },
 });
+
+const submit = (): void => {
+  if (isEdit.value) {
+    form
+      .transform((data) => ({
+        shop: data.shop,
+      }))
+      .patch(route("admin.shops.index", shop?.id));
+  } else {
+    //
+  }
+};
 </script>
 
 <template>
@@ -96,7 +114,7 @@ const activeFlag = computed({
       <h2 class="text-3xl">店舗編集</h2>
     </div>
     <div class="mt-6">
-      <form @submit.prevent="">
+      <form @submit.prevent="submit">
         <div class="px-3 py-1 rounded-md bg-zinc-200">
           <p class="text-sm font-semibold text-zinc-800">店舗情報</p>
         </div>

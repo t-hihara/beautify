@@ -11,10 +11,11 @@ class UpdateShopUseCase
     public function __invoke(array $payload, Shop $shop): Shop
     {
         return DB::transaction(function () use ($payload, $shop) {
-            $convert = RecursiveCovert::_convert($payload);
+            $convert = RecursiveCovert::_convert($payload, 'snake');
             $shop->load(['businessHours']);
 
-            $shop->fill(unset($convert['business_hours']))->save();
+            unset($convert['business_hours']);
+            $shop->fill($convert)->save();
             foreach ($convert['business_hours'] as $businessHour) {
                 $shop->businessHours->updateOrCreate(
                     [

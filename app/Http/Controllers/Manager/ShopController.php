@@ -37,7 +37,7 @@ class ShopController extends Controller
     }
 
     public function update(
-        FormShopRequest $request
+        FormShopRequest $request,
         Shop $shop,
         UpdateShopUseCase $useCase
     ): RedirectResponse {
