@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Manager\Form\FormShopRequest;
 use App\Http\Requests\Manager\Search\SearchShopRequest;
 use App\Models\Shop;
 use App\UseCases\Shop\ExportShopUseCase;
 use App\UseCases\Shop\FetchShopForEditUseCase;
 use App\UseCases\Shop\FetchShopListUseCase;
+use App\UseCases\Shop\UpdateShopUseCase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -32,6 +34,22 @@ class ShopController extends Controller
     ): Response {
         $data = $useCase($shop);
         return Inertia::render('Shop/ShopForm', $data);
+    }
+
+    public function update(
+        FormShopRequest $request
+        Shop $shop,
+        UpdateShopUseCase $useCase
+    ): RedirectResponse {
+        try {
+            $validated = $request->validated();
+            $useCase($validated, $shop);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '更新に失敗しました。');
+        }
+
+        return redirect()->route('admin.shops.index')->with('success', '更新に成功しました。');
     }
 
     public function exportExcel(
