@@ -4,8 +4,10 @@ namespace App\Http\Requests\Manager\Form;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\DayOfWeekTypeEnum;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class FormShopRequest extends FormRequest
 {
@@ -44,8 +46,32 @@ class FormShopRequest extends FormRequest
             'shop.businessHours'             => '営業時間',
             'shop.businessHours.*.id'        => '営業時間ID',
             'shop.businessHours.*.dayOfWeek' => '曜日',
-            'shop.businessHours.*.openTime'  => 'オープン時間',
+            'shop.businessHours.*.openTime'  => '開店時間',
             'shop.businessHours.*.closeTime' => '閉店時間',
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                $businessHours = $this->input('shop.businessHours', []);
+                foreach ($businessHours as $index => $businessHour) {
+                    $openTime  = $businessHour['openTime'] ?? null;
+                    $closeTime = $businessHour['closeTime'] ?? null;
+                    if ($closeTime === null && $openTime === null) continue;
+
+                    $open  = Carbon::parse($openTime);
+                    $close = Carbon::parse($closeTime);
+
+                    if ($close->lt($open)) {
+                        $validator->errors()->add(
+                            "shop.businessHours.{$index}.closeTime",
+                            '閉店時間は開店時間以降に設定してください。',
+                        );
+                    }
+                }
+            }
         ];
     }
 }
