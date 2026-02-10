@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { Head, useForm } from "@inertiajs/vue3";
 import type { EnumType } from "@/common/js/lib";
 import {
@@ -7,6 +8,7 @@ import {
   FormSingleSelect,
   FormTextarea,
   FormDateTime,
+  FormSwitchToggle,
 } from "@/common/js/components/Form/FormIndex";
 
 type ShopType = {
@@ -78,6 +80,13 @@ const form = useForm<FormType>({
     businessHours: shop?.businessHours ?? DEFAULT_BUSINESS_HOURS,
   },
 });
+
+const activeFlag = computed({
+  get: () => form.shop.activeFlag === "active",
+  set: (v: boolean) => {
+    form.shop.activeFlag = v ? "active" : "inactive";
+  },
+});
 </script>
 
 <template>
@@ -145,6 +154,13 @@ const form = useForm<FormType>({
             title="番地・部屋番号"
             field="shop.building"
             placeholder="番地・部屋番号"
+            required
+            :error="form.errors"
+          />
+          <form-switch-toggle
+            v-model="activeFlag"
+            title="運営状態"
+            field="shop.activeFlag"
             required
             :error="form.errors"
           />

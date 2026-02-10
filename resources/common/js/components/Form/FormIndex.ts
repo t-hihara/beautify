@@ -5,3 +5,4 @@ export { default as FormSingleSelect } from "@common/components/Form/FormSingleS
 export { default as FormDateTime } from "@common/components/Form/FormDateTime.vue";
 export { default as FormCheckbox } from "@common/components/Form/FormCheckbox.vue";
 export { default as FormTextarea } from "@common/components/Form/FormTextarea.vue";
+export { default as FormSwitchToggle } from "@common/components/Form/FormSwitchToggle.vue";

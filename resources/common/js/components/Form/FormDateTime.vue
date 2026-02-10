@@ -55,7 +55,7 @@ const handleModelUpdate = (value: Date | string | null): void => {
 
 <template>
   <div class="form-date-time-input">
-    <label v-if="title" class="text-sm font-medium text-zinc-800 flex gap-1">
+    <label v-if="title" class="text-sm font-medium text-zinc-800 flex items-center gap-1">
       {{ title }}<span v-if="required" class="text-red-500">※</span>
     </label>
     <vue-date-picker

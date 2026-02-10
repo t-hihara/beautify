@@ -27,7 +27,7 @@ const selectedItem = computed(() => items.find((item) => item.id === modelValue)
 <template>
   <div>
     <listbox :model-value="selectedItem" @update:model-value="(item) => $emit('update:modelValue', item.id)">
-      <listbox-label v-if="title" class="block text-sm font-medium text-zinc-800">
+      <listbox-label v-if="title" class="flex items-center gap-1 text-sm font-medium text-zinc-800">
         {{ title }}<span v-if="required" class="text-red-500">※</span>
       </listbox-label>
       <div class="w-full relative">
