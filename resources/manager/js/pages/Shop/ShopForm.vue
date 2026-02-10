@@ -95,6 +95,15 @@ const activeFlag = computed<boolean>({
   },
 });
 
+const businessHoursErrors = computed<string[][]>(() =>
+  form.shop.businessHours.map((_, index) => {
+    const prefix = `shop.businessHours.${index}`;
+    return Object.entries(form.errors)
+      .filter(([key]) => key.startsWith(prefix))
+      .map(([, value]) => value as string);
+  }),
+);
+
 const submit = (): void => {
   if (isEdit.value) {
     form
@@ -200,26 +209,33 @@ const submit = (): void => {
             <div
               v-for="(bh, index) in form.shop.businessHours"
               :key="bh.dayOfWeek"
-              class="flex items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 shadow-sm"
+              class="rounded-md border border-zinc-200 bg-white px-3 py-2 shadow-sm"
             >
-              <span class="w-5 shrink-0 font-medium text-zinc-600">{{ bh.label }}</span>
-              <form-date-time
-                v-model="bh.openTime"
-                mode="time"
-                inputmode="text"
-                time-picker
-                format="HH:mm"
-                :field="`shop.businessHours.${index}.openTime`"
-              />
-              <span class="shrink-0 text-zinc-400">～</span>
-              <form-date-time
-                v-model="bh.closeTime"
-                mode="time"
-                inputmode="text"
-                time-picker
-                format="HH:mm"
-                :field="`shop.businessHours.${index}.closeTime`"
-              />
+              <div class="flex items-center gap-2">
+                <span class="w-5 shrink-0 font-medium text-zinc-600">{{ bh.label }}</span>
+                <form-date-time
+                  v-model="bh.openTime"
+                  mode="time"
+                  inputmode="text"
+                  time-picker
+                  format="HH:mm"
+                  :field="`shop.businessHours.${index}.openTime`"
+                />
+                <span class="shrink-0 text-zinc-400">～</span>
+                <form-date-time
+                  v-model="bh.closeTime"
+                  mode="time"
+                  inputmode="text"
+                  time-picker
+                  format="HH:mm"
+                  :field="`shop.businessHours.${index}.closeTime`"
+                />
+              </div>
+              <div v-if="(businessHoursErrors[index] ?? []).length" class="mt-1.5">
+                <span v-for="msg in businessHoursErrors[index] ?? []" :key="msg" class="text-xs text-red-600">{{
+                  msg
+                }}</span>
+              </div>
             </div>
           </div>
           <p class="mt-3 text-xs text-zinc-500">空欄は休業日</p>
