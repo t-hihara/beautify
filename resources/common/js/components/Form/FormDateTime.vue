@@ -64,7 +64,7 @@ const handleModelUpdate = (value: Date | string | null): void => {
       :model-value="modelValue"
       :model-type="timePicker ? format : undefined"
       :text-input="timePicker ? true : false"
-      :min-date="minDate ?? undefined"
+      :min-date="mode === 'time' ? undefined : (minDate ?? undefined)"
       :time-picker="timePicker"
       :time-config="{ enableTimePicker: timePicker }"
       :formats="{ input: format }"

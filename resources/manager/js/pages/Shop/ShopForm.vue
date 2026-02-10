@@ -11,6 +11,7 @@ import {
   FormDateTime,
   FormSwitchToggle,
 } from "@/common/js/components/Form/FormIndex";
+import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
 
 type ShopType = {
   id: number;
@@ -100,7 +101,7 @@ const submit = (): void => {
       .transform((data) => ({
         shop: data.shop,
       }))
-      .patch(route("admin.shops.index", shop?.id));
+      .patch(route("admin.shops.update", shop?.id));
   } else {
     //
   }
@@ -109,9 +110,9 @@ const submit = (): void => {
 
 <template>
   <div>
-    <Head title="店舗編集" />
+    <Head :title="isEdit ? '店舗編集' : '店舗登録'" />
     <div>
-      <h2 class="text-3xl">店舗編集</h2>
+      <h2 class="text-3xl">{{ isEdit ? "店舗編集" : "登録する" }}</h2>
     </div>
     <div class="mt-6">
       <form @submit.prevent="submit">
@@ -222,6 +223,9 @@ const submit = (): void => {
             </div>
           </div>
           <p class="mt-3 text-xs text-zinc-500">空欄は休業日</p>
+        </div>
+        <div class="mt-8 pt-8 border-t border-zinc-200 flex justify-end">
+          <button-submit>{{ isEdit ? "更新する" : "登録する" }}</button-submit>
         </div>
       </form>
     </div>
