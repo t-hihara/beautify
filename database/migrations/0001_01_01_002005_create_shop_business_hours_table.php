@@ -19,6 +19,7 @@ return new class extends Migration
             $table->time('open_time')->nullable()->comment('開始時間');
             $table->time('close_time')->nullable()->comment('終了時間');
             $table->timestamps();
+            $table->unique(['shop_id', 'day_of_week']);
         });
     }
 
