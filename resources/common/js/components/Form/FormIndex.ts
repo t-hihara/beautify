@@ -6,3 +6,4 @@ export { default as FormDateTime } from "@common/components/Form/FormDateTime.vu
 export { default as FormCheckbox } from "@common/components/Form/FormCheckbox.vue";
 export { default as FormTextarea } from "@common/components/Form/FormTextarea.vue";
 export { default as FormSwitchToggle } from "@common/components/Form/FormSwitchToggle.vue";
+export { default as FormMultiImage } from "@common/components/Form/FormMultiImage.vue";

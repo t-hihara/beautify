@@ -10,6 +10,7 @@ import {
   FormTextarea,
   FormDateTime,
   FormSwitchToggle,
+  FormMultiImage,
 } from "@/common/js/components/Form/FormIndex";
 import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
 
@@ -26,6 +27,7 @@ type ShopType = {
   activeFlag: string;
   updatedAt?: string;
   businessHours: BusinessHour[];
+  images: ImageType[];
 };
 
 type BusinessHour = {
@@ -34,6 +36,17 @@ type BusinessHour = {
   label: string;
   openTime: string | null;
   closeTime: string | null;
+};
+
+export type ImageType = {
+  id: number;
+  filename: string;
+  filePath: string;
+};
+
+export type ShopImageFormValue = {
+  keepImageIds: number[];
+  newImages: File[];
 };
 
 type FormType = {
@@ -50,6 +63,8 @@ type FormType = {
     activeFlag: string;
     updatedAt?: string;
     businessHours: BusinessHour[];
+    keepImageIds: number[];
+    newImages: File[];
   };
 };
 
@@ -82,10 +97,23 @@ const form = useForm<FormType>({
     activeFlag: shop?.activeFlag || "active",
     updatedAt: shop?.updatedAt || undefined,
     businessHours: shop?.businessHours ?? DEFAULT_BUSINESS_HOURS,
+    keepImageIds: shop?.images?.map((img) => img.id) ?? [],
+    newImages: [],
   },
 });
 
 const isEdit = computed<boolean>(() => route().current("admin.shops.edit"));
+
+const shopImageFormValue = computed<ShopImageFormValue>({
+  get: () => ({
+    keepImageIds: form.shop.keepImageIds,
+    newImages: form.shop.newImages,
+  }),
+  set: (v: ShopImageFormValue) => {
+    form.shop.keepImageIds = v.keepImageIds;
+    form.shop.newImages = v.newImages;
+  },
+});
 
 const activeFlag = computed<boolean>({
   get: () => form.shop.activeFlag === "active",
@@ -159,7 +187,7 @@ const submit = (): void => {
         <div class="px-3 py-1 rounded-md bg-zinc-200">
           <p class="text-sm font-semibold text-zinc-800">店舗情報</p>
         </div>
-        <div class="mt-3 grid grid-cols-2 gap-6">
+        <div class="mt-4 grid grid-cols-2 gap-6">
           <form-text
             v-model="form.shop.name"
             title="店舗名"
@@ -232,11 +260,24 @@ const submit = (): void => {
             :error="form.errors"
           />
         </div>
+        <div class="mt-8">
+          <div class="px-3 py-1 rounded-md bg-zinc-200">
+            <p class="text-sm font-semibold text-zinc-800">店舗画像</p>
+          </div>
+          <div class="mt-4 p-4 rounded-lg bg-white border border-zinc-200">
+            <form-multi-image
+              v-model="shopImageFormValue"
+              field="image"
+              :max-count="5"
+              :existing-images="shop?.images ?? []"
+            />
+          </div>
+        </div>
         <div class="mt-8 rounded-lg">
           <div class="px-3 py-1 rounded-md bg-zinc-200">
             <p class="text-sm font-semibold text-zinc-800">営業時間</p>
           </div>
-          <div class="mt-3 grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
+          <div class="mt-4 grid grid-cols-3 gap-x-6 gap-y-3 text-sm">
             <div
               v-for="(bh, index) in form.shop.businessHours"
               :key="bh.dayOfWeek"

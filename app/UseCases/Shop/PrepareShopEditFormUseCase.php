@@ -3,25 +3,14 @@
 namespace App\UseCases\Shop;
 
 use App\Enum\ActiveFlagTypeEnum;
-use App\Enum\DayOfWeekTypeEnum;
 use App\Models\Prefecture;
 use App\Models\Shop;
 
 class PrepareShopEditFormUseCase
 {
-    private const DAY_ORDER = [
-        DayOfWeekTypeEnum::MONDAY,
-        DayOfWeekTypeEnum::TUESDAY,
-        DayOfWeekTypeEnum::WEDNESDAY,
-        DayOfWeekTypeEnum::THURSDAY,
-        DayOfWeekTypeEnum::FRIDAY,
-        DayOfWeekTypeEnum::SATURDAY,
-        DayOfWeekTypeEnum::SUNDAY,
-    ];
-
     public function __invoke(Shop $shop): array
     {
-        $shop->load(['businessHours']);
+        $shop->load(['businessHours', 'images']);
         return [
             'shop' => [
                 'id'            => $shop->id,
@@ -36,11 +25,16 @@ class PrepareShopEditFormUseCase
                 'activeFlag'    => $shop->active_flag->value,
                 'updatedAt'     => $shop->updated_at,
                 'businessHours' => $shop->businessHours->map(fn($businessHour) => [
-                    'id'         => $businessHour->id,
-                    'dayOfWeek'  => $businessHour->day_of_week->value,
-                    'label'      => $businessHour->day_of_week->description(),
+                    'id'        => $businessHour->id,
+                    'dayOfWeek' => $businessHour->day_of_week->value,
+                    'label'     => $businessHour->day_of_week->description(),
                     'openTime'  => $businessHour->open_time,
                     'closeTime' => $businessHour->close_time,
+                ]),
+                'images' => $shop->images->map(fn($image) => [
+                    'id'       => $image->id,
+                    'filename' => $image->filename,
+                    'filePath' => $image->file_path,
                 ]),
             ],
             'activeFlags' => ActiveFlagTypeEnum::options(),
