@@ -3,7 +3,6 @@
 namespace App\UseCases\Shop;
 
 use App\Models\Shop;
-use App\Models\ShopBusinessHour;
 use App\Models\ShopImage;
 use App\Utilities\RecursiveCovert;
 use Illuminate\Support\Facades\DB;
@@ -17,29 +16,22 @@ class UpdateShopUseCase
             $convert       = RecursiveCovert::_convert($payload, 'snake');
             $shopData      = $convert['shop'];
             $businessHours = $shopData['business_hours'];
-            $keepImageIds  = $shopData['keep_image_ids'];
-            $newImages     = $shopData['new_images'];
+            $keepImageIds  = $shopData['keep_image_ids'] ?? [];
+            $newImages     = $shopData['new_images'] ?? [];
 
             $shop->load(['businessHours', 'images']);
 
             unset($convert['updated_at']);
             $shop->fill($convert)->save();
 
-
-            $rows = [];
-            foreach ($businessHours as $businessHour) {
-                $rows[] = [
-                    'shop_id'     => $shop->id,
-                    'day_of_week' => $businessHour['day_of_week'],
-                    'open_time'   => $businessHour['open_time'],
-                    'close_time'  => $businessHour['close_time'],
-                ];
-            }
-            ShopBusinessHour::upsert(
-                $rows,
-                ['shop_id', 'day_of_week'],
-                ['open_time', 'close_time'],
-            );
+            $shop->businessHours->each(function ($model) use ($businessHours): void {
+                $data = collect($businessHours)->firstWhere('day_of_week', $model->day_of_week);
+                if ($data) {
+                    $model->open_time  = $data['open_time'];
+                    $model->close_time = $data['close_time'];
+                    $model->save();
+                }
+            });
 
             $shop->images->whereNotIn('id', $keepImageIds)
                 ->each(function (ShopImage $shopImage): void {

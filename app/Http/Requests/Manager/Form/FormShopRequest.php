@@ -14,8 +14,6 @@ class FormShopRequest extends FormRequest
     public function rules(): array
     {
         $isEdit = $this->route('shop');
-        \Log::info(request()->toArray());
-
         $rules = [
             'shop.name'                      => ['required', 'string', 'max:20'],
             'shop.email'                     => ['required', 'email', Rule::unique('shops', 'email')->ignore($this->route('shop'))],
