@@ -152,7 +152,7 @@ const submit = (): void => {
   <div>
     <Head :title="isEdit ? '店舗編集' : '店舗登録'" />
     <div>
-      <h2 class="text-3xl">{{ isEdit ? "店舗編集" : "登録する" }}</h2>
+      <h2 class="text-3xl">{{ isEdit ? "店舗編集" : "店舗登録" }}</h2>
     </div>
     <div class="mt-6">
       <form @submit.prevent="submit">
