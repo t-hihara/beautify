@@ -44,8 +44,14 @@ const menus = computed(() => (guard.value === "admin" ? adminMenu : shopMenu));
               <chevron-down-icon class="size-5 transition ease-in-out duration-300" :class="{ 'rotate-180': open }" />
             </disclosure-button>
             <transition enter-active-class="animate-fade-in" leave-active-class="animate-fade-out">
-              <disclosure-panel class="mt-1 ml-10 py-1 space-y-4 flex flex-col">
-                <Link v-for="child in menu.children" :key="child.id" :href="route(child.route)">{{ child.label }}</Link>
+              <disclosure-panel class="mt-1 ml-7 flex flex-col">
+                <Link
+                  v-for="child in menu.children"
+                  :key="child.id"
+                  :href="route(child.route)"
+                  class="px-3 py-2 rounded-md hover:bg-zinc-300/60 transition ease-in-out duration-300"
+                  >{{ child.label }}</Link
+                >
               </disclosure-panel>
             </transition>
           </disclosure>
