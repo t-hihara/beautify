@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { Head, useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
 import { DateTime } from "luxon";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
 import { SearchText, SearchDateTime, SearchSingleSelect } from "@/common/js/components/Form/SearchIndex";
-import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
+import { ClipboardDocumentListIcon } from "@heroicons/vue/24/outline";
+import { ButtonSubmit, ButtonText } from "@/common/js/components/Ui/ButtonIndex";
 import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
+import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -29,6 +32,13 @@ type LogType = {
   event: string;
   causer: string | null;
   createdAt: string;
+  properties: PropertyType[];
+};
+
+type PropertyType = {
+  attribute: string;
+  oldValue: string | null;
+  newValue: string | null;
 };
 
 type SearchFormType = {
@@ -40,7 +50,9 @@ type SearchFormType = {
 };
 
 const guard = useGuard();
-const { filters } = defineProps<{
+const showDetailModal = ref<boolean>(false);
+const targetProperties = ref<PropertyType[]>([]);
+const { filters, logs } = defineProps<{
   filters: FilterType;
   logs: LogType[];
   links: PaginationLinkType[];
@@ -60,6 +72,12 @@ const search = (): void => {
     preserveState: true,
     preserveScroll: true,
   });
+};
+
+const openDialog = (id: number): void => {
+  const log = logs.find((log) => log.id === id);
+  targetProperties.value = log?.properties ?? [];
+  showDetailModal.value = true;
 };
 </script>
 
@@ -119,6 +137,7 @@ const search = (): void => {
             <th scope="col" class="px-4 py-3">実行者名</th>
             <th scope="col" class="px-4 py-3">イベント</th>
             <th scope="col" class="px-4 py-3">内容</th>
+            <th scope="col" class="px-4 py-3 text-center">詳細</th>
             <th scope="col" class="px-4 py-3">作成日時</th>
           </tr>
         </thead>
@@ -129,6 +148,11 @@ const search = (): void => {
               <td class="px-4 py-3">{{ log.causer ?? "----" }}</td>
               <td class="px-4 py-3">{{ log.event }}</td>
               <td class="px-4 py-3">{{ log.description }}</td>
+              <td class="px-4 py-3">
+                <div class="flex justify-center">
+                  <button-text @click="openDialog(log.id)"><clipboard-document-list-icon class="size-5" /></button-text>
+                </div>
+              </td>
               <td class="px-4 py-3">{{ log.createdAt }}</td>
             </tr>
           </template>
@@ -141,5 +165,31 @@ const search = (): void => {
       </table>
     </div>
     <pagination :links="links" :pagination="pagination" :per-page="filters.perPage" class="mt-4" />
+    <dialog-modal
+      v-model="showDetailModal"
+      title="変更詳細"
+      show-close
+      dialog-class="max-w-4xl w-full"
+      @close="showDetailModal = false"
+    >
+      <div class="mt-4 rounded-lg border border-zinc-200 overflow-hidden">
+        <table class="min-w-full divide-y divide-zinc-300 text-sm">
+          <thead class="bg-zinc-200 font-medium text-zinc-600 text-left align-bottom tracking-wider">
+            <tr>
+              <th scope="col" class="px-4 py-3">項目</th>
+              <th scope="col" class="px-4 py-3">変更前</th>
+              <th scope="col" class="px-4 py-3">変更後</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-300 text-zinc-600">
+            <tr v-for="row in targetProperties" :key="row.attribute">
+              <td class="px-4 py-3">{{ row.attribute }}</td>
+              <td class="px-4 py-3">{{ row.oldValue ?? "----" }}</td>
+              <td class="px-4 py-3">{{ row.newValue ?? "----" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </dialog-modal>
   </div>
 </template>

@@ -21,7 +21,15 @@ defineEmits<{
     <Dialog @close="$emit('close')" class="relative z-50">
       <div class="fixed inset-0 bg-black/50"></div>
       <div class="fixed inset-0 flex items-center justify-center">
-        <transition-child as="template" enter-active-class="animate-fade-in" leave-active-class="animate-fade-out">
+        <transition-child
+          as="template"
+          enter="transition ease-out duration-200"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="transition ease-in duration-150"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
           <dialog-panel class="bg-white rounded-lg p-6" :class="dialogClass">
             <div class="flex justify-between items-center">
               <dialog-title class="text-md font-semibold">{{ title }}</dialog-title>

@@ -4,6 +4,7 @@ namespace App\UseCases\Log;
 
 use App\Models\ActivityLog;
 use App\Utilities\RecursiveCovert;
+use Illuminate\Support\Collection;
 
 class FetchLogListUseCase
 {
@@ -21,6 +22,7 @@ class FetchLogListUseCase
                 'event'       => $log->event,
                 'causer'      => $log->causer?->name,
                 'createdAt'   => $log->created_at,
+                'properties'  => $this->formatProperties($log->properties),
             ]);
 
         return [
@@ -35,5 +37,23 @@ class FetchLogListUseCase
                 'total'       => $logs->total(),
             ],
         ];
+    }
+
+    private function formatProperties(Collection $properties): array
+    {
+        $changes = [];
+        $old     = $properties->get('old') ?? [];
+        $new     = $properties->get('attributes') ?? [];
+        $keys    = array_keys($old + $new);
+
+        foreach ($keys as $key) {
+            $changes[] = [
+                'attribute' => $key,
+                'oldValue'  => array_key_exists($key, $old) ? $old[$key] : null,
+                'newValue'  => array_key_exists($key, $new) ? $new[$key] : null,
+            ];
+        }
+
+        return $changes;
     }
 }
