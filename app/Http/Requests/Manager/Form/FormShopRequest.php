@@ -15,7 +15,7 @@ class FormShopRequest extends FormRequest
     {
         return [
             'shop.name'                      => ['required', 'string', 'max:20'],
-            'shop.email'                     => ['required', 'email'],
+            'shop.email'                     => ['required', 'email', 'unique:shops,email'],
             'shop.phone'                     => ['required', 'string',],
             'shop.prefectureId'              => ['required', 'integer', 'exists:prefectures,id'],
             'shop.zipcode'                   => ['required', 'string'],
