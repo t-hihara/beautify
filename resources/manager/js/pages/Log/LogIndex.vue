@@ -6,7 +6,7 @@ import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
 import { SearchText, SearchDateTime, SearchSingleSelect } from "@/common/js/components/Form/SearchIndex";
 import { ClipboardDocumentListIcon } from "@heroicons/vue/24/outline";
-import { ButtonSubmit, ButtonText } from "@/common/js/components/Ui/ButtonIndex";
+import { ButtonSubmit, ButtonText, ButtonTertiary } from "@/common/js/components/Ui/ButtonIndex";
 import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
@@ -77,6 +77,16 @@ const search = (): void => {
   });
 };
 
+const resetSearch = (): void => {
+  searchForm.name = "";
+  searchForm.event = "";
+  searchForm.description = "";
+  searchForm.fromDate = DateTime.now().toISODate();
+  searchForm.toDate = "";
+  searchForm.perPage = 10;
+  search();
+};
+
 const openDialog = (id: number): void => {
   const log = logs.find((log) => log.id === id);
   targetProperties.value = log?.properties ?? [];
@@ -126,7 +136,10 @@ const openDialog = (id: number): void => {
           </ul>
         </div>
         <form @submit.prevent="search">
-          <button-submit :disabled="searchForm.processing">検索する</button-submit>
+          <div class="flex items-center gap-2">
+            <button-submit :disabled="searchForm.processing">検索する</button-submit>
+            <button-tertiary @click="resetSearch" :disabled="searchForm.processing">リセット</button-tertiary>
+          </div>
         </form>
       </div>
     </div>
@@ -168,7 +181,7 @@ const openDialog = (id: number): void => {
         </tbody>
       </table>
     </div>
-    <pagination :links="links" :pagination="pagination" :per-page="filters.perPage" class="mt-4" />
+    <pagination :links="links" :pagination="pagination" :per-page="Number(filters.perPage)" class="mt-4" />
     <dialog-modal
       v-model="showDetailModal"
       title="変更詳細"
