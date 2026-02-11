@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { Head, useForm } from "@inertiajs/vue3";
-import { watch } from "vue";
+import { Head, router, useForm } from "@inertiajs/vue3";
+import { ref, watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { HomeIcon, PhoneArrowUpRightIcon, EnvelopeIcon } from "@heroicons/vue/24/outline";
-import { FolderArrowDownIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
+import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
-import { ButtonPrimary, ButtonIcon } from "@/common/js/components/Ui/ButtonIndex";
+import { ButtonPrimary, ButtonTertiary, ButtonIcon, ButtonIconDanger } from "@/common/js/components/Ui/ButtonIndex";
 import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
+import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -56,7 +57,10 @@ type SearchFormType = {
   perPage: number;
 };
 
-const { filters } = defineProps<{
+const showDeleteModal = ref<boolean>(false);
+const targetShop = ref<ShopType | null>(null);
+
+const { filters, shops } = defineProps<{
   filters: FilterType;
   activeFlags: EnumType[];
   prefectures: EnumType[];
@@ -83,6 +87,30 @@ const search = (): void => {
 
 const exportFile = (type: "excel" | "csv"): void => {
   type === "excel" ? searchForm.get(route("admin.shops.excel")) : searchForm.get(route("admin.shops.csv"));
+};
+
+const openDeleteModal = (id: number): void => {
+  const shop = shops.find((shop) => shop.id === id);
+  targetShop.value = shop ?? null;
+  showDeleteModal.value = true;
+};
+
+const closeDeleteModal = (): void => {
+  showDeleteModal.value = false;
+};
+
+const resetTargetShop = (): void => {
+  targetShop.value = null;
+};
+
+const deleteShop = (): void => {
+  router.delete(route("admin.shops.delete", targetShop.value?.id), {
+    preserveState: true,
+    preserveScroll: true,
+    onFinish: () => {
+      closeDeleteModal();
+    },
+  });
 };
 
 watch(
@@ -196,10 +224,13 @@ watch(
               </td>
               <td class="px-4 py-3 text-center">{{ shop.activeFlag }}</td>
               <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
+                <div class="flex justify-end items-center gap-2">
                   <button-icon :href="route('admin.shops.edit', shop.id)"
                     ><pencil-square-icon class="size-6"
                   /></button-icon>
+                  <button-icon-danger @click="openDeleteModal(shop.id)"
+                    ><trash-icon class="size-6"
+                  /></button-icon-danger>
                 </div>
               </td>
             </tr>
@@ -213,5 +244,24 @@ watch(
       </table>
     </div>
     <pagination :links="links" :pagination="pagination" :per-page="Number(filters.perPage)" class="mt-4" />
+    <dialog-modal
+      v-model="showDeleteModal"
+      title="店舗削除"
+      show-close
+      dialog-class="max-w-2xl w-full"
+      @close="closeDeleteModal"
+      @after-leave="resetTargetShop"
+    >
+      <div class="mt-4">
+        <div v-if="targetShop" class="flex flex-col space-y-1">
+          <span>該当の店舗を削除しますか？</span>
+          <span class="font-semibold">{{ targetShop.name }}</span>
+        </div>
+        <div class="mt-4 pt-4 flex justify-center items-center gap-4 border-t border-zinc-200">
+          <button-tertiary @click="closeDeleteModal">キャンセル</button-tertiary>
+          <button-primary @click="deleteShop">削除する</button-primary>
+        </div>
+      </div>
+    </dialog-modal>
   </div>
 </template>

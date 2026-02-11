@@ -2,6 +2,7 @@
 
 namespace App\UseCases\Shop;
 
+use App\Models\Shop;
 use Illuminate\Support\Facades\DB;
 
 class DeleteShopUseCase
