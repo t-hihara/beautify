@@ -11,7 +11,7 @@ class PrepareShopCreateFormUseCase
     {
         return [
             'prefectures' => Prefecture::get(['id', 'name']),
-            'activeFlag'  => ActiveFlagTypeEnum::options(),
+            'activeFlags'  => ActiveFlagTypeEnum::options(),
         ];
     }
 }
