@@ -10,8 +10,10 @@ use Inertia\Response;
 
 class ActivityLogController extends Controller
 {
-    public function index(SearchLogRequest $request, FetchLogListUseCase $useCase): Response
-    {
+    public function index(
+        SearchLogRequest $request,
+        FetchLogListUseCase $useCase
+    ): Response {
         $validated = $request->validated();
         $data      = $useCase($validated);
 

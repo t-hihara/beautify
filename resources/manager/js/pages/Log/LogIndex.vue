@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { DateTime } from "luxon";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
@@ -10,6 +10,7 @@ import { ButtonSubmit, ButtonText, ButtonTertiary } from "@/common/js/components
 import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
+import { debounce } from "lodash";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -54,6 +55,7 @@ type SearchFormType = {
 const guard = useGuard();
 const showDetailModal = ref<boolean>(false);
 const targetProperties = ref<PropertyType[]>([]);
+
 const { filters, logs } = defineProps<{
   filters: FilterType;
   logs: LogType[];
@@ -92,6 +94,13 @@ const openDialog = (id: number): void => {
   targetProperties.value = log?.properties ?? [];
   showDetailModal.value = true;
 };
+
+watch(
+  () => searchForm.perPage,
+  debounce(() => {
+    search();
+  }, 300),
+);
 </script>
 
 <template>
@@ -150,7 +159,6 @@ const openDialog = (id: number): void => {
       <table class="min-w-full divide-y divide-zinc-300 text-sm">
         <thead class="bg-zinc-200 font-medium text-zinc-600 text-left align-bottom tracking-wider">
           <tr>
-            <th scope="col" class="px-4 py-3">ID</th>
             <th scope="col" class="px-4 py-3">実行者名</th>
             <th scope="col" class="px-4 py-3">イベント</th>
             <th scope="col" class="px-4 py-3">内容</th>
@@ -161,7 +169,6 @@ const openDialog = (id: number): void => {
         <tbody class="divide-y divide-zinc-300 text-zinc-600">
           <template v-if="logs.length > 0">
             <tr v-for="log in logs" :key="log.id">
-              <td class="px-4 py-3">{{ log.id }}</td>
               <td class="px-4 py-3">{{ log.causer ?? "----" }}</td>
               <td class="px-4 py-3">{{ log.event }}</td>
               <td class="px-4 py-3">{{ log.description }}</td>
