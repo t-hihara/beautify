@@ -67,7 +67,7 @@ const searchForm = useForm<SearchFormType>({
   description: filters.description || "",
   fromDate: filters.fromDate || DateTime.now().minus({ month: 1 }).toISODate(),
   toDate: filters.toDate || null,
-  perPage: filters.perPage || 10,
+  perPage: Number(filters.perPage) || 10,
 });
 
 const search = (): void => {

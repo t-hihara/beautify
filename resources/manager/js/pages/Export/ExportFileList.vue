@@ -53,7 +53,7 @@ const searchForm = useForm<SearchFormType>({
   subject: filters.subject || "",
   fromDate: filters.fromDate || null,
   toDate: filters.toDate || null,
-  perPage: filters.perPage || 10,
+  perPage: Number(filters.perPage) || 10,
 });
 
 const showDeleteModal = ref<boolean>(false);
@@ -218,7 +218,7 @@ watch(
         </tbody>
       </table>
     </div>
-    <pagination :links="links" :pagination="pagination" :per-page="filters.perPage" class="mt-4" />
+    <pagination :links="links" :pagination="pagination" :per-page="Number(filters.perPage)" class="mt-4" />
 
     <dialog-modal
       v-model="showDeleteModal"

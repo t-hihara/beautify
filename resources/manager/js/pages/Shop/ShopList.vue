@@ -71,7 +71,7 @@ const searchForm = useForm<SearchFormType>({
   phone: filters.phone || "",
   prefectureIds: filters.prefectureIds || [],
   activeFlag: filters.activeFlag || null,
-  perPage: filters.perPage || 10,
+  perPage: Number(filters.perPage) || 10,
 });
 
 const search = (): void => {
@@ -212,6 +212,6 @@ watch(
         </tbody>
       </table>
     </div>
-    <pagination :links="links" :pagination="pagination" :per-page="filters.perPage" class="mt-4" />
+    <pagination :links="links" :pagination="pagination" :per-page="Number(filters.perPage)" class="mt-4" />
   </div>
 </template>
