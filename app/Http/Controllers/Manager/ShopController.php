@@ -67,7 +67,7 @@ class ShopController extends Controller
         UpdateShopUseCase $useCase
     ): RedirectResponse {
         try {
-            $validated = $request->validated('shop');
+            $validated = $request->validated();
             $useCase($validated, $shop);
         } catch (Throwable $e) {
             report($e);

@@ -50,6 +50,7 @@ export type ShopImageFormValue = {
 };
 
 type FormType = {
+  _method: "POST" | "PATCH";
   shop: {
     id: number | null;
     name: string;
@@ -84,6 +85,7 @@ const DEFAULT_BUSINESS_HOURS: BusinessHour[] = [
 ];
 
 const form = useForm<FormType>({
+  _method: "POST",
   shop: {
     id: shop?.id || null,
     name: shop?.name || "",
@@ -135,9 +137,10 @@ const submit = (): void => {
   if (isEdit.value) {
     form
       .transform((data) => ({
+        _method: "PATCH",
         shop: data.shop,
       }))
-      .patch(route("admin.shops.update", shop?.id));
+      .post(route("admin.shops.update", shop?.id));
   } else {
     form.post(route("admin.shops.store"));
   }

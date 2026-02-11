@@ -15,7 +15,7 @@ class FormShopRequest extends FormRequest
     {
         return [
             'shop.name'                      => ['required', 'string', 'max:20'],
-            'shop.email'                     => ['required', 'email', 'unique:shops,email'],
+            'shop.email'                     => ['required', 'email', Rule::unique('shops', 'email')->ignore($this->route('shop'))],
             'shop.phone'                     => ['required', 'string',],
             'shop.prefectureId'              => ['required', 'integer', 'exists:prefectures,id'],
             'shop.zipcode'                   => ['required', 'string'],
@@ -28,6 +28,10 @@ class FormShopRequest extends FormRequest
             'shop.businessHours.*.dayOfWeek' => ['required', Rule::enum(DayOfWeekTypeEnum::class)],
             'shop.businessHours.*.openTime'  => ['nullable', 'required_with:shop.businessHours.*.closeTime', 'string'],
             'shop.businessHours.*.closeTime' => ['nullable', 'required_with:shop.businessHours.*.openTime', 'string'],
+            'shop.keepImageIds'              => ['nullable', 'array'],
+            'shop.keepImageIds.*'            => ['integer', Rule::exists('shop_images', 'id')->where('shop_id', $this->route('shop')->id)],
+            'shop.newImages'                 => ['nullable', 'array'],
+            'shop.newImages.*'               => ['file', 'image', 'max:2048'],
         ];
     }
 
@@ -48,30 +52,51 @@ class FormShopRequest extends FormRequest
             'shop.businessHours.*.dayOfWeek' => '曜日',
             'shop.businessHours.*.openTime'  => '開店時間',
             'shop.businessHours.*.closeTime' => '閉店時間',
+            'shop.keepImageIds'              => '店舗画像(既存)',
+            'shop.newImages'                 => '店舗画像(新規)',
+            'shop.newImages.*'               => '店舗画像(新規)',
         ];
     }
 
     public function after(): array
     {
         return [
-            function (Validator $validator) {
-                $businessHours = $this->input('shop.businessHours', []);
-                foreach ($businessHours as $index => $businessHour) {
-                    $openTime  = $businessHour['openTime'] ?? null;
-                    $closeTime = $businessHour['closeTime'] ?? null;
-                    if ($closeTime === null && $openTime === null) continue;
-
-                    $open  = Carbon::parse($openTime);
-                    $close = Carbon::parse($closeTime);
-
-                    if ($close->lt($open)) {
-                        $validator->errors()->add(
-                            "shop.businessHours.{$index}.closeTime",
-                            '閉店時間は開店時間以降に設定してください。',
-                        );
-                    }
-                }
-            }
+            fn(Validator $validator)  => $this->validateBusinessHours($validator),
+            fn(Validator $validator) => $this->validateShopImageCount($validator),
         ];
+    }
+
+    private function validateBusinessHours(Validator $validator): void
+    {
+        $businessHours = $this->input('shop.businessHours', []);
+        foreach ($businessHours as $index => $businessHour) {
+            $openTime  = $businessHour['openTime'] ?? null;
+            $closeTime = $businessHour['closeTime'] ?? null;
+            if ($closeTime === null && $openTime === null) continue;
+
+            $open  = Carbon::parse($openTime);
+            $close = Carbon::parse($closeTime);
+
+            if ($close->lt($open)) {
+                $validator->errors()->add(
+                    "shop.businessHours.{$index}.closeTime",
+                    '閉店時間は開店時間以降に設定してください。',
+                );
+            }
+        }
+    }
+
+    private function validateShopImageCount(Validator $validator): void
+    {
+        $keep  = $this->input('shop.keepImageIds', []);
+        $new   = $this->input('shop.newImages', []);
+        $total = count($keep) + count($new);
+
+        if ($total < 1 || $total > 5) {
+            $validator->errors()->add(
+                'shop.keepImageIds',
+                '画像は1枚以上5枚以下にしてください。',
+            );
+        }
     }
 }
