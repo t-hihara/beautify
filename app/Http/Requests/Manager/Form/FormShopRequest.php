@@ -26,8 +26,8 @@ class FormShopRequest extends FormRequest
             'shop.businessHours'             => ['required', 'array'],
             'shop.businessHours.*.id'        => ['nullable', 'integer'],
             'shop.businessHours.*.dayOfWeek' => ['required', Rule::enum(DayOfWeekTypeEnum::class)],
-            'shop.businessHours.*.openTime'  => ['nullable', 'string'],
-            'shop.businessHours.*.closeTime' => ['nullable', 'string'],
+            'shop.businessHours.*.openTime'  => ['nullable', 'required_with:shop.businessHours.*.closeTime', 'string'],
+            'shop.businessHours.*.closeTime' => ['nullable', 'required_with:shop.businessHours.*.openTime', 'string'],
         ];
     }
 
