@@ -33,7 +33,7 @@ export const adminMenu: MenuItem[] = [
       {
         id: 2,
         label: "店舗登録",
-        route: "admin.shops.index",
+        route: "admin.shops.create",
       },
     ],
   },
