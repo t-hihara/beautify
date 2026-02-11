@@ -21,6 +21,7 @@ const PER_PAGE_OPTIONS = [
 type FilterType = {
   name: string;
   event: string;
+  description: string;
   fromDate: string;
   toDate: string;
   perPage: number;
@@ -44,6 +45,7 @@ type PropertyType = {
 type SearchFormType = {
   name: string;
   event: string;
+  description: string;
   fromDate: string | null;
   toDate: string | null;
   perPage: number;
@@ -62,6 +64,7 @@ const { filters, logs } = defineProps<{
 const searchForm = useForm<SearchFormType>({
   name: filters.name || "",
   event: filters.event || "",
+  description: filters.description || "",
   fromDate: filters.fromDate || DateTime.now().minus({ month: 1 }).toISODate(),
   toDate: filters.toDate || null,
   perPage: filters.perPage || 10,
@@ -91,6 +94,7 @@ const openDialog = (id: number): void => {
       <div class="grid grid-cols-4 gap-4">
         <search-text v-model="searchForm.name" field="name" title="実行者名" placeholder="実行者名で検索" />
         <search-text v-model="searchForm.event" field="event" title="イベント名" placeholder="イベント名で検索" />
+        <search-text v-model="searchForm.description" field="description" title="内容" placeholder="内容で検索" />
         <div class="col-span-2 flex items-end gap-2">
           <search-date-time
             v-model="searchForm.fromDate"
