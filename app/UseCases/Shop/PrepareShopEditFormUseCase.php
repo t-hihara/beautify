@@ -5,6 +5,7 @@ namespace App\UseCases\Shop;
 use App\Enum\ActiveFlagTypeEnum;
 use App\Models\Prefecture;
 use App\Models\Shop;
+use Illuminate\Support\Facades\Storage;
 
 class PrepareShopEditFormUseCase
 {
@@ -34,7 +35,9 @@ class PrepareShopEditFormUseCase
                 'images' => $shop->images->map(fn($image) => [
                     'id'       => $image->id,
                     'filename' => $image->filename,
-                    'filePath' => $image->file_path,
+                    'filePath' => str_starts_with($image->file_path, 'http')
+                        ? $image->file_path
+                        : Storage::disk('s3')->temporaryUrl($image->file_path, now()->addMinutes(60)),
                 ]),
             ],
             'activeFlags' => ActiveFlagTypeEnum::options(),
