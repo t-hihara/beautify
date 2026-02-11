@@ -31,6 +31,16 @@ class ActivityLog extends Activity
         });
     }
 
+    public function scopeByEvent(Builder $query, ?string $event): Builder
+    {
+        return $query->when($event, fn($q) => $q->where('event', 'like', "%$event%"));
+    }
+
+    public function scopeByDescription(Builder $query, ?string $description): Builder
+    {
+        return $query->when($description, fn($q) => $q->where('description', 'like', "%$description%"));
+    }
+
     public function scopeByDuration(Builder $query, ?string $from, ?string $to): Builder
     {
         return $query

@@ -20,22 +20,24 @@ class SearchLogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'     => ['nullable', 'string'],
-            'event'    => ['nullable', 'string'],
-            'fromDate' => ['required', 'date'],
-            'toDate'   => ['nullable', 'date'],
-            'perPage'  => ['nullable', 'integer'],
+            'name'        => ['nullable', 'string'],
+            'event'       => ['nullable', 'string'],
+            'description' => ['nullable', 'string'],
+            'fromDate'    => ['required', 'date'],
+            'toDate'      => ['nullable', 'date'],
+            'perPage'     => ['nullable', 'integer'],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'name'     => '実行者名',
-            'event'    => 'アクション名',
-            'fromDate' => '作成日(from)',
-            'toDate'   => '作成日(to)',
-            'perPage'  => '表示件数',
+            'name'        => '実行者名',
+            'event'       => 'アクション名',
+            'description' => '内容',
+            'fromDate'    => '作成日(from)',
+            'toDate'      => '作成日(to)',
+            'perPage'     => '表示件数',
         ];
     }
 

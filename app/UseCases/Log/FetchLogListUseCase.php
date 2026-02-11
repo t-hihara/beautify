@@ -14,6 +14,8 @@ class FetchLogListUseCase
 
         $logs = ActivityLog::with(['causer', 'subject'])
             ->byName($convert['name'] ?? null)
+            ->byEvent($convert['event'] ?? null)
+            ->byDescription($convert['description'] ?? null)
             ->byDuration($convert['from_date'] ?? null, $convert['to_date'] ?? null)
             ->paginate($convert['per_page'] ?? 10)
             ->through(fn($log) => [
