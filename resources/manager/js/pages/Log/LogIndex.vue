@@ -181,7 +181,7 @@ const openDialog = (id: number): void => {
         </tbody>
       </table>
     </div>
-    <pagination :links="links" :pagination="pagination" :per-page="Number(filters.perPage)" class="mt-4" />
+    <pagination :links="links" :pagination="pagination" :per-page="Number(filters.perPage) || 10" class="mt-4" />
     <dialog-modal
       v-model="showDetailModal"
       title="変更詳細"
