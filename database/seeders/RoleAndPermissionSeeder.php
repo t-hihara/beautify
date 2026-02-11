@@ -63,12 +63,13 @@ class RoleAndPermissionSeeder extends BaseSeeder
             'view.shops',
             'manage.shops',
             'export.shops',
-            'view.exports',
-            'manage.exports',
             'view.staffs',
             'manage.staffs',
             'view.reservations',
             'manage.reservations',
+            'view.exports',
+            'manage.exports',
+            'view.logs',
         ];
     }
 
@@ -89,6 +90,7 @@ class RoleAndPermissionSeeder extends BaseSeeder
             'staff_owner' => [
                 'view.exports',
                 'manage.exports',
+                'view.logs',
             ],
             'staff' => [
                 //
