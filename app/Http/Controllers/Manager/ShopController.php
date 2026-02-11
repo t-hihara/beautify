@@ -9,6 +9,7 @@ use App\Models\Shop;
 use App\UseCases\Shop\ExportShopUseCase;
 use App\UseCases\Shop\FetchShopForEditUseCase;
 use App\UseCases\Shop\FetchShopListUseCase;
+use App\UseCases\Shop\PrepareShopCreateFormUseCase;
 use App\UseCases\Shop\UpdateShopUseCase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,6 +27,13 @@ class ShopController extends Controller
         $data    = $useCase($filters);
 
         return Inertia::render('Shop/ShopList', $data);
+    }
+
+    public function create(
+        PrepareShopCreateFormUseCase $useCase
+    ): Response {
+        $data = $useCase();
+        return Inertia::render('Shop/ShopForm', $data);
     }
 
     public function edit(
