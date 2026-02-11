@@ -7,7 +7,7 @@ use App\Http\Requests\Manager\Form\FormShopRequest;
 use App\Http\Requests\Manager\Search\SearchShopRequest;
 use App\Models\Shop;
 use App\UseCases\Shop\ExportShopUseCase;
-use App\UseCases\Shop\FetchShopForEditUseCase;
+use App\UseCases\Shop\PrepareShopEditFormUseCase;
 use App\UseCases\Shop\FetchShopListUseCase;
 use App\UseCases\Shop\PrepareShopCreateFormUseCase;
 use App\UseCases\Shop\UpdateShopUseCase;
@@ -38,7 +38,7 @@ class ShopController extends Controller
 
     public function edit(
         Shop $shop,
-        FetchShopForEditUseCase $useCase
+        PrepareShopEditFormUseCase $useCase
     ): Response {
         $data = $useCase($shop);
         return Inertia::render('Shop/ShopForm', $data);

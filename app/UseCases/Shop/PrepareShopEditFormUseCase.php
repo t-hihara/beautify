@@ -7,7 +7,7 @@ use App\Enum\DayOfWeekTypeEnum;
 use App\Models\Prefecture;
 use App\Models\Shop;
 
-class FetchShopForEditUseCase
+class PrepareShopEditFormUseCase
 {
     private const DAY_ORDER = [
         DayOfWeekTypeEnum::MONDAY,
