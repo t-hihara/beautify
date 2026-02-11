@@ -134,15 +134,17 @@ const businessHoursErrors = computed<string[][]>(() =>
 );
 
 const submit = (): void => {
+  // setDummy();
+  const options = { forceFormData: true };
   if (isEdit.value) {
     form
       .transform((data) => ({
         _method: "PATCH",
         shop: data.shop,
       }))
-      .post(route("admin.shops.update", shop?.id));
+      .post(route("admin.shops.update", shop?.id), options);
   } else {
-    form.post(route("admin.shops.store"));
+    form.post(route("admin.shops.store"), options);
   }
 };
 
@@ -167,6 +169,7 @@ const submit = (): void => {
 //       { dayOfWeek: "friday", label: "金", openTime: "10:00", closeTime: "20:00" },
 //       { dayOfWeek: "saturday", label: "土", openTime: "10:00", closeTime: "20:00" },
 //     ],
+//     // newImages は送信用の File[]。表示用の画像は送らないのでダミーでは空のまま
 //   },
 // };
 
@@ -270,9 +273,10 @@ const submit = (): void => {
           <div class="mt-4 p-4 rounded-lg bg-white border border-zinc-200">
             <form-multi-image
               v-model="shopImageFormValue"
-              field="image"
+              field="shop"
               :max-count="5"
               :existing-images="shop?.images ?? []"
+              :error="form.errors"
             />
           </div>
         </div>

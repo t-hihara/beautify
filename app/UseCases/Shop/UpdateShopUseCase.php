@@ -53,7 +53,7 @@ class UpdateShopUseCase
                 $path = $newImage->store('shops/' . $shop->id, 's3');
                 $shop->images()->create([
                     'file_path' => $path,
-                    'filename' => $newImage->getClientOriginalName(),
+                    'filename'  => $newImage->getClientOriginalName(),
                     'mime_type' => $newImage->getMimeType(),
                     'file_size' => $newImage->getSize(),
                 ]);

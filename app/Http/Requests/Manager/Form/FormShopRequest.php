@@ -13,7 +13,10 @@ class FormShopRequest extends FormRequest
 {
     public function rules(): array
     {
-        return [
+        $isEdit = $this->route('shop');
+        \Log::info(request()->toArray());
+
+        $rules = [
             'shop.name'                      => ['required', 'string', 'max:20'],
             'shop.email'                     => ['required', 'email', Rule::unique('shops', 'email')->ignore($this->route('shop'))],
             'shop.phone'                     => ['required', 'string',],
@@ -28,11 +31,16 @@ class FormShopRequest extends FormRequest
             'shop.businessHours.*.dayOfWeek' => ['required', Rule::enum(DayOfWeekTypeEnum::class)],
             'shop.businessHours.*.openTime'  => ['nullable', 'required_with:shop.businessHours.*.closeTime', 'string'],
             'shop.businessHours.*.closeTime' => ['nullable', 'required_with:shop.businessHours.*.openTime', 'string'],
-            'shop.keepImageIds'              => ['nullable', 'array'],
-            'shop.keepImageIds.*'            => ['integer', Rule::exists('shop_images', 'id')->where('shop_id', $this->route('shop')->id)],
             'shop.newImages'                 => ['nullable', 'array'],
             'shop.newImages.*'               => ['file', 'image', 'max:2048'],
         ];
+
+        if ($isEdit) {
+            $rules['shop.keepImageIds']   = ['nullable', 'array'];
+            $rules['shop.keepImageIds.*'] = ['integer', Rule::exists('shop_images', 'id')->where('shop_id', $this->route('shop')->id)];
+        }
+
+        return $rules;
     }
 
     public function attributes(): array
@@ -89,7 +97,7 @@ class FormShopRequest extends FormRequest
     private function validateShopImageCount(Validator $validator): void
     {
         $keep  = $this->input('shop.keepImageIds', []);
-        $new   = $this->input('shop.newImages', []);
+        $new   = $this->file('shop.newImages', []);
         $total = count($keep) + count($new);
 
         if ($total < 1 || $total > 5) {

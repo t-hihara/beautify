@@ -16,10 +16,12 @@ export type MultiImageFormValue = {
 
 const {
   modelValue,
+  field,
   title = "",
   required = false,
   existingImages = [],
   maxCount,
+  error,
 } = defineProps<{
   modelValue: MultiImageFormValue;
   field: string;
@@ -45,6 +47,17 @@ const newImagePreviewUrls = computed<string[]>(() => modelValue.newImages.map((f
 const totalImageCount = computed<number>(() => modelValue.keepImageIds.length + modelValue.newImages.length);
 
 const canAddMoreImage = computed<boolean>(() => (maxCount === undefined ? true : totalImageCount.value < maxCount));
+
+const newImageErrors = computed<string[]>(() =>
+  modelValue.newImages.map((_, index) => error?.[`${field}.newImages.${index}`] ?? ""),
+);
+
+const existingImageErrors = computed<string[]>(() => {
+  if (!error) return [];
+  return Object.entries(error)
+    .filter(([key]) => key === `${field}.keepImageIds` || key.startsWith(`${field}.keepImageIds.`))
+    .map(([, msg]) => msg as string);
+});
 
 const openFileDialog = (): void => {
   fileInputRef.value?.click();
@@ -89,6 +102,9 @@ const removeNewImage = (index: number): void => {
           canAddMoreImage ? "追加できる画像は5枚までです。" : "追加できる上限に達しています。"
         }}</span>
       </div>
+      <div v-if="existingImageErrors.length > 0" class="mt-1">
+        <span v-for="(msg, i) in existingImageErrors" :key="i" class="text-xs text-red-600">{{ msg }}</span>
+      </div>
       <div v-if="keptExisting.length > 0 || modelValue.newImages.length > 0" class="mt-2 grid grid-cols-5 gap-4">
         <template v-if="keptExisting.length > 0">
           <div v-for="image in keptExisting" :key="image.id" class="relative col-span-1 rounded-lg">
@@ -104,6 +120,9 @@ const removeNewImage = (index: number): void => {
         <template v-if="modelValue.newImages.length > 0">
           <div v-for="(url, index) in newImagePreviewUrls" :key="index" class="relative col-span-1 rounded-lg">
             <img :src="url" alt="" class="aspect-square w-full object-cover rounded-lg" />
+            <div v-if="newImageErrors[index]" class="mt-0.5">
+              <span class="text-xs text-red-600">{{ newImageErrors[index] }}</span>
+            </div>
             <button
               type="button"
               @click="removeNewImage(index)"

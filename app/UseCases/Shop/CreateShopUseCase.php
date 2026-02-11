@@ -21,6 +21,16 @@ class CreateShopUseCase
             $this->shop->fill($shopData)->save();
             $this->shop->businessHours()->createMany($shopData['business_hours']);
 
+            foreach ($shopData['new_images'] as $newImage) {
+                $path = $newImage->store('shops/' . $this->shop->id, 's3');
+                $this->shop->images()->create([
+                    'file_path' => $path,
+                    'filename'  => $newImage->getClientOriginalName(),
+                    'mime_type' => $newImage->getMimeType(),
+                    'file_size' => $newImage->getSize(),
+                ]);
+            }
+
             return $this->shop;
         });
     }
