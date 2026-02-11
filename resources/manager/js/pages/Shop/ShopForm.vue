@@ -60,13 +60,12 @@ const { shop } = defineProps<{
 }>();
 
 const DEFAULT_BUSINESS_HOURS: BusinessHour[] = [
-  { dayOfWeek: "monday", label: "月", openTime: null, closeTime: null },
+  { dayOfWeek: "sunday", label: "日", openTime: null, closeTime: null },
   { dayOfWeek: "tuesday", label: "火", openTime: null, closeTime: null },
   { dayOfWeek: "wednesday", label: "水", openTime: null, closeTime: null },
   { dayOfWeek: "thursday", label: "木", openTime: null, closeTime: null },
   { dayOfWeek: "friday", label: "金", openTime: null, closeTime: null },
   { dayOfWeek: "saturday", label: "土", openTime: null, closeTime: null },
-  { dayOfWeek: "sunday", label: "日", openTime: null, closeTime: null },
 ];
 
 const form = useForm<FormType>({
@@ -112,9 +111,41 @@ const submit = (): void => {
       }))
       .patch(route("admin.shops.update", shop?.id));
   } else {
-    //
+    form.post(route("admin.shops.store"));
   }
 };
+
+// const dummy = {
+//   shop: {
+//     name: "テスト店舗",
+//     nameKana: "テストテンポ",
+//     email: "test2@example.com",
+//     phone: "0312345678",
+//     activeFlag: "active",
+//     prefectureId: 1,
+//     zipcode: "1000001",
+//     address: "東京都千代田区千代田1-1",
+//     building: "テストビル1F",
+//     description: "テスト用の店舗説明です",
+//     businessHours: [
+//       { dayOfWeek: "sunday", label: "日", openTime: "10:00", closeTime: "20:00" },
+//       { dayOfWeek: "monday", label: "月", openTime: "10:00", closeTime: "20:00" },
+//       { dayOfWeek: "tuesday", label: "火", openTime: "10:00", closeTime: "20:00" },
+//       { dayOfWeek: "wednesday", label: "水", openTime: "10:00", closeTime: "20:00" },
+//       { dayOfWeek: "thursday", label: "木", openTime: "10:00", closeTime: "20:00" },
+//       { dayOfWeek: "friday", label: "金", openTime: "10:00", closeTime: "20:00" },
+//       { dayOfWeek: "saturday", label: "土", openTime: "10:00", closeTime: "20:00" },
+//     ],
+//   },
+// };
+
+// const setDummy = () => {
+//   if (isEdit.value) {
+//     //
+//   } else {
+//     form.shop = { ...form.shop, ...dummy.shop };
+//   }
+// };
 </script>
 
 <template>

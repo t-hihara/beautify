@@ -22,6 +22,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::middleware(['permission:view.shops'])->get('/', 'index')->name('index');
             Route::middleware(['permission:manage.shops'])->group(function () {
                 Route::get('/create', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
                 Route::get('/{shop}/edit', 'edit')->name('edit');
                 Route::patch('/{shop}', 'update')->name('update');
             });

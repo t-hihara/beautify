@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Form\FormShopRequest;
 use App\Http\Requests\Manager\Search\SearchShopRequest;
 use App\Models\Shop;
+use App\UseCases\Shop\CreateShopUseCase;
 use App\UseCases\Shop\ExportShopUseCase;
 use App\UseCases\Shop\PrepareShopEditFormUseCase;
 use App\UseCases\Shop\FetchShopListUseCase;
@@ -34,6 +35,21 @@ class ShopController extends Controller
     ): Response {
         $data = $useCase();
         return Inertia::render('Shop/ShopForm', $data);
+    }
+
+    public function store(
+        FormShopRequest $request,
+        CreateShopUseCase $useCase
+    ): RedirectResponse {
+        try {
+            $validated = $request->validated();
+            $useCase($validated);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '登録に失敗しました。');
+        }
+
+        return redirect()->route('admin.shops.index')->with('success', '登録に成功しました。');
     }
 
     public function edit(
