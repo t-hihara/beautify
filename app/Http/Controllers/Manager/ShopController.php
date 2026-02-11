@@ -7,6 +7,7 @@ use App\Http\Requests\Manager\Form\FormShopRequest;
 use App\Http\Requests\Manager\Search\SearchShopRequest;
 use App\Models\Shop;
 use App\UseCases\Shop\CreateShopUseCase;
+use App\UseCases\Shop\DeleteShopUseCase;
 use App\UseCases\Shop\ExportShopUseCase;
 use App\UseCases\Shop\PrepareShopEditFormUseCase;
 use App\UseCases\Shop\FetchShopListUseCase;
@@ -74,6 +75,20 @@ class ShopController extends Controller
         }
 
         return redirect()->route('admin.shops.index')->with('success', '更新に成功しました。');
+    }
+
+    public function destroy(
+        Shop $shop,
+        DeleteShopUseCase $useCase
+    ): RedirectResponse {
+        try {
+            $useCase($shop);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '削除に失敗しました。');
+        }
+
+        return back()->with('success', '削除に成功しました。');
     }
 
     public function exportExcel(

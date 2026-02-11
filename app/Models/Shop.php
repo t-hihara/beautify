@@ -76,7 +76,7 @@ class Shop extends Model
         return $this->hasMany(ShopBusinessHour::class);
     }
 
-    public function shopImages(): HasMany
+    public function images(): HasMany
     {
         return $this->hasMany(ShopImage::class);
     }

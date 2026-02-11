@@ -27,7 +27,7 @@ trait LogsActivity
         return match ($event) {
             'created' => "{$value}を作成しました。",
             'updated' => "{$value}を更新しました。",
-            'deleted' => "{$value}を更新しました。",
+            'deleted' => "{$value}を削除しました。",
             default   => "{$value}に{$event}が発生しました。",
         };
     }
