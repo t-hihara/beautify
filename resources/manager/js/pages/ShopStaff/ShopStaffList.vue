@@ -70,9 +70,9 @@ defineProps<{
                   v-if="staff.image"
                   :src="staff.image.filePath"
                   alt=""
-                  class="mx-auto w-14 h-14 aspect-square object-center rounded-md"
+                  class="mx-auto w-16 h-16 aspect-square object-center rounded-md"
                 />
-                <span v-else class="mx-auto w-14 h-14 aspect-square rounded-md border border-zinc-200">画像なし</span>
+                <span v-else class="mx-auto w-16 h-16 aspect-square rounded-md border border-zinc-200">画像なし</span>
               </td>
               <td class="px-4 py-3">
                 <div class="flex flex-col space-y-1">
