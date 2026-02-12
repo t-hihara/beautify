@@ -40,7 +40,7 @@ type BusinessHour = {
 
 export type ImageType = {
   id: number;
-  filename: string;
+  fileName: string;
   filePath: string;
 };
 

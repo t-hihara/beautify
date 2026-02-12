@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('shop_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name')->comment('スタッフ名');
+            $table->string('email')->comment('メールアドレス');
             $table->enum('position', ShopStaffPositionTypeEnum::cases())->comment('ポジション');
             $table->text('description')->comment('スタッフ紹介');
             $table->string('image_path')->nullable()->comment('プロフィール画像');

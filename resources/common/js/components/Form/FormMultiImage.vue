@@ -5,7 +5,7 @@ import { ButtonPrimary } from "@/common/js/components/Ui/ButtonIndex";
 
 export type ImageType = {
   id: number;
-  filename: string;
+  fileName: string;
   filePath: string;
 };
 
@@ -108,7 +108,7 @@ const removeNewImage = (index: number): void => {
       <div v-if="keptExisting.length > 0 || modelValue.newImages.length > 0" class="mt-2 grid grid-cols-5 gap-4">
         <template v-if="keptExisting.length > 0">
           <div v-for="image in keptExisting" :key="image.id" class="relative col-span-1 rounded-lg">
-            <img :src="image.filePath" :alt="image.filename" class="aspect-square w-full object-cover rounded-lg" />
+            <img :src="image.filePath" :alt="image.fileName" class="aspect-square w-full object-cover rounded-lg" />
             <button
               type="button"
               @click="removeExistingImage(image.id)"

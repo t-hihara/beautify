@@ -34,7 +34,7 @@ class PrepareShopEditFormUseCase
                 ]),
                 'images' => $shop->images->map(fn($image) => [
                     'id'       => $image->id,
-                    'filename' => $image->file_name,
+                    'fileName' => $image->file_name,
                     'filePath' => str_starts_with($image->file_path, 'http')
                         ? $image->file_path
                         : Storage::disk($image->disk)->temporaryUrl($image->file_path, now()->addMinutes(60)),

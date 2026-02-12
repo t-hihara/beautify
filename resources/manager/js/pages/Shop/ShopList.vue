@@ -194,7 +194,7 @@ watch(
               <td class="px-4 py-3 text-center">{{ shop.id }}</td>
               <td class="px-4 py-3">{{ shop.name }}</td>
               <td class="px-4 py-3">
-                <div class="flex flex-col">
+                <div class="flex flex-col space-y-1">
                   <span class="flex items-center gap-1"><envelope-icon class="size-3 mt-0.5" />{{ shop.email }}</span>
                   <span class="flex items-center gap-1"
                     ><phone-arrow-up-right-icon class="size-3 mt-0.5" />{{ shop.phone }}</span
@@ -202,7 +202,7 @@ watch(
                 </div>
               </td>
               <td class="px-4 py-3">
-                <div class="flex flex-col">
+                <div class="flex flex-col space-y-1">
                   <span class="text-xs">〒{{ shop.zipcode }}</span>
                   <span class="text-xs flex items-center gap-0.5"
                     ><home-icon class="size-3" />{{ shop.prefecture }}</span

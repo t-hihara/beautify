@@ -14,9 +14,9 @@ class ShopStaff extends Model
         'shop_id',
         'user_id',
         'name',
+        'email',
         'position',
         'description',
-        'image_path',
         'experience_years',
         'active_flag',
     ];

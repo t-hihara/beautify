@@ -35,6 +35,11 @@ export const adminMenu: MenuItem[] = [
         label: "店舗登録",
         route: "admin.shops.create",
       },
+      {
+        id: 3,
+        label: "店舗スタッフ一覧",
+        route: "admin.staffs.index",
+      },
     ],
   },
   {
