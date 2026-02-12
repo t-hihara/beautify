@@ -6,6 +6,7 @@ use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\ShopStaffPositionTypeEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class ShopStaff extends Model
 {
@@ -36,6 +37,11 @@ class ShopStaff extends Model
     /* ================================================================================
                                         リレーション
     ================================================================================ */
+
+    public function image(): MorphOne
+    {
+        return $this->morphOne(UploadedImage::class, 'imageable');
+    }
 
     public function shop(): BelongsTo
     {

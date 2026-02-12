@@ -79,7 +79,6 @@ class ShopStaffSeeder extends BaseSeeder
                         'name'             => $user->last_name . ' ' . $user->first_name,
                         'position'         => $position,
                         'description'      => $this->faker->realText(80),
-                        'image_path'       => null,
                         'experience_years' => rand(1, 20),
                         'active_flag'      => $user->active_flag,
                         'created_at'       => $this->now,

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Shop extends Model
 {
@@ -77,9 +78,9 @@ class Shop extends Model
         return $this->hasMany(ShopBusinessHour::class);
     }
 
-    public function images(): HasMany
+    public function images(): MorphMany
     {
-        return $this->hasMany(ShopImage::class);
+        return $this->morphMany(UploadedImage::class, 'imageable');
     }
 
     public function prefecture(): BelongsTo

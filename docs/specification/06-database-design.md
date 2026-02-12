@@ -86,6 +86,36 @@
 **リレーション**:
 - `shop` (多対1)
 
+**備考**: 画像をストレージ＋ポリモーフィックで一元管理する場合は、`uploaded_images` テーブルに統合する。その場合は本テーブルは廃止し、`Shop` は `uploadedImages()` リレーションで画像を参照する。
+
+---
+
+### 2.2 uploaded_images（アップロード画像・ポリモーフィック）
+アップロードした画像の参照を、ポリモーフィックで管理するテーブル。実体はストレージ（S3 等）に保存し、店舗画像・スタッフ写真・メニュー画像・施術写真などを一括で扱う。保存先が S3 から別サービスに変わってもテーブル名はそのまま使える。
+
+**カラム**:
+- `id` (bigint, primary key)
+- `disk` (string, default: 's3') - ストレージディスク名（config/filesystems の disk。s3 や local 等）
+- `file_path` (string) - ストレージ上のパス（キー）。URL は `Storage::disk($disk)->url($file_path)` で取得
+- `file_name` (string) - 元のファイル名
+- `mime_type` (string, nullable) - MIME タイプ（image/jpeg 等）
+- `file_size` (unsigned bigint, nullable) - ファイルサイズ（バイト）
+- `imageable_type` (string) - ポリモーフィック 親モデルクラス（例: App\Models\Shop）
+- `imageable_id` (bigint) - ポリモーフィック 親ID
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+**リレーション**:
+- 親側（Shop, ShopStaff, Menu 等）が `morphMany(UploadedImage::class, 'imageable')` で複数枚保持
+- 「代表1枚」だけ欲しい場合は `morphOne` で先頭1件（orderBy で id 等を指定）。ギャラリーは `images` の2件目以降で取得
+
+**インデックス**:
+- `imageable_type`, `imageable_id` - 親ごとの取得
+
+**備考**:
+- 実画像はストレージ（現状 S3）に保存し、このテーブルにはメタ情報とパスのみ保存する。
+- 削除時はレコード削除に加え、ストレージ上のオブジェクト削除も行う（モデルイベント等で対応）。
+
 ---
 
 ### 3. menus（メニュー）

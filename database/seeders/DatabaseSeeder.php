@@ -21,11 +21,11 @@ class DatabaseSeeder extends Seeder
                 PrefectureSeeder::class,
                 ShopSeeder::class,
                 ShopBusinessHourSeeder::class,
-                ShopImageSeeder::class,
                 UserSeeder::class,
                 RoleAndPermissionSeeder::class,
                 ShopStaffSeeder::class,
                 CustomerSeeder::class,
+                UploadedImageSeeder::class,
                 ExportFileSeeder::class,
             ]);
         } finally {
