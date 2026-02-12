@@ -156,8 +156,8 @@ class RoleAndPermissionSeeder extends BaseSeeder
                 }
             });
 
-        User::where('email', 'like', 'staff_%@test.com')
-            ->where('email', 'not like', 'staff_owner_%@test.com')
+        User::where('email', 'like', 'staff%@test.com')
+            ->where('email', 'not like', 'staff_owner%@test.com')
             ->chunkById(self::CHUNK_SIZE, function ($staffs) use ($staffRole, $modelType, &$items) {
                 foreach ($staffs as $staff) {
                     $items[] = [

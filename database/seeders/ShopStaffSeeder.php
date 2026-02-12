@@ -97,6 +97,6 @@ class ShopStaffSeeder extends BaseSeeder
 
     private function parseShopIdFromEmail(string $email): ?int
     {
-        return preg_match('/staff_?owner?(\d+)/', $email, $m) ? (int) $m[1] : null;
+        return preg_match('/staff(_?owner)?(\d+)/', $email, $m) ? (int) $m[2] : null;
     }
 }
