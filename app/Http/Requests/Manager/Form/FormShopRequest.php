@@ -4,6 +4,7 @@ namespace App\Http\Requests\Manager\Form;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\DayOfWeekTypeEnum;
+use App\Models\Shop;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -35,7 +36,12 @@ class FormShopRequest extends FormRequest
 
         if ($isEdit) {
             $rules['shop.keepImageIds']   = ['nullable', 'array'];
-            $rules['shop.keepImageIds.*'] = ['integer', Rule::exists('shop_images', 'id')->where('shop_id', $this->route('shop')->id)];
+            $rules['shop.keepImageIds.*'] = [
+                'integer',
+                Rule::exists('uploaded_images', 'id')
+                    ->where('imageable_id', $this->route('shop')->id)
+                    ->where('imageable_type', Shop::class),
+            ];
         }
 
         return $rules;

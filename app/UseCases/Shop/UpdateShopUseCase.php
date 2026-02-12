@@ -3,7 +3,7 @@
 namespace App\UseCases\Shop;
 
 use App\Models\Shop;
-use App\Models\ShopImage;
+use App\Models\UploadedImage;
 use App\Utilities\RecursiveCovert;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -18,6 +18,7 @@ class UpdateShopUseCase
             $businessHours = $shopData['business_hours'];
             $keepImageIds  = $shopData['keep_image_ids'] ?? [];
             $newImages     = $shopData['new_images'] ?? [];
+            $imageDisk     = config('filesystems.default');
 
             $shop->load(['businessHours', 'images']);
 
@@ -34,18 +35,19 @@ class UpdateShopUseCase
             });
 
             $shop->images->whereNotIn('id', $keepImageIds)
-                ->each(function (ShopImage $shopImage): void {
-                    if (str_starts_with($shopImage->file_path, 'shops/')) {
-                        Storage::disk('s3')->delete($shopImage->file_path);
+                ->each(function (UploadedImage $uploadedImage) use ($imageDisk): void {
+                    if (str_starts_with($uploadedImage->file_path, 'shops/')) {
+                        Storage::disk($imageDisk)->delete($uploadedImage->file_path);
                     }
-                    $shopImage->delete();
+                    $uploadedImage->delete();
                 });
 
             foreach ($newImages as $newImage) {
-                $path = $newImage->store('shops/' . $shop->id, 's3');
+                $path = $newImage->store('shops/' . $shop->id, $imageDisk);
                 $shop->images()->create([
+                    'disk'      => $imageDisk,
                     'file_path' => $path,
-                    'filename'  => $newImage->getClientOriginalName(),
+                    'file_name' => $newImage->getClientOriginalName(),
                     'mime_type' => $newImage->getMimeType(),
                     'file_size' => $newImage->getSize(),
                 ]);
