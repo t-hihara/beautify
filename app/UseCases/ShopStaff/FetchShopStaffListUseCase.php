@@ -5,13 +5,13 @@ namespace App\UseCases\ShopStaff;
 use App\Enum\ActiveFlagTypeEnum;
 use App\Models\Shop;
 use App\Models\ShopStaff;
-use Illuminate\Container\Attributes\Storage;
+use Illuminate\Support\Facades\Storage;
 
 class FetchShopStaffListUseCase
 {
     public function __invoke(array $filters): array
     {
-        $staffs = ShopStaff::with(['image'])
+        $staffs = ShopStaff::with(['image', 'shop'])
             ->orderBy('id')
             ->paginate(20)
             ->through(fn($staff) => [
@@ -22,6 +22,10 @@ class FetchShopStaffListUseCase
                 'description'     => $staff->description,
                 'experienceYears' => $staff->experience_years,
                 'activeFlag'      => $staff->active_flag->description(),
+                'shop'            => [
+                    'id'   => $staff->shop->id,
+                    'name' => $staff->shop->name,
+                ],
                 'image'           => $staff->image ? [
                     'id'       => $staff->image->id,
                     'fileName' => $staff->image->file_name,

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { UserIcon } from "@heroicons/vue/24/solid";
-import { EnvelopeIcon } from "@heroicons/vue/24/outline";
+import { EnvelopeIcon, BuildingOfficeIcon } from "@heroicons/vue/24/outline";
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 
@@ -13,6 +13,7 @@ type ShopStaffType = {
   description: string;
   activeFlag: string;
   image: ImageType | null;
+  shop: EnumType;
 };
 
 type ImageType = {
@@ -43,13 +44,14 @@ defineProps<{
             <th scope="col" class="px-4 py-3 text-center">ID</th>
             <th scope="col" class="px-4 py-3 text-center">画像</th>
             <th scope="col" class="px-4 py-3">
-              <div class="flex flex-col">
+              <div class="flex flex-col space-y-1">
                 <span>スタッフ名</span>
                 <span>メールアドレス</span>
+                <span>店舗名</span>
               </div>
             </th>
             <th scope="col" class="px-4 py-3">
-              <div class="flex flex-col">
+              <div class="flex flex-col space-y-1">
                 <span>ポジション</span>
                 <span>経歴年数</span>
               </div>
@@ -76,6 +78,9 @@ defineProps<{
                 <div class="flex flex-col space-y-1">
                   <span class="flex items-center gap-1"><user-icon class="size-3 mt-0.5" />{{ staff.name }}</span>
                   <span class="flex items-center gap-1"><envelope-icon class="size-3 mt-0.5" />{{ staff.email }}</span>
+                  <span class="flex items-center gap-1"
+                    ><building-office-icon class="size-3 mt-0.5" />{{ staff.shop.name }}</span
+                  >
                 </div>
               </td>
               <td class="px-4 py-3">
