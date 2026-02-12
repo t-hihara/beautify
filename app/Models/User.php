@@ -94,4 +94,9 @@ class User extends Authenticatable implements MustVerifyEmailContract
     {
         return $this->hasOne(Customer::class);
     }
+
+    public function shopStaff(): HasOne
+    {
+        return $this->hasOne(ShopStaff::class);
+    }
 }

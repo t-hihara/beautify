@@ -121,7 +121,6 @@
 - `name` (string) - スタイリスト名
 - `description` (text, nullable) - プロフィール
 - `image_path` (string, nullable) - 画像パス
-- `skills` (json, nullable) - スキル（カット、カラー、パーマ、ヘアセットなど）
 - `experience_years` (integer, nullable) - 経験年数
 - `qualifications` (json, nullable) - 資格情報
 - `is_active` (boolean, default: true) - 有効状態
@@ -134,6 +133,49 @@
 - `reservations` (1対多)
 - `shifts` (1対多)
 - `menus` (多対多) - 担当メニュー
+- `skills` (多対多) - スキル（中間テーブル `staff_skills` 経由）
+
+---
+
+#### 4.1 skills（スキルマスタ）
+スタイリストのスキル種類を管理するマスタテーブル。カット・カラー・パーマ等の種類を登録し、スタッフと多対多で紐付ける。
+
+**カラム**:
+- `id` (bigint, primary key)
+- `name` (string) - スキル名（例: カット、カラー、パーマ、トリートメント、ヘッドスパ、ヘアセット）
+- `category` (string, nullable) - カテゴリ（例: cut, color, perm, treatment, set）
+- `sort_order` (integer, nullable) - 表示順
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+**リレーション**:
+- `staff_skills` (1対多) を経由して `staff` と多対多
+
+**備考**:
+- スキル種類の追加・名称変更はこのマスタのみで対応可能。中間テーブル方式のため検索・集計が容易。
+
+---
+
+#### 4.2 staff_skills（スタイリスト－スキル 中間テーブル）
+スタイリストとスキルの多対多関係を管理する中間テーブル。
+
+**カラム**:
+- `id` (bigint, primary key)
+- `staff_id` (bigint, foreign key) - スタイリストID
+- `skill_id` (bigint, foreign key) - スキルID
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+**リレーション**:
+- `staff` (多対1)
+- `skill` (多対1)
+
+**ユニーク制約**:
+- `staff_id`, `skill_id` の組み合わせ
+
+**インデックス**:
+- `staff_id` - スタッフごとのスキル取得
+- `skill_id` - スキルごとのスタッフ一覧取得
 
 ---
 

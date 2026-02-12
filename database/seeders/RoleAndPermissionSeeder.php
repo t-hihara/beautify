@@ -13,6 +13,8 @@ class RoleAndPermissionSeeder extends BaseSeeder
 {
     private const CHUNK_SIZE = 1000;
     private int $admins      = 0;
+    private int $staffOwners = 0;
+    private int $staffs      = 0;
     private int $users       = 0;
 
     public function run(): void
@@ -28,10 +30,15 @@ class RoleAndPermissionSeeder extends BaseSeeder
             Role::findOrCreate($role, $guard);
         }
 
+        $created = [];
         foreach ($rolePermissions as $role => $permissions) {
             $guard = $roleGuards[$role];
             foreach ($permissions as $permission) {
-                Permission::findOrCreate($permission, $guard);
+                $key = "{$permission}_{$guard}";
+                if (!isset($created[$key])) {
+                    Permission::findOrCreate($permission, $guard);
+                    $created[$key] = true;
+                }
             }
         }
 
@@ -50,10 +57,12 @@ class RoleAndPermissionSeeder extends BaseSeeder
         $this->insertData('model_has_roles', $assignItems);
 
         $this->finalize('RoleAndPermissions', [
-            'permissions' => count($permissions),
-            'roles'       => count($roleGuards),
-            'admins'      => $this->admins,
-            'users'       => $this->users,
+            'permissions'  => count($permissions),
+            'roles'        => count($roleGuards),
+            'admins'       => $this->admins,
+            'staff_owners' => $this->staffOwners,
+            'staffs'       => $this->staffs,
+            'users'        => $this->users,
         ]);
     }
 
@@ -93,7 +102,8 @@ class RoleAndPermissionSeeder extends BaseSeeder
                 'view.logs',
             ],
             'staff' => [
-                //
+                'view.exports',
+                'manage.exports',
             ],
             'user' => [
                 'view.reservations',
@@ -105,6 +115,8 @@ class RoleAndPermissionSeeder extends BaseSeeder
     private function assignRoles(&$items): void
     {
         $adminRole      = Role::findByName('admin', 'admin');
+        $staffOwnerRole = Role::findByName('staff_owner', 'shop');
+        $staffRole      = Role::findByName('staff', 'shop');
         $userRole       = Role::findByName('user', 'user');
         $modelType      = User::class;
 
@@ -112,9 +124,9 @@ class RoleAndPermissionSeeder extends BaseSeeder
             ->chunkById(self::CHUNK_SIZE, function ($admins) use ($adminRole, $modelType, &$items) {
                 foreach ($admins as $admin) {
                     $items[] = [
-                        'role_id' => $adminRole->id,
+                        'role_id'    => $adminRole->id,
                         'model_type' => $modelType,
-                        'model_id' => $admin->id,
+                        'model_id'   => $admin->id,
                     ];
                     $this->admins++;
                 }
@@ -124,11 +136,36 @@ class RoleAndPermissionSeeder extends BaseSeeder
             ->chunkById(self::CHUNK_SIZE, function ($users) use ($userRole, $modelType, &$items) {
                 foreach ($users as $user) {
                     $items[] = [
-                        'role_id' => $userRole->id,
+                        'role_id'    => $userRole->id,
                         'model_type' => $modelType,
-                        'model_id' => $user->id,
+                        'model_id'   => $user->id,
                     ];
                     $this->users++;
+                }
+            });
+
+        User::where('email', 'like', "staff_owner%@test.com")
+            ->chunkById(self::CHUNK_SIZE, function ($staffOwners) use ($staffOwnerRole, $modelType, &$items) {
+                foreach ($staffOwners as $staffOwner) {
+                    $items[] = [
+                        'role_id'    => $staffOwnerRole->id,
+                        'model_type' => $modelType,
+                        'model_id'   => $staffOwner->id,
+                    ];
+                    $this->staffOwners++;
+                }
+            });
+
+        User::where('email', 'like', 'staff_%@test.com')
+            ->where('email', 'not like', 'staff_owner_%@test.com')
+            ->chunkById(self::CHUNK_SIZE, function ($staffs) use ($staffRole, $modelType, &$items) {
+                foreach ($staffs as $staff) {
+                    $items[] = [
+                        'role_id'    => $staffRole->id,
+                        'model_type' => $modelType,
+                        'model_id'   => $staff->id,
+                    ];
+                    $this->staffs++;
                 }
             });
     }

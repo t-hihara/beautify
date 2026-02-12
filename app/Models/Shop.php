@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Shop extends Model
 {
@@ -84,5 +85,10 @@ class Shop extends Model
     public function prefecture(): BelongsTo
     {
         return $this->belongsTo(Prefecture::class);
+    }
+
+    public function shopStaff(): HasOne
+    {
+        return $this->hasOne(ShopStaff::class);
     }
 }

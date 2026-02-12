@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
                 ShopImageSeeder::class,
                 UserSeeder::class,
                 RoleAndPermissionSeeder::class,
+                ShopStaffSeeder::class,
                 CustomerSeeder::class,
                 ExportFileSeeder::class,
             ]);

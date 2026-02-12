@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Shop;
 use Carbon\Carbon;
 use Faker\Factory;
 use Faker\Generator;
@@ -14,6 +15,7 @@ class UserSeeder extends BaseSeeder
     private static ?string $password = null;
     private Generator $faker;
     private Carbon $now;
+    private const CHUNK_SIZE = 1000;
 
     public function __construct()
     {
@@ -28,6 +30,7 @@ class UserSeeder extends BaseSeeder
         $items = [];
 
         $this->createAdmin($items);
+        $this->createShopStaffs($items);
         $this->createUsers($items);
 
         $this->insertData('users', $items);
@@ -46,7 +49,7 @@ class UserSeeder extends BaseSeeder
     {
         for ($i = 1; $i <= 100; $i++) {
             $items[] = [
-                'last_name'       => "amin_{$i}",
+                'last_name'       => "admin_{$i}",
                 'first_name'      => "test",
                 'last_name_kana'  => null,
                 'first_name_kana' => null,
@@ -58,7 +61,40 @@ class UserSeeder extends BaseSeeder
         }
     }
 
-    public function createUsers(array &$items): void
+    private function createShopStaffs(array &$items): void
+    {
+        Shop::chunkById(self::CHUNK_SIZE, function ($shops) use (&$items) {
+            foreach ($shops as $shop) {
+                for ($i = 1; $i <= rand(2, 5); $i++) {
+                    $items[] = [
+                        'last_name'       => "staff_owner{$shop->id}_{$i}",
+                        'first_name'      => "test",
+                        'last_name_kana'  => null,
+                        'first_name_kana' => null,
+                        'email'           => "staff_owner{$shop->id}_{$i}@test.com",
+                        'password'        => self::getPassword(),
+                        'created_at'      => $this->now,
+                        'updated_at'      => $this->now,
+                    ];
+                }
+
+                for ($i = 1; $i <= rand(5, 8); $i++) {
+                    $items[] = [
+                        'last_name'       => "staff{$shop->id}_{$i}",
+                        'first_name'      => "test",
+                        'last_name_kana'  => null,
+                        'first_name_kana' => null,
+                        'email'           => "staff{$shop->id}_{$i}@test.com",
+                        'password'        => self::getPassword(),
+                        'created_at'      => $this->now,
+                        'updated_at'      => $this->now,
+                    ];
+                }
+            }
+        });
+    }
+
+    private function createUsers(array &$items): void
     {
         for ($i = 1; $i <= 5000; $i++) {
             $items[] = [
