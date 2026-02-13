@@ -1,19 +1,27 @@
 <script setup lang="ts">
-import { UserIcon } from "@heroicons/vue/24/solid";
 import { useForm } from "@inertiajs/vue3";
+import { watch } from "vue";
+import { debounce } from "lodash";
+import { route } from "ziggy-js";
+import { UserIcon } from "@heroicons/vue/24/solid";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
 import { EnvelopeIcon, BuildingOfficeIcon } from "@heroicons/vue/24/outline";
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
-import { watch } from "vue";
-import { debounce } from "lodash";
-import { route } from "ziggy-js";
+
+const PER_PAGE_OPTIONS = [
+  { id: 10, name: "10件" },
+  { id: 20, name: "20件" },
+  { id: 50, name: "50件" },
+  { id: 100, name: "100件" },
+];
 
 type FilterType = {
   name: string;
   shopIds: (string | number)[];
   activeFlag: string;
   positions: string[];
+  perPage: number;
 };
 
 type ShopStaffType = {
@@ -39,6 +47,7 @@ type SearchFormType = {
   shopIds: (string | number)[];
   activeFlag: string | null;
   positions: string[];
+  perPage: number;
 };
 
 const { filters } = defineProps<{
@@ -56,6 +65,7 @@ const searchForm = useForm<SearchFormType>({
   shopIds: filters.shopIds || [],
   activeFlag: filters.activeFlag || null,
   positions: filters.positions || [],
+  perPage: Number(filters.perPage) || 10,
 });
 
 const search = (): void => {
@@ -105,6 +115,15 @@ watch(
           :items="activeFlags"
         />
       </div>
+    </div>
+    <div class="mt-6 flex items-end">
+      <search-single-select
+        v-model="searchForm.perPage"
+        title="表示件数"
+        field="perPage"
+        :items="PER_PAGE_OPTIONS"
+        class="max-w-28 w-full"
+      />
     </div>
     <div class="mt-4 bg-white shadow-sm rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-zinc-300 text-sm">
@@ -175,6 +194,6 @@ watch(
         </tbody>
       </table>
     </div>
-    <pagination :links="links" :pagination="pagination" :per-page="10" class="mt-4" />
+    <pagination :links="links" :pagination="pagination" :per-page="searchForm.perPage" class="mt-4" />
   </div>
 </template>

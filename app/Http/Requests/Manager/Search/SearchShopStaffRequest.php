@@ -18,6 +18,7 @@ class SearchShopStaffRequest extends FormRequest
             'activeFlag'  => ['nullable', Rule::enum(ActiveFlagTypeEnum::class)],
             'positions'   => ['nullable', 'array'],
             'positions.*' => ['string', Rule::enum(ShopStaffPositionTypeEnum::class)],
+            'perPage'     => ['nullable', 'integer'],
         ];
     }
 

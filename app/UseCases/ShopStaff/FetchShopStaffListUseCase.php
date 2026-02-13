@@ -21,7 +21,7 @@ class FetchShopStaffListUseCase
             ->byActiveFlag($convert['active_flag'] ?? null)
             ->byPositions($convert['positions'] ?? null)
             ->orderBy('id')
-            ->paginate(20)
+            ->paginate($convert['per_page'] ?? 10)
             ->through(fn($staff) => [
                 'id'              => $staff->id,
                 'name'            => $staff->name,
