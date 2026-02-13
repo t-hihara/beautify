@@ -1,8 +1,20 @@
 <script setup lang="ts">
 import { UserIcon } from "@heroicons/vue/24/solid";
+import { useForm } from "@inertiajs/vue3";
+import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
 import { EnvelopeIcon, BuildingOfficeIcon } from "@heroicons/vue/24/outline";
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
+import { watch } from "vue";
+import { debounce } from "lodash";
+import { route } from "ziggy-js";
+
+type FilterType = {
+  name: string;
+  shopIds: (string | number)[];
+  activeFlag: string;
+  positions: string[];
+};
 
 type ShopStaffType = {
   id: number;
@@ -22,13 +34,43 @@ type ImageType = {
   fileName: string;
 };
 
-defineProps<{
+type SearchFormType = {
+  name: string;
+  shopIds: (string | number)[];
+  activeFlag: string | null;
+  positions: string[];
+};
+
+const { filters } = defineProps<{
+  filters: FilterType;
   shopStaffs: ShopStaffType[];
   links: PaginationLinkType[];
   pagination: PaginationType;
   shops: EnumType[];
   activeFlags: EnumType[];
+  positions: EnumType[];
 }>();
+
+const searchForm = useForm<SearchFormType>({
+  name: filters.name || "",
+  shopIds: filters.shopIds || [],
+  activeFlag: filters.activeFlag || null,
+  positions: filters.positions || [],
+});
+
+const search = (): void => {
+  searchForm.get(route("admin.staffs.index"), {
+    preserveState: true,
+    preserveScroll: true,
+  });
+};
+
+watch(
+  () => searchForm.data(),
+  debounce(() => {
+    search();
+  }, 300),
+);
 </script>
 
 <template>
@@ -36,6 +78,33 @@ defineProps<{
     <Head title="店舗スタッフ一覧" />
     <div>
       <h2 class="text-3xl">店舗スタッフ一覧</h2>
+    </div>
+    <div class="mt-8 p-6 bg-white rounded-lg shadow-lg">
+      <div class="grid grid-cols-4 gap-4">
+        <search-text v-model="searchForm.name" field="name" title="スタッフ名" placeholder="スタッフ名" />
+        <search-multi-select
+          v-model="searchForm.shopIds"
+          field="shopIds"
+          title="店舗"
+          class="col-span-2"
+          show-clear
+          :items="shops"
+        />
+        <search-multi-select
+          v-model="searchForm.positions"
+          field="positions"
+          title="ポジション"
+          show-clear
+          :items="positions"
+        />
+        <search-single-select
+          v-model="searchForm.activeFlag"
+          title="運営状態"
+          field="activeFlag"
+          show-all
+          :items="activeFlags"
+        />
+      </div>
     </div>
     <div class="mt-4 bg-white shadow-sm rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-zinc-300 text-sm">

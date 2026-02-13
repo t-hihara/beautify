@@ -51,20 +51,17 @@ const selectedItems = computed(() => items.filter((item) => modelValue.includes(
           <span class="line-clamp-1 min-w-0 flex-1 text-left">{{
             selectedItems.length > 0 ? selectedItems.map((item) => item.name).join(", ") : "すべて"
           }}</span>
-          <template v-if="showClear">
-            <div class="flex items-center gap-2">
-              <button
-                type="button"
-                class="px-2 py-1 rounded-lg border border-zinc-300 hover:bg-zinc-200 transition ease-in-out duration-300 text-xs cursor-pointer"
-                @click="$emit('update:modelValue', [])"
-              >
-                クリア
-              </button>
-              <chevron-down-icon
-                class="size-4 transition-transform duration-200"
-                :class="{ 'rotate-180': open }"
-              /></div
-          ></template>
+          <div class="flex items-center gap-2">
+            <button
+              v-if="showClear"
+              type="button"
+              class="px-2 py-1 rounded-lg border border-zinc-300 hover:bg-zinc-200 transition ease-in-out duration-300 text-xs cursor-pointer"
+              @click="$emit('update:modelValue', [])"
+            >
+              クリア
+            </button>
+            <chevron-down-icon class="size-4 transition-transform duration-200" :class="{ 'rotate-180': open }" />
+          </div>
         </listbox-button>
         <transition enter-active-class="animate-fade-in" leave-active-class="animate-fade-out">
           <listbox-options

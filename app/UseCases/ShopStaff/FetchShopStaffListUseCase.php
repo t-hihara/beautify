@@ -3,15 +3,23 @@
 namespace App\UseCases\ShopStaff;
 
 use App\Enum\ActiveFlagTypeEnum;
+use App\Enum\ShopStaffPositionTypeEnum;
 use App\Models\Shop;
 use App\Models\ShopStaff;
+use App\Utilities\RecursiveCovert;
 use Illuminate\Support\Facades\Storage;
 
 class FetchShopStaffListUseCase
 {
     public function __invoke(array $filters): array
     {
+        $convert = RecursiveCovert::_convert($filters, 'snake');
+
         $staffs = ShopStaff::with(['image', 'shop'])
+            ->byName($convert['name'] ?? null)
+            ->byShopIds($convert['shop_ids'] ?? null)
+            ->byActiveFlag($convert['active_flag'] ?? null)
+            ->byPositions($convert['positions'] ?? null)
             ->orderBy('id')
             ->paginate(20)
             ->through(fn($staff) => [
@@ -26,7 +34,7 @@ class FetchShopStaffListUseCase
                     'id'   => $staff->shop->id,
                     'name' => $staff->shop->name,
                 ],
-                'image'           => $staff->image ? [
+                'image' => $staff->image ? [
                     'id'       => $staff->image->id,
                     'fileName' => $staff->image->file_name,
                     'filePath' => str_starts_with($staff->image->file_path, 'http')
@@ -36,8 +44,10 @@ class FetchShopStaffListUseCase
             ]);
 
         return [
+            'filters'     => $filters,
             'shops'       => Shop::get(['id', 'name']),
             'activeFlags' => ActiveFlagTypeEnum::options(),
+            'positions'   => ShopStaffPositionTypeEnum::options(),
             'shopStaffs'  => $staffs->items(),
             'links'       => $staffs->linkCollection(),
             'pagination'  => [
