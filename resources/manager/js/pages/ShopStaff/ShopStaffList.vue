@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useForm } from "@inertiajs/vue3";
-import { watch } from "vue";
+import { ref, watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { UserIcon } from "@heroicons/vue/24/solid";
@@ -8,6 +8,7 @@ import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/c
 import { EnvelopeIcon, BuildingOfficeIcon } from "@heroicons/vue/24/outline";
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
+import Drawer from "@manager/components/Ui/Drawer.vue";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -50,7 +51,9 @@ type SearchFormType = {
   perPage: number;
 };
 
-const { filters } = defineProps<{
+const showDrawer = ref<boolean>(false);
+const targetStaff = ref<ShopStaffType | null>(null);
+const { filters, shopStaffs } = defineProps<{
   filters: FilterType;
   shopStaffs: ShopStaffType[];
   links: PaginationLinkType[];
@@ -73,6 +76,15 @@ const search = (): void => {
     preserveState: true,
     preserveScroll: true,
   });
+};
+
+const openDrawer = (id: number): void => {
+  targetStaff.value = shopStaffs.find((staff) => staff.id === id) ?? null;
+  showDrawer.value = true;
+};
+
+const closeDrawer = (): void => {
+  showDrawer.value = false;
 };
 
 watch(
@@ -151,7 +163,12 @@ watch(
         </thead>
         <tbody class="divide-y divide-zinc-300 text-zinc-600">
           <template v-if="shopStaffs.length > 0">
-            <tr v-for="staff in shopStaffs" :key="staff.id">
+            <tr
+              v-for="staff in shopStaffs"
+              :key="staff.id"
+              class="hover:bg-rose-100/50 transition ease-in-out duration-300 cursor-pointer"
+              @click="openDrawer(staff.id)"
+            >
               <td class="px-4 py-3 text-center">{{ staff.id }}</td>
               <td class="px-4 py-3 text-center">
                 <img
@@ -195,5 +212,8 @@ watch(
       </table>
     </div>
     <pagination :links="links" :pagination="pagination" :per-page="searchForm.perPage" class="mt-4" />
+    <drawer v-model="showDrawer" show-close position="right" drawer-class="w-3/4" @close="closeDrawer">
+      <div></div>
+    </drawer>
   </div>
 </template>
