@@ -88,8 +88,8 @@ class Shop extends Model
         return $this->belongsTo(Prefecture::class);
     }
 
-    public function shopStaff(): HasOne
+    public function staffs(): HasMany
     {
-        return $this->hasOne(ShopStaff::class);
+        return $this->hasMany(ShopStaff::class);
     }
 }

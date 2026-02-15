@@ -11,6 +11,7 @@ use App\UseCases\Shop\DeleteShopUseCase;
 use App\UseCases\Shop\ExportShopUseCase;
 use App\UseCases\Shop\PrepareShopEditFormUseCase;
 use App\UseCases\Shop\FetchShopListUseCase;
+use App\UseCases\Shop\FetchShopUseCase;
 use App\UseCases\Shop\PrepareShopCreateFormUseCase;
 use App\UseCases\Shop\UpdateShopUseCase;
 use Illuminate\Http\RedirectResponse;
@@ -51,6 +52,14 @@ class ShopController extends Controller
         }
 
         return redirect()->route('admin.shops.index')->with('success', '登録に成功しました。');
+    }
+
+    public function show(
+        Shop $shop,
+        FetchShopUseCase $useCase
+    ): Response {
+        $data = $useCase($shop);
+        return Inertia::render('Shop/ShopDetail', ['shop' => $data]);
     }
 
     public function edit(

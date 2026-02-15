@@ -20,7 +20,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::prefix('shops')->name('shops.')->controller(ShopController::class)->group(function () {
-            Route::middleware(['permission:view.shops'])->get('/', 'index')->name('index');
+            Route::middleware(['permission:view.shops'])->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/{shop}', 'show')->name('show');
+            });
             Route::middleware(['permission:manage.shops'])->group(function () {
                 Route::get('/create', 'create')->name('create');
                 Route::post('/', 'store')->name('store');

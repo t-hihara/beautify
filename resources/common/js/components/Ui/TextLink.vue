@@ -9,7 +9,11 @@ const { isAnchor = false, disabled = false } = defineProps<{
 </script>
 
 <template>
-  <button-base :href="href" :is-anchor="isAnchor" :disabled="disabled" class="text-zinc-800 underline"
+  <button-base
+    :href="href"
+    :is-anchor="isAnchor"
+    :disabled="disabled"
+    class="text-zinc-800 underline hover:text-zinc-400"
     ><slot
   /></button-base>
 </template>

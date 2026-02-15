@@ -6,7 +6,13 @@ import { route } from "ziggy-js";
 import { HomeIcon, PhoneArrowUpRightIcon, EnvelopeIcon } from "@heroicons/vue/24/outline";
 import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
-import { ButtonPrimary, ButtonTertiary, ButtonIcon, ButtonIconDanger } from "@/common/js/components/Ui/ButtonIndex";
+import {
+  ButtonPrimary,
+  ButtonTertiary,
+  ButtonIcon,
+  ButtonIconDanger,
+  TextLink,
+} from "@/common/js/components/Ui/ButtonIndex";
 import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
@@ -192,7 +198,9 @@ watch(
           <template v-if="shops.length > 0">
             <tr v-for="shop in shops" :key="shop.id">
               <td class="px-4 py-3 text-center">{{ shop.id }}</td>
-              <td class="px-4 py-3">{{ shop.name }}</td>
+              <td class="px-4 py-3">
+                <text-link :href="route('admin.shops.show', shop.id)">{{ shop.name }}</text-link>
+              </td>
               <td class="px-4 py-3">
                 <div class="flex flex-col space-y-1">
                   <span class="flex items-center gap-1"><envelope-icon class="size-3 mt-0.5" />{{ shop.email }}</span>
