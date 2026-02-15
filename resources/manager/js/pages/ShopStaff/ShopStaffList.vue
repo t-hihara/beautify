@@ -5,7 +5,7 @@ import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { UserIcon } from "@heroicons/vue/24/solid";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
-import { EnvelopeIcon, BuildingOfficeIcon } from "@heroicons/vue/24/outline";
+import { EnvelopeIcon, BuildingOfficeIcon, UserCircleIcon } from "@heroicons/vue/24/outline";
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 import Drawer from "@manager/components/Ui/Drawer.vue";
@@ -212,8 +212,83 @@ watch(
       </table>
     </div>
     <pagination :links="links" :pagination="pagination" :per-page="searchForm.perPage" class="mt-4" />
-    <drawer v-model="showDrawer" show-close position="right" drawer-class="w-3/4" @close="closeDrawer">
-      <div></div>
+    <drawer
+      v-model="showDrawer"
+      show-close
+      position="right"
+      title="スタッフ詳細"
+      drawer-class="w-3/4"
+      @close="closeDrawer"
+    >
+      <template v-if="targetStaff">
+        <div class="flex flex-col gap-8 px-8 py-12">
+          <div class="flex gap-6 items-start">
+            <div
+              class="shrink-0 w-28 h-28 rounded-xl overflow-hidden bg-zinc-100 flex items-center justify-center ring-1 ring-zinc-200/80"
+            >
+              <img
+                v-if="targetStaff.image"
+                :src="targetStaff.image.filePath"
+                :alt="targetStaff.name"
+                class="w-full h-full object-cover"
+              />
+              <user-circle-icon v-else class="w-14 h-14 text-zinc-300" />
+            </div>
+            <div class="min-w-0 flex-1 pt-0.5">
+              <h3 class="text-xl font-bold text-zinc-900 tracking-tight">{{ targetStaff.name }}</h3>
+              <p class="text-sm text-zinc-500 mt-1">{{ targetStaff.position }}</p>
+              <span
+                class="inline-block mt-3 px-3 py-1 text-xs font-medium rounded-md"
+                :class="
+                  targetStaff.activeFlag === '有効'
+                    ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200/60'
+                    : 'bg-zinc-100 text-zinc-600'
+                "
+              >
+                {{ targetStaff.activeFlag }}
+              </span>
+              <p v-if="targetStaff.description" class="mt-3 text-sm text-zinc-600 leading-relaxed line-clamp-2">
+                {{ targetStaff.description }}
+              </p>
+            </div>
+          </div>
+          <div>
+            <h4 class="text-sm font-semibold text-zinc-700 mb-3 pl-2 border-l-4 border-rose-400">基本情報</h4>
+            <table class="w-full text-sm border-collapse rounded-lg overflow-hidden ring-1 ring-zinc-200/80">
+              <tbody class="divide-y divide-zinc-200">
+                <tr>
+                  <th scope="row" class="w-28 shrink-0 px-4 py-3 text-left font-medium text-zinc-500 bg-zinc-50">
+                    メール
+                  </th>
+                  <td class="px-4 py-3 text-zinc-800 bg-white break-all">{{ targetStaff.email }}</td>
+                </tr>
+                <tr>
+                  <th scope="row" class="px-4 py-3 text-left font-medium text-zinc-500 bg-zinc-50">店舗</th>
+                  <td class="px-4 py-3 text-zinc-800 bg-white">{{ targetStaff.shop.name }}</td>
+                </tr>
+                <tr>
+                  <th scope="row" class="px-4 py-3 text-left font-medium text-zinc-500 bg-zinc-50">経歴</th>
+                  <td class="px-4 py-3 text-rose-600 font-medium bg-white">{{ targetStaff.experienceYears }}年</td>
+                </tr>
+                <tr>
+                  <th scope="row" class="px-4 py-3 text-left font-medium text-zinc-500 bg-zinc-50">運営状態</th>
+                  <td class="px-4 py-3 text-rose-600 font-medium bg-white">
+                    {{ targetStaff.activeFlag }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div v-if="targetStaff.description">
+            <h4 class="text-sm font-semibold text-zinc-700 mb-3 pl-2 border-l-4 border-rose-400">スタッフ紹介</h4>
+            <div class="px-4 py-3 bg-zinc-50/80 rounded-lg ring-1 ring-zinc-200/60">
+              <p class="text-sm text-zinc-700 leading-relaxed whitespace-pre-wrap">
+                {{ targetStaff.description }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </template>
     </drawer>
   </div>
 </template>
