@@ -47,6 +47,7 @@ const { shop } = defineProps<{
 const currentImageIndex = ref(0);
 const images = computed(() => shop?.images ?? []);
 const hasImages = computed(() => (shop?.images?.length ?? 0) > 0);
+const staffs = computed(() => shop?.staffs ?? []);
 
 const goPrev = (): void => {
   if (!hasImages.value) return;
@@ -70,8 +71,6 @@ const fullAddress = computed(() => {
   if (line2) parts.push(line2);
   return parts.length > 0 ? parts.join(" ") : "—";
 });
-
-const staffs = computed(() => shop?.staffs ?? []);
 </script>
 
 <template>
