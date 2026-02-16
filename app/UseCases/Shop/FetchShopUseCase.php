@@ -31,7 +31,9 @@ class FetchShopUseCase
                 'fileName' => $image->file_name,
             ]),
             'staffs' => $shop->staffs
+                ->sortBy('id')
                 ->filter(fn($staff) => $staff->active_flag === ActiveFlagTypeEnum::ACTIVE)
+                ->take(4)
                 ->values()
                 ->map(fn($staff) => [
                     'id'          => $staff->id,
@@ -46,6 +48,7 @@ class FetchShopUseCase
                             : Storage::disk($staff->image->disk)->temporaryUrl($staff->image->file_path, now()->addMinutes(60)),
                     ] : null,
                 ]),
+            'staffCount' => $shop->staffs->count(),
         ];
     }
 }

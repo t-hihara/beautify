@@ -11,6 +11,7 @@ use App\UseCases\Shop\DeleteShopUseCase;
 use App\UseCases\Shop\ExportShopUseCase;
 use App\UseCases\Shop\PrepareShopEditFormUseCase;
 use App\UseCases\Shop\FetchShopListUseCase;
+use App\UseCases\Shop\FetchShopStaffsUseCase;
 use App\UseCases\Shop\FetchShopUseCase;
 use App\UseCases\Shop\PrepareShopCreateFormUseCase;
 use App\UseCases\Shop\UpdateShopUseCase;
@@ -60,6 +61,14 @@ class ShopController extends Controller
     ): Response {
         $data = $useCase($shop);
         return Inertia::render('Shop/ShopDetail', ['shop' => $data]);
+    }
+
+    public function staffs(
+        Shop $shop,
+        FetchShopStaffsUseCase $useCase
+    ): Response {
+        $data = $useCase($shop);
+        return Inertia::render('Shop/ShopDetail', $data);
     }
 
     public function edit(

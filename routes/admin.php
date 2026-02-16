@@ -23,6 +23,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::middleware(['permission:view.shops'])->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/{shop}', 'show')->name('show');
+                Route::get('/{shop}/staffs', 'staffs')->name('staff');
             });
             Route::middleware(['permission:manage.shops'])->group(function () {
                 Route::get('/create', 'create')->name('create');
