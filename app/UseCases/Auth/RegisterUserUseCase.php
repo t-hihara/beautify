@@ -10,16 +10,18 @@ class RegisterUserUseCase
 {
     public function __invoke(array $data): User
     {
-        return DB::transaction(function () use ($data) {
+        $user = DB::transaction(function () use ($data) {
             $user = new User;
             $user->fill($data['user'])->save();
             $user->customer()->create($data['customer']);
 
             $user->assignRole(Role::findByName('user', 'user'));
 
-            $user->sendEmailVerificationNotification();
-
             return $user;
         });
+
+        $user->sendEmailVerificationNotification();
+
+        return $user;
     }
 }

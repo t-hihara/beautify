@@ -6,11 +6,15 @@ use Carbon\Carbon;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\URL;
 
-class VerifyEmailNotification extends VerifyEmail
+class VerifyEmailNotification extends VerifyEmail implements ShouldQueue
 {
+    use Queueable;
+
     public function toMail($notifiable): MailMessage
     {
         $url = $this->verificationUrl($notifiable);
