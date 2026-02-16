@@ -9,8 +9,10 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\URL;
 
-class ResetPasswordNotification extends ResetPassword
+class ResetPasswordNotification extends ResetPassword implements ShouldQueue
 {
+    use Queueable;
+
     public function toMail($notifiable): MailMessage
     {
         $url = $this->resetUrl($notifiable);
