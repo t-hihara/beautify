@@ -7,9 +7,17 @@ import { useGuard } from "@manager/composables/useGuard";
 import { UserIcon } from "@heroicons/vue/24/solid";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
 import { EnvelopeIcon, BuildingOfficeIcon, UserCircleIcon } from "@heroicons/vue/24/outline";
+import {
+  ButtonPrimary,
+  ButtonTertiary,
+  ButtonIcon,
+  ButtonIconDanger,
+  TextLink,
+} from "@/common/js/components/Ui/ButtonIndex";
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 import Drawer from "@manager/components/Ui/Drawer.vue";
+import Spinner from "@/common/js/components/Ui/Spinner.vue";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -55,6 +63,7 @@ type SearchFormType = {
 const guard = useGuard();
 const showDrawer = ref<boolean>(false);
 const targetStaff = ref<ShopStaffType | null>(null);
+const imageLoaded = ref<Record<number, boolean>>({});
 
 const { filters, shopStaffs } = defineProps<{
   filters: FilterType;
@@ -88,6 +97,10 @@ const openDrawer = (id: number): void => {
 
 const closeDrawer = (): void => {
   showDrawer.value = false;
+};
+
+const onImageLoad = (id: number): void => {
+  imageLoaded.value = { ...imageLoaded.value, [id]: true };
 };
 
 watch(
@@ -171,24 +184,30 @@ watch(
               v-for="staff in shopStaffs"
               :key="staff.id"
               class="hover:bg-rose-100/50 transition ease-in-out duration-300 cursor-pointer"
-              @click="openDrawer(staff.id)"
+              @click="(e) => !(e.target as Element).closest('a') && openDrawer(staff.id)"
             >
               <td class="px-4 py-3 text-center">{{ staff.id }}</td>
               <td class="px-4 py-3 text-center">
-                <img
-                  v-if="staff.image"
-                  :src="staff.image.filePath"
-                  alt=""
-                  class="mx-auto w-16 h-16 aspect-square object-center rounded-md"
-                />
+                <template v-if="staff.image">
+                  <img
+                    :src="staff.image.filePath"
+                    alt=""
+                    class="mx-auto w-16 h-16 aspect-square object-center rounded-md"
+                    @load="onImageLoad(staff.image.id)"
+                  />
+                  <spinner v-show="!imageLoaded[staff.image.id]" />
+                </template>
                 <span v-else class="mx-auto w-16 h-16 aspect-square rounded-md border border-zinc-200">画像なし</span>
               </td>
               <td class="px-4 py-3">
                 <div class="flex flex-col space-y-1">
                   <span class="flex items-center gap-1"><user-icon class="size-3 mt-0.5" />{{ staff.name }}</span>
                   <span class="flex items-center gap-1"><envelope-icon class="size-3 mt-0.5" />{{ staff.email }}</span>
-                  <span class="flex items-center gap-1"
-                    ><building-office-icon class="size-3 mt-0.5" />{{ staff.shop.name }}</span
+                  <text-link
+                    :href="guard === 'admin' ? route('admin.shops.show', staff.shop.id) : route('shop.profile')"
+                    class="flex items-center gap-1"
+                    @click.stop
+                    ><building-office-icon class="size-3 mt-0.5" />{{ staff.shop.name }}</text-link
                   >
                 </div>
               </td>
