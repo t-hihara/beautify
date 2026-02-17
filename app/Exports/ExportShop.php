@@ -7,17 +7,22 @@ use App\Models\ExportFile;
 use App\Models\Shop;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeExport;
+use Throwable;
 
-class ExportShop implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithHeadings, WithMapping
+class ExportShop implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithHeadings, WithMapping, WithEvents
 {
     public function __construct(
         private array $filters,
         private int $exportFileId,
+        private string $disk = 's3',
     ) {}
 
     public function query(): Builder
@@ -67,5 +72,38 @@ class ExportShop implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithH
             $shop->address,
             $shop->building,
         ];
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            BeforeExport::class => function () {
+                ExportFile::find($this->exportFileId)?->update([
+                    'status' => ExportFileStatusTypeEnum::PROCESSING,
+                ]);
+            },
+            AfterSheet::class => function () {
+                $file = ExportFile::find($this->exportFileId);
+                if (!$file) {
+                    return;
+                }
+                $filesize = Storage::disk($this->disk)->exists($file->file_path)
+                    ? Storage::disk($this->disk)->size($file->file_path)
+                    : 0;
+
+                $file->update([
+                    'status'    => ExportFileStatusTypeEnum::COMPLETED,
+                    'file_size' => $filesize,
+                ]);
+            },
+        ];
+    }
+
+    public function failed(Throwable $e): void
+    {
+        ExportFile::find($this->exportFileId)?->update([
+            'status'        => ExportFileStatusTypeEnum::FAILED,
+            'error_message' => $e->getMessage(),
+        ]);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\UseCases\Shop;
 
 use App\Enum\ExportFileStatusTypeEnum;
-use App\Jobs\ExportShopJob;
+use App\Exports\ExportShop;
 use App\Models\ExportFile;
 use App\Utilities\RecursiveCovert;
 use Carbon\Carbon;
@@ -38,7 +38,7 @@ class ExportShopUseCase
                 default => ExcelType::CSV,
             };
 
-            ExportShopJob::dispatch($convert, $exportFile->id, $filepath, $excelType);
+            Excel::queue(new ExportShop($convert, $exportFile->id), $filepath, 's3', $excelType);
         });
     }
 }
