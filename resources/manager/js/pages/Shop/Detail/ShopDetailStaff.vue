@@ -1,15 +1,10 @@
 <script setup lang="ts">
+import type { StaffType } from "@manager/pages/Shop/ShopDetail.vue";
 defineOptions({ name: "ShopDetailStaff" });
 
 defineProps<{
   shop: { id: number; name: string };
-  staffs: Array<{
-    id: number;
-    name: string;
-    position: string;
-    description: string | null;
-    image: { id: number; filePath: string; fileName: string } | null;
-  }>;
+  staffs: StaffType[];
 }>();
 </script>
 
@@ -19,11 +14,7 @@ defineProps<{
       <h3 class="text-xl font-bold text-zinc-900 border-l-4 border-rose-500 pl-3">スタッフ</h3>
     </div>
     <div v-if="staffs.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-      <article
-        v-for="staff in staffs"
-        :key="staff.id"
-        class="flex flex-col h-full bg-white rounded-lg overflow-hidden"
-      >
+      <article v-for="staff in staffs" :key="staff.id" class="flex flex-col h-full bg-white rounded-lg overflow-hidden">
         <div
           class="aspect-square w-full shrink-0"
           :class="staff.image?.filePath ? 'bg-zinc-100' : 'bg-zinc-100/70 border border-zinc-300'"
@@ -34,9 +25,7 @@ defineProps<{
             :alt="staff.name"
             class="w-full h-full object-cover"
           />
-          <div v-else class="w-full h-full flex items-center justify-center text-zinc-500 text-sm">
-            写真なし
-          </div>
+          <div v-else class="w-full h-full flex items-center justify-center text-zinc-500 text-sm">写真なし</div>
         </div>
         <div class="p-4 flex flex-col flex-1 min-h-0">
           <p class="font-bold text-zinc-900 text-lg">{{ staff.name }}</p>

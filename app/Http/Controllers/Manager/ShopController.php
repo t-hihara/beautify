@@ -60,7 +60,7 @@ class ShopController extends Controller
         FetchShopUseCase $useCase
     ): Response {
         $data = $useCase($shop);
-        return Inertia::render('Shop/ShopDetail', ['shop' => $data]);
+        return Inertia::render('Shop/ShopDetail', $data);
     }
 
     public function staffs(

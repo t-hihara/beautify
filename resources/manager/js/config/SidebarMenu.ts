@@ -72,6 +72,11 @@ export const shopMenu: MenuItem[] = [
     icon: "shop",
     children: [
       {
+        id: 1,
+        label: "店舗情報",
+        route: "shop.profile",
+      },
+      {
         id: 2,
         label: "店舗スタッフ一覧",
         route: "shop.staffs.index",

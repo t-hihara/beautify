@@ -31,7 +31,7 @@ class FetchShopStaffsUseCase
             ]);
 
         return [
-            'shop' => array_merge($data, ['staffs' => $staffs->all()]),
+            'shop' => array_merge($data['shop'], ['staffs' => $staffs->all()]),
         ];
     }
 }

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Head, Link } from "@inertiajs/vue3";
+import { computed } from "vue";
 import { route } from "ziggy-js";
 import { ArrowLeftIcon, PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { ButtonIcon, TextLink } from "@/common/js/components/Ui/ButtonIndex";
-import { computed } from "vue";
+import { useGuard } from "@manager/composables/useGuard";
 import ShopDetailTop from "./Detail/ShopDetailTop.vue";
 import ShopDetailStaff from "./Detail/ShopDetailStaff.vue";
 
@@ -37,23 +38,33 @@ export type StaffType = {
   image: ImageType | null;
 };
 
+const guard = useGuard();
+
 const RouteToTab: Record<string, string> = {
   "admin.shops.show": "top",
   "admin.shops.staff": "staff",
+  "shop.profile": "top",
+  "shop.staff": "staff",
 };
 
-const TabList = [
-  { key: "top", label: "サロンTOP", route: "admin.shops.show" },
-  { key: "staff", label: "スタッフ", route: "admin.shops.staff" },
-];
+const TabList = computed(() =>
+  guard.value === "admin"
+    ? [
+        { key: "top", label: "サロンTOP", route: "admin.shops.show" },
+        { key: "staff", label: "スタッフ", route: "admin.shops.staff" },
+      ]
+    : [
+        { key: "top", label: "サロンTOP", route: "shop.index" },
+        { key: "staff", label: "スタッフ", route: "shop.staff" },
+      ],
+);
+const tabComponentNames = ["ShopDetailTop", "ShopDetailStaff"];
 
 defineProps<{
   shop: ShopType;
 }>();
 
 const activeTab = computed(() => RouteToTab[route().current() ?? ""] ?? "top");
-
-const tabComponentNames = ["ShopDetailTop", "ShopDetailStaff"];
 const currentTabComponent = computed(() => {
   const map: Record<string, typeof ShopDetailTop | typeof ShopDetailStaff> = {
     top: ShopDetailTop,
@@ -75,7 +86,7 @@ const currentTabComponent = computed(() => {
           <arrow-left-icon class="size-4" />
           店舗一覧へ戻る
         </text-link>
-        <button-icon :href="route('admin.shops.edit', { shop: shop.id })" class="flex items-center gap-2">
+        <button-icon :href="route('admin.shops.edit', shop.id)" class="flex items-center gap-2">
           <pencil-square-icon class="size-5" />
           編集
         </button-icon>
@@ -112,7 +123,7 @@ const currentTabComponent = computed(() => {
           <Link
             v-for="tab in TabList"
             :key="tab.key"
-            :href="route(tab.route, { shop: shop.id })"
+            :href="guard === 'admin' ? route(tab.route, shop.id) : route(tab.route)"
             class="px-1 py-3 text-sm font-medium border-b-2 -mb-px transition-colors"
             :class="
               activeTab === tab.key
