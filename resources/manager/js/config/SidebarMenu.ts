@@ -66,4 +66,16 @@ export const shopMenu: MenuItem[] = [
     route: "shop.dashboard",
     children: [],
   },
+  {
+    id: 3,
+    label: "店舗管理",
+    icon: "shop",
+    children: [
+      {
+        id: 2,
+        label: "店舗スタッフ一覧",
+        route: "shop.staffs.index",
+      },
+    ],
+  },
 ];

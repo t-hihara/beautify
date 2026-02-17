@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useForm } from "@inertiajs/vue3";
+import { Head, useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
+import { useGuard } from "@manager/composables/useGuard";
 import { UserIcon } from "@heroicons/vue/24/solid";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
 import { EnvelopeIcon, BuildingOfficeIcon, UserCircleIcon } from "@heroicons/vue/24/outline";
@@ -51,8 +52,10 @@ type SearchFormType = {
   perPage: number;
 };
 
+const guard = useGuard();
 const showDrawer = ref<boolean>(false);
 const targetStaff = ref<ShopStaffType | null>(null);
+
 const { filters, shopStaffs } = defineProps<{
   filters: FilterType;
   shopStaffs: ShopStaffType[];
@@ -72,7 +75,7 @@ const searchForm = useForm<SearchFormType>({
 });
 
 const search = (): void => {
-  searchForm.get(route("admin.staffs.index"), {
+  searchForm.get(route(`${guard.value}.staffs.index`), {
     preserveState: true,
     preserveScroll: true,
   });
@@ -105,6 +108,7 @@ watch(
       <div class="grid grid-cols-4 gap-4">
         <search-text v-model="searchForm.name" field="name" title="スタッフ名" placeholder="スタッフ名" />
         <search-multi-select
+          v-if="guard === 'admin'"
           v-model="searchForm.shopIds"
           field="shopIds"
           title="店舗"
