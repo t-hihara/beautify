@@ -15,7 +15,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ExportShopUseCase
 {
-    public function __invoke(int $userId, array $filters, string $type): PendingDispatch
+    public function __invoke(int $userId, array $filters, string $type): ExportFile
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
@@ -40,6 +40,8 @@ class ExportShopUseCase
             };
 
             Excel::queue(new ExportShop($convert, $exportFile->id), $filepath, 's3', $excelType);
+
+            return $exportFile;
         });
     }
 }

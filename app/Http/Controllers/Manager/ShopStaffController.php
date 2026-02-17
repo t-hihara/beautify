@@ -43,7 +43,7 @@ class ShopStaffController extends Controller
     ): RedirectResponse {
         try {
             $validated = $request->validated();
-            $useCase(auth()->id(), $validated, $this->getShopId(), 'xlsx');
+            $useCase(auth()->id(), $validated, $this->getShopId(), 'csv');
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', 'Csvエクスポートに失敗しました。');

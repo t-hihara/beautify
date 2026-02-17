@@ -15,7 +15,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ExportShopStaffUseCase
 {
-    public function __invoke(int $userId, array $filters, ?int $shopId = null, string $type): PendingDispatch
+    public function __invoke(int $userId, array $filters, ?int $shopId = null, string $type): ExportFile
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
         $shopId ? $convert['shop_ids'] = [$shopId] : null;
@@ -41,7 +41,9 @@ class ExportShopStaffUseCase
                 default => ExcelType::CSV,
             };
 
-            Excel::queue(new ExportShopStaff($convert, $exportFile->id), $filepath, 's3', $excelType);
+            Excel::queue(new ExportShopStaff($convert, $exportFile->id), $filepath, 's3', $exportType);
+
+            return $exportFile;
         });
     }
 }

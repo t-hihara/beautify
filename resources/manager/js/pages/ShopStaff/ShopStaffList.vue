@@ -7,6 +7,7 @@ import { useGuard } from "@manager/composables/useGuard";
 import { UserIcon } from "@heroicons/vue/24/solid";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
 import { EnvelopeIcon, BuildingOfficeIcon, UserCircleIcon } from "@heroicons/vue/24/outline";
+import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import {
   ButtonPrimary,
   ButtonTertiary,
@@ -103,6 +104,12 @@ const onImageLoad = (id: number): void => {
   imageLoaded.value = { ...imageLoaded.value, [id]: true };
 };
 
+const exportFile = (type: "excel" | "csv"): void => {
+  type === "excel"
+    ? searchForm.get(route(`${guard.value}.staffs.excel`))
+    : searchForm.get(route(`${guard.value}.staffs.csv`));
+};
+
 watch(
   () => searchForm.data(),
   debounce(() => {
@@ -145,7 +152,7 @@ watch(
         />
       </div>
     </div>
-    <div class="mt-6 flex items-end">
+    <div class="mt-6 flex items-end justify-between">
       <search-single-select
         v-model="searchForm.perPage"
         title="表示件数"
@@ -153,6 +160,14 @@ watch(
         :items="PER_PAGE_OPTIONS"
         class="max-w-28 w-full"
       />
+      <div class="flex items-center gap-2">
+        <button-primary @click="exportFile('excel')" class="flex items-center gap-2">
+          <folder-arrow-down-icon class="size-4" />Excel
+        </button-primary>
+        <button-primary @click="exportFile('csv')" class="flex items-center gap-2">
+          <folder-arrow-down-icon class="size-4" />CSV
+        </button-primary>
+      </div>
     </div>
     <div class="mt-4 bg-white shadow-sm rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-zinc-300 text-sm">

@@ -5,7 +5,7 @@ namespace App\Exports;
 use App\Enum\ExportFileStatusTypeEnum;
 use App\Models\ExportFile;
 use App\Models\ShopStaff;
-use DragonCode\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -63,7 +63,7 @@ class ExportShopStaff implements FromQuery, ShouldQueue, WithCustomCsvSettings, 
             $row->name,
             $row->shop->name,
             $row->email,
-            $row->position,
+            $row->position->description(),
             $row->experience_years . '年',
             $row->active_flag->description(),
         ];
