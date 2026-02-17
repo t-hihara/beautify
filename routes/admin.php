@@ -39,6 +39,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
         Route::prefix('staffs')->name('staffs.')->controller(ShopStaffController::class)->group(function () {
             Route::middleware(['permission:view.staffs'])->get('/', 'index')->name('index');
+            Route::middleware(['permission:export.staffs'])->group(function () {
+                Route::get('/export/excel', 'exportExcel')->name('excel');
+                Route::get('/export/csv', 'exportCsv')->name('csv');
+            });
         });
         Route::prefix('logs')->name('logs.')->controller(ActivityLogController::class)->group(function () {
             Route::middleware('permission:view.logs')->get('/', 'index')->name('index');

@@ -30,6 +30,10 @@ Route::prefix('shop')->name('shop.')->group(function () {
             Route::middleware(['permission:view.staffs'])->group(function () {
                 Route::get('/', 'index')->name('index');
             });
+            Route::middleware(['permission:export.staffs'])->group(function () {
+                Route::get('/export/excel', 'exportExcel')->name('excel');
+                Route::get('/export/csv', 'exportCsv')->name('csv');
+            });
         });
     });
 });
