@@ -39,13 +39,17 @@ export type StaffType = {
 };
 
 const guard = useGuard();
-
 const RouteToTab: Record<string, string> = {
   "admin.shops.show": "top",
   "admin.shops.staff": "staff",
   "shop.profile": "top",
   "shop.staff": "staff",
 };
+const tabComponentNames = ["ShopDetailTop", "ShopDetailStaff"];
+
+defineProps<{
+  shop: ShopType;
+}>();
 
 const TabList = computed(() =>
   guard.value === "admin"
@@ -58,12 +62,6 @@ const TabList = computed(() =>
         { key: "staff", label: "スタッフ", route: "shop.staff" },
       ],
 );
-const tabComponentNames = ["ShopDetailTop", "ShopDetailStaff"];
-
-defineProps<{
-  shop: ShopType;
-}>();
-
 const activeTab = computed(() => RouteToTab[route().current() ?? ""] ?? "top");
 const currentTabComponent = computed(() => {
   const map: Record<string, typeof ShopDetailTop | typeof ShopDetailStaff> = {
