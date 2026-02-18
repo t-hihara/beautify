@@ -22,7 +22,7 @@ class UpdateShopStaffUseCase
                 $disk = config('filesystems.default');
                 $path = $image->store('shop_staffs/' . $staff->id, $disk);
                 $data = [
-                    'disk' => $disk,
+                    'disk'      => $disk,
                     'file_path' => $path,
                     'file_name' => $image->getClientOriginalName(),
                     'mime_type' => $image->getMimeType(),
