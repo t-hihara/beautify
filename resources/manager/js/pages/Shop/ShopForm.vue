@@ -142,9 +142,9 @@ const submit = (): void => {
         _method: "PATCH",
         shop: data.shop,
       }))
-      .post(route("admin.shops.update", shop?.id), options);
+      .post(route("admin.shops.update", shop?.id));
   } else {
-    form.post(route("admin.shops.store"), options);
+    form.post(route("admin.shops.store"));
   }
 };
 

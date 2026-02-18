@@ -12,6 +12,7 @@ import {
   FormSingleImage,
   FormSwitchToggle,
 } from "@/common/js/components/Form/FormIndex";
+import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
 import type { EnumType } from "@/common/js/lib";
 
 type StaffType = {
@@ -33,6 +34,8 @@ type ImageType = {
 };
 
 type FormType = {
+  _method: "POST" | "PATCH";
+  id?: number;
   lastName: string;
   firstName: string;
   email: string;
@@ -53,6 +56,8 @@ const guard = useGuard();
 const isEdit = computed<boolean>(() => route().current() === `${guard.value}.staffs.edit`);
 
 const form = useForm<FormType>({
+  _method: "POST",
+  id: staff?.id ?? undefined,
   lastName: staff?.lastName ?? "",
   firstName: staff?.firstName ?? "",
   email: staff?.email ?? "",
@@ -69,6 +74,15 @@ const activeFlag = computed<boolean>({
     form.activeFlag = v ? "active" : "inactive";
   },
 });
+
+const submit = (): void => {
+  if (isEdit.value) {
+    form._method = "PATCH";
+    form.post(route(`${guard.value}.staffs.update`, staff?.id));
+  } else {
+    //
+  }
+};
 </script>
 
 <template>
@@ -78,7 +92,7 @@ const activeFlag = computed<boolean>({
       <h2 class="text-3xl">{{ isEdit ? "店舗スタッフ編集" : "店舗スタッフ登録" }}</h2>
     </div>
     <div class="mt-6">
-      <form @submit.prevent>
+      <form @submit.prevent="submit">
         <div class="px-3 py-1 rounded-md bg-zinc-200">
           <p class="text-sm font-semibold text-zinc-800">スタッフ情報</p>
         </div>
@@ -133,6 +147,7 @@ const activeFlag = computed<boolean>({
             :error="form.errors"
           />
         </div>
+        <button-submit :disabled="form.processing">{{ isEdit ? "編集する" : "登録する" }}</button-submit>
       </form>
     </div>
   </div>
