@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Form\FormShopStaffRequest;
 use App\Http\Requests\Manager\Search\SearchShopStaffRequest;
 use App\Models\ShopStaff;
+use App\UseCases\ShopStaff\CreateShopStaffUseCase;
 use App\UseCases\ShopStaff\ExportShopStaffUseCase;
 use App\UseCases\ShopStaff\FetchShopStaffListUseCase;
 use App\UseCases\ShopStaff\PrepareShopStaffCreateUseCase;
@@ -32,6 +33,21 @@ class ShopStaffController extends Controller
     ): Response {
         $data = $useCase();
         return Inertia::render('ShopStaff/ShopStaffForm', $data);
+    }
+
+    public function store(
+        FormShopStaffRequest $request,
+        CreateShopStaffUseCase $useCase,
+    ): RedirectResponse {
+        try {
+            $validated = $request->validated();
+            $useCase($validated);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '作成に失敗しました。');
+        }
+
+        return redirect()->route($this->getRoutePrefix() . '.staffs.index')->with('success', '作成に成功しました。');
     }
 
     public function edit(

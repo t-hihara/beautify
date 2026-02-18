@@ -19,7 +19,6 @@ class CreateShopUseCase
             $shopData  = $convert['shop'];
             $imageDisk = config('filesystems.default');
 
-
             $this->shop->fill($shopData)->save();
             $this->shop->businessHours()->createMany($shopData['business_hours']);
 

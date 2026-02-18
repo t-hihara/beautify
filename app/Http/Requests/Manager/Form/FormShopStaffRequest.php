@@ -7,13 +7,25 @@ use App\Enum\ShopStaffPositionTypeEnum;
 use App\Models\ShopStaff;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class FormShopStaffRequest extends FormRequest
 {
+    public function prepareForValidation()
+    {
+        if (!$this->route('staff')) {
+            $this->marge([
+                'password' => Str::random(16),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
-        return [
+        $isEdit = $this->route('staff');
+
+        $rules = [
             'lastName'        => ['required', 'string'],
             'firstName'       => ['required', 'string'],
             'email'           => ['required', 'email', Rule::unique('shop_staff', 'email')->ignore($this->route('staff'))],
@@ -30,6 +42,13 @@ class FormShopStaffRequest extends FormRequest
                 ),
             ],
         ];
+
+        if (!$isEdit) {
+            $rules['shopId']   = ['required', Rule::exists('shops', 'id')];
+            $rules['password'] = ['required', 'string'];
+        }
+
+        return $rules;
     }
 
     public function attributes(): array
@@ -37,6 +56,7 @@ class FormShopStaffRequest extends FormRequest
         return [
             'lastName'        => 'スタッフ名(姓)',
             'firstName'       => 'スタッフ名(名)',
+            'shopId'          => '所属店舗',
             'email'           => 'メールアドレス',
             'position'        => 'ポジション',
             'experienceYears' => '経歴年数',

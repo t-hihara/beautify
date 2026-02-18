@@ -41,6 +41,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::middleware(['permission:view.staffs'])->get('/', 'index')->name('index');
             Route::middleware(['permission:manage.staffs'])->group(function () {
                 Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
                 Route::get('/{staff}/edit', 'edit')->name('edit');
                 Route::patch('/{staff}', 'update')->name('update');
             });
