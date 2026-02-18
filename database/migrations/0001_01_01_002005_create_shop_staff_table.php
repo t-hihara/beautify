@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('first_name')->comment('スタッフ名（名）');
             $table->string('email')->comment('メールアドレス');
             $table->enum('position', ShopStaffPositionTypeEnum::cases())->comment('ポジション');
-            $table->text('description')->comment('スタッフ紹介');
+            $table->text('description')->nullable()->comment('スタッフ紹介');
             $table->string('image_path')->nullable()->comment('プロフィール画像');
             $table->unsignedInteger('experience_years')->comment('経歴年数');
             $table->enum('active_flag', ActiveFlagTypeEnum::cases())->comment('有効状態');

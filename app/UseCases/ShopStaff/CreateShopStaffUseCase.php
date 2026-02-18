@@ -4,6 +4,7 @@ namespace App\UseCases\ShopStaff;
 
 use App\Models\ShopStaff;
 use App\Models\User;
+use App\Utilities\RecursiveCovert;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,7 @@ class CreateShopStaffUseCase
     public function __invoke(array $payload): ?ShopStaff
     {
         return DB::transaction(function () use ($payload) {
+            $convert   = RecursiveCovert::_convert($payload, 'snake');
             $userData  = Arr::except($convert, ['position', 'experience_years', 'image', 'description']);
             $staffData = Arr::except($convert, ['password', 'image']);
 
