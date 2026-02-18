@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { Head, useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
