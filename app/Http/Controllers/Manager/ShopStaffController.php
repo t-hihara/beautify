@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Manager\Form\FormShopStaffRequest;
 use App\Http\Requests\Manager\Search\SearchShopStaffRequest;
 use App\Models\ShopStaff;
 use App\UseCases\ShopStaff\ExportShopStaffUseCase;
 use App\UseCases\ShopStaff\FetchShopStaffListUseCase;
 use App\UseCases\ShopStaff\PrepareShopStaffEditFormUseCase;
+use App\UseCases\ShopStaff\UpdateShopStaffUseCase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -30,6 +32,22 @@ class ShopStaffController extends Controller
     ): Response {
         $data = $useCase($staff);
         return Inertia::render("ShopStaff/ShopStaffForm", $data);
+    }
+
+    public function update(
+        FormShopStaffRequest $request,
+        ShopStaff $staff,
+        UpdateShopStaffUseCase $useCase
+    ): RedirectResponse {
+        try {
+            $validated = $request->validated();
+            $useCase($validated, $staff);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '更新に失敗しました。');
+        }
+
+        return redirect()->route($this->getRoutePrefix() . '.staffs.index')->with('success', '更新に成功しました。');
     }
 
     public function exportExcel(
@@ -69,5 +87,10 @@ class ShopStaffController extends Controller
         }
 
         return auth()->user()->shopStaff?->shop_id;
+    }
+
+    private function getRoutePrefix(): string
+    {
+        return request()->is('admin/*') ? 'admin' : 'shop';
     }
 }

@@ -28,7 +28,7 @@ class PrepareShopStaffEditFormUseCase
                     'fileName' => $staff->image->file_name,
                     'filePath' => str_starts_with($staff->image->file_path, 'http')
                         ? $staff->image->file_path
-                        : Storage::disk($image->disk)->temporaryUrl($staff->image->file_path, now()->addMinutes(60)),
+                        : Storage::disk($staff->image->disk)->temporaryUrl($staff->image->file_path, now()->addMinutes(60)),
                 ] : null,
             ],
             'activeFlags' => ActiveFlagTypeEnum::options(),

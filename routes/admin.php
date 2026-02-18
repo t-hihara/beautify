@@ -41,6 +41,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::middleware(['permission:view.staffs'])->get('/', 'index')->name('index');
             Route::middleware(['permission:manage.staffs'])->group(function () {
                 Route::get('/{staff}/edit', 'edit')->name('edit');
+                Route::patch('/{staff}', 'update')->name('update');
             });
             Route::middleware(['permission:export.staffs'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
