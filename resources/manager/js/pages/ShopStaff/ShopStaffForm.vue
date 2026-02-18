@@ -16,7 +16,8 @@ import type { EnumType } from "@/common/js/lib";
 
 type StaffType = {
   id: number;
-  name: string;
+  lastName: string;
+  firstName: string;
   email: string;
   position: string;
   description: string | null;
@@ -32,7 +33,8 @@ type ImageType = {
 };
 
 type FormType = {
-  name: string;
+  lastName: string;
+  firstName: string;
   email: string;
   position: string;
   description: string | null;
@@ -51,7 +53,8 @@ const guard = useGuard();
 const isEdit = computed<boolean>(() => route().current() === `${guard.value}.staffs.edit`);
 
 const form = useForm<FormType>({
-  name: staff?.name ?? "",
+  lastName: staff?.lastName ?? "",
+  firstName: staff?.firstName ?? "",
   email: staff?.email ?? "",
   position: staff?.position ?? "",
   description: staff?.description ?? (null as string | null),
@@ -81,10 +84,18 @@ const activeFlag = computed<boolean>({
         </div>
         <div class="mt-4 grid grid-cols-2 gap-6">
           <form-text
-            v-model="form.name"
-            title="スタッフ名"
-            field="name"
-            placeholder="スタッフ名"
+            v-model="form.lastName"
+            title="スタッフ名(姓)"
+            field="lastName"
+            placeholder="スタッフ名(姓)"
+            required
+            :error="form.errors"
+          />
+          <form-text
+            v-model="form.firstName"
+            title="スタッフ名(名)"
+            field="firstName"
+            placeholder="スタッフ名(名)"
             required
             :error="form.errors"
           />

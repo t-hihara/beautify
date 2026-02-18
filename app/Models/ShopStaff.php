@@ -11,10 +11,15 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class ShopStaff extends Model
 {
+    protected $appends = [
+        'name'
+    ];
+
     protected $fillable = [
         'shop_id',
         'user_id',
-        'name',
+        'last_name',
+        'first_name',
         'email',
         'position',
         'description',
@@ -30,6 +35,11 @@ class ShopStaff extends Model
     /* ================================================================================
                                         アクセサ
     ================================================================================ */
+
+    public function getNameAttribute(): string
+    {
+        return $this->last_name . ' ' . $this->first_name;
+    }
 
     /* ================================================================================
                                         スコープ

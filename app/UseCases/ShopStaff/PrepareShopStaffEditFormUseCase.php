@@ -16,7 +16,8 @@ class PrepareShopStaffEditFormUseCase
         return [
             'staff' => [
                 'id'              => $staff->id,
-                'name'            => $staff->name,
+                'lastName'        => $staff->last_name,
+                'firstName'       => $staff->first_name,
                 'email'           => $staff->email,
                 'position'        => $staff->position->value,
                 'experienceYears' => $staff->experience_years,

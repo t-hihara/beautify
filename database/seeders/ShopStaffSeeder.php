@@ -76,7 +76,8 @@ class ShopStaffSeeder extends BaseSeeder
                     $items[] = [
                         'shop_id'          => $shopId,
                         'user_id'          => $user->id,
-                        'name'             => $user->name,
+                        'last_name'        => $user->last_name,
+                        'first_name'       => $user->first_name,
                         'email'            => $user->email,
                         'position'         => $position,
                         'description'      => $this->faker->realText(80),
