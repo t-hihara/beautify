@@ -33,6 +33,7 @@ class PrepareShopStaffEditFormUseCase
             ],
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'positions'   => ShopStaffPositionTypeEnum::options(),
+            'shops'       => [],
         ];
     }
 }

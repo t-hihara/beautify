@@ -134,8 +134,6 @@ const businessHoursErrors = computed<string[][]>(() =>
 );
 
 const submit = (): void => {
-  // setDummy();
-  const options = { forceFormData: true };
   if (isEdit.value) {
     form
       .transform((data) => ({
@@ -147,39 +145,6 @@ const submit = (): void => {
     form.post(route("admin.shops.store"));
   }
 };
-
-// const dummy = {
-//   shop: {
-//     name: "テスト店舗",
-//     nameKana: "テストテンポ",
-//     email: "test2@example.com",
-//     phone: "0312345678",
-//     activeFlag: "active",
-//     prefectureId: 1,
-//     zipcode: "1000001",
-//     address: "東京都千代田区千代田1-1",
-//     building: "テストビル1F",
-//     description: "テスト用の店舗説明です",
-//     businessHours: [
-//       { dayOfWeek: "sunday", label: "日", openTime: "10:00", closeTime: "20:00" },
-//       { dayOfWeek: "monday", label: "月", openTime: "10:00", closeTime: "20:00" },
-//       { dayOfWeek: "tuesday", label: "火", openTime: "10:00", closeTime: "20:00" },
-//       { dayOfWeek: "wednesday", label: "水", openTime: "10:00", closeTime: "20:00" },
-//       { dayOfWeek: "thursday", label: "木", openTime: "10:00", closeTime: "20:00" },
-//       { dayOfWeek: "friday", label: "金", openTime: "10:00", closeTime: "20:00" },
-//       { dayOfWeek: "saturday", label: "土", openTime: "10:00", closeTime: "20:00" },
-//     ],
-//     // newImages は送信用の File[]。表示用の画像は送らないのでダミーでは空のまま
-//   },
-// };
-
-// const setDummy = () => {
-//   if (isEdit.value) {
-//     //
-//   } else {
-//     form.shop = { ...form.shop, ...dummy.shop };
-//   }
-// };
 </script>
 
 <template>
@@ -247,7 +212,6 @@ const submit = (): void => {
             title="番地・部屋番号"
             field="shop.building"
             placeholder="番地・部屋番号"
-            required
             :error="form.errors"
           />
           <form-switch-toggle

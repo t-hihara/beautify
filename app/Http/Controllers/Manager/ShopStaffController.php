@@ -8,6 +8,7 @@ use App\Http\Requests\Manager\Search\SearchShopStaffRequest;
 use App\Models\ShopStaff;
 use App\UseCases\ShopStaff\ExportShopStaffUseCase;
 use App\UseCases\ShopStaff\FetchShopStaffListUseCase;
+use App\UseCases\ShopStaff\PrepareShopStaffCreateUseCase;
 use App\UseCases\ShopStaff\PrepareShopStaffEditFormUseCase;
 use App\UseCases\ShopStaff\UpdateShopStaffUseCase;
 use Illuminate\Http\RedirectResponse;
@@ -24,6 +25,13 @@ class ShopStaffController extends Controller
     ): Response {
         $data = $useCase($request->validated(), $this->getShopId());
         return Inertia::render('ShopStaff/ShopStaffList', $data);
+    }
+
+    public function create(
+        PrepareShopStaffCreateUseCase $useCase
+    ): Response {
+        $data = $useCase();
+        return Inertia::render('ShopStaff/ShopStaffForm', $data);
     }
 
     public function edit(

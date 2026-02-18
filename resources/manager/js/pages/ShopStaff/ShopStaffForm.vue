@@ -36,6 +36,7 @@ type ImageType = {
 type FormType = {
   _method: "POST" | "PATCH";
   id?: number;
+  shopId: number | null;
   lastName: string;
   firstName: string;
   email: string;
@@ -48,6 +49,7 @@ type FormType = {
 
 const { staff } = defineProps<{
   staff?: StaffType;
+  shops: EnumType[];
   activeFlags: EnumType[];
   positions: EnumType[];
 }>();
@@ -58,6 +60,7 @@ const isEdit = computed<boolean>(() => route().current() === `${guard.value}.sta
 const form = useForm<FormType>({
   _method: "POST",
   id: staff?.id ?? undefined,
+  shopId: null,
   lastName: staff?.lastName ?? "",
   firstName: staff?.firstName ?? "",
   email: staff?.email ?? "",
@@ -113,6 +116,15 @@ const submit = (): void => {
             required
             :error="form.errors"
           />
+          <form-single-select
+            v-if="!isEdit"
+            v-model="form.shopId"
+            field="shopId"
+            title="所属店舗"
+            :items="shops"
+            :required="!isEdit"
+            :error="form.errors"
+          />
           <form-email
             v-model="form.email"
             title="メールアドレス"
@@ -147,7 +159,9 @@ const submit = (): void => {
             :error="form.errors"
           />
         </div>
-        <button-submit :disabled="form.processing">{{ isEdit ? "編集する" : "登録する" }}</button-submit>
+        <div class="mt-8 pt-8 border-t border-zinc-200 flex justify-end">
+          <button-submit>{{ isEdit ? "更新する" : "登録する" }}</button-submit>
+        </div>
       </form>
     </div>
   </div>

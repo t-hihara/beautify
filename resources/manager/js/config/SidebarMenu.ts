@@ -40,6 +40,11 @@ export const adminMenu: MenuItem[] = [
         label: "店舗スタッフ一覧",
         route: "admin.staffs.index",
       },
+      {
+        id: 4,
+        label: "店舗スタッフ登録",
+        route: "admin.staffs.create",
+      },
     ],
   },
   {
