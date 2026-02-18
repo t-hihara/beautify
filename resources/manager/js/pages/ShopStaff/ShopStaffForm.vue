@@ -146,6 +146,7 @@ const submit = (): void => {
             title="経歴年数"
             field="experienceYears"
             placeholder="0"
+            required
             :error="form.errors"
           />
           <form-switch-toggle v-model="activeFlag" title="有効状態" field="activeFlag" required :error="form.errors" />
