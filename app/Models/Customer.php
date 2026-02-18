@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Enum\GenderTypeEnum;
+use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Customer extends Model
 {
+    use LogsActivity;
+
     protected $fillable = [
         'user_id',
         'name',
@@ -22,6 +25,11 @@ class Customer extends Model
         'dob'    => 'date',
         'gender' => GenderTypeEnum::class,
     ];
+
+    public function getDescriptionValue(): string
+    {
+        return "顧客ID「{$this->id}」";
+    }
 
     /* ================================================================================
                                         アクセサ
