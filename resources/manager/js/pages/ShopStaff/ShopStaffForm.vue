@@ -83,7 +83,7 @@ const submit = (): void => {
     form._method = "PATCH";
     form.post(route(`${guard.value}.staffs.update`, staff?.id));
   } else {
-    //
+    form.post(route(`${guard.value}.staffs.store`));
   }
 };
 </script>

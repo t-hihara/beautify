@@ -15,7 +15,7 @@ class FormShopStaffRequest extends FormRequest
     public function prepareForValidation()
     {
         if (!$this->route('staff')) {
-            $this->marge([
+            $this->merge([
                 'password' => Str::random(16),
             ]);
         }
