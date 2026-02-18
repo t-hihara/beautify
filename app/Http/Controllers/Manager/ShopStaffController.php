@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Search\SearchShopStaffRequest;
+use App\Models\ShopStaff;
 use App\UseCases\ShopStaff\ExportShopStaffUseCase;
 use App\UseCases\ShopStaff\FetchShopStaffListUseCase;
+use App\UseCases\ShopStaff\PrepareShopStaffEditFormUseCase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,6 +22,14 @@ class ShopStaffController extends Controller
     ): Response {
         $data = $useCase($request->validated(), $this->getShopId());
         return Inertia::render('ShopStaff/ShopStaffList', $data);
+    }
+
+    public function edit(
+        ShopStaff $staff,
+        PrepareShopStaffEditFormUseCase $useCase
+    ): Response {
+        $data = $useCase($staff);
+        return Inertia::render("ShopStaff/ShopStaffForm", $data);
     }
 
     public function exportExcel(

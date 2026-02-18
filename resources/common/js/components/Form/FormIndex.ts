@@ -1,9 +1,11 @@
 export { default as FormEmail } from "@common/components/Form/FormEmail.vue";
 export { default as FormPassword } from "@common/components/Form/FormPassword.vue";
 export { default as FormText } from "@common/components/Form/FormText.vue";
+export { default as FormNumber } from "@common/components/Form/FormNumber.vue";
 export { default as FormSingleSelect } from "@common/components/Form/FormSingleSelect.vue";
 export { default as FormDateTime } from "@common/components/Form/FormDateTime.vue";
 export { default as FormCheckbox } from "@common/components/Form/FormCheckbox.vue";
 export { default as FormTextarea } from "@common/components/Form/FormTextarea.vue";
 export { default as FormSwitchToggle } from "@common/components/Form/FormSwitchToggle.vue";
+export { default as FormSingleImage } from "@common/components/Form/FormSingleImage.vue";
 export { default as FormMultiImage } from "@common/components/Form/FormMultiImage.vue";
