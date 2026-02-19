@@ -3,6 +3,7 @@ type MenuItem = {
   label: string;
   icon: string;
   route?: string;
+  permission?: string;
   children: SubMenuItem[];
 };
 
@@ -10,6 +11,7 @@ type SubMenuItem = {
   id: number;
   label: string;
   route: string;
+  permission?: string;
 };
 
 export const adminMenu: MenuItem[] = [
@@ -29,21 +31,25 @@ export const adminMenu: MenuItem[] = [
         id: 1,
         label: "店舗一覧",
         route: "admin.shops.index",
+        permission: "view.shops",
       },
       {
         id: 2,
         label: "店舗登録",
         route: "admin.shops.create",
+        permission: "manage.shops",
       },
       {
         id: 3,
         label: "店舗スタッフ一覧",
         route: "admin.staffs.index",
+        permission: "view.staffs",
       },
       {
         id: 4,
         label: "店舗スタッフ登録",
         route: "admin.staffs.create",
+        permission: "manage.staffs",
       },
     ],
   },
@@ -80,16 +86,19 @@ export const shopMenu: MenuItem[] = [
         id: 1,
         label: "店舗情報",
         route: "shop.index",
+        permission: "view.shops",
       },
       {
         id: 2,
         label: "店舗スタッフ一覧",
         route: "shop.staffs.index",
+        permission: "view.staffs",
       },
       {
         id: 3,
         label: "店舋スタッフ登録",
         route: "shop.staffs.create",
+        permission: "manage.staffs",
       },
     ],
   },

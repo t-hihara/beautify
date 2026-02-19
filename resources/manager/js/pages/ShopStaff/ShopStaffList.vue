@@ -212,7 +212,9 @@ watch(
                   />
                   <spinner v-show="!imageLoaded[staff.image.id]" />
                 </template>
-                <span v-else class="mx-auto w-16 h-16 aspect-square rounded-md border border-zinc-200">画像なし</span>
+                <span v-else class="mx-auto w-16 h-16 aspect-square rounded-md flex items-center justify-center"
+                  >画像なし</span
+                >
               </td>
               <td class="px-4 py-3">
                 <div class="flex flex-col space-y-1">

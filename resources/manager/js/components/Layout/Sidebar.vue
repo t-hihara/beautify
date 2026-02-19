@@ -13,6 +13,7 @@ import {
   FolderIcon,
   ChevronDownIcon,
 } from "@heroicons/vue/24/outline";
+import { can } from "laravel-permission-to-vuejs";
 
 const { count: unloadedExportFileCount } = useUnloadedExportFileCount();
 const guard = useGuard();
@@ -22,7 +23,19 @@ const iconMap: Record<string, Component> = {
   export: FolderIcon,
   log: DocumentDuplicateIcon,
 };
-const menus = computed(() => (guard.value === "admin" ? adminMenu : shopMenu));
+const menus = computed(() => {
+  const raw = guard.value === "admin" ? adminMenu : shopMenu;
+  const canSee = (permission?: string) => !permission || can(permission);
+
+  return raw.flatMap((menu) => {
+    if (menu.children.length > 0) {
+      const visibleChildren = menu.children.filter((c) => canSee(c.permission));
+      if (visibleChildren.length === 0) return [];
+      return [{ ...menu, children: visibleChildren }];
+    }
+    return canSee(menu.permission) ? [menu] : [];
+  });
+});
 </script>
 
 <template>

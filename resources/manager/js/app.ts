@@ -31,6 +31,11 @@ createInertiaApp({
     return page;
   },
   setup({ el, App, props, plugin }) {
+    const permissions = props.initialPage.props.permissions;
+    if (permissions) {
+      (window as any).Laravel = (window as any).Laravel || {};
+      (window as any).Laravel.jsPermissions = typeof permissions === "string" ? JSON.parse(permissions) : permissions;
+    }
     createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(LaravelPermissionToVueJS)
