@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 import { computed, type Component } from "vue";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
@@ -13,8 +13,14 @@ import {
   FolderIcon,
   ChevronDownIcon,
 } from "@heroicons/vue/24/outline";
-import { can } from "laravel-permission-to-vuejs";
 
+const page = usePage();
+const permissions = computed(() => {
+  const raw = (page.props as { permissions?: string }).permissions;
+  if (typeof raw !== "string") return [];
+  const data = JSON.parse(raw) as { permissions?: string[] };
+  return Array.isArray(data?.permissions) ? data.permissions : [];
+});
 const { count: unloadedExportFileCount } = useUnloadedExportFileCount();
 const guard = useGuard();
 const iconMap: Record<string, Component> = {
@@ -25,7 +31,7 @@ const iconMap: Record<string, Component> = {
 };
 const menus = computed(() => {
   const raw = guard.value === "admin" ? adminMenu : shopMenu;
-  const canSee = (permission?: string) => !permission || can(permission);
+  const canSee = (permission?: string) => !permission || permissions.value.includes(permission);
 
   return raw.flatMap((menu) => {
     if (menu.children.length > 0) {
