@@ -2,6 +2,7 @@
 
 namespace App\UseCases\ShopStaff;
 
+use App\Enum\ShopStaffPositionTypeEnum;
 use App\Models\ShopStaff;
 use App\Models\User;
 use App\Utilities\RecursiveCovert;
@@ -24,9 +25,12 @@ class CreateShopStaffUseCase
             $convert   = RecursiveCovert::_convert($payload, 'snake');
             $userData  = Arr::except($convert, ['position', 'experience_years', 'image', 'description']);
             $staffData = Arr::except($convert, ['password', 'image']);
+            $role      = in_array($convert['position'], [ShopStaffPositionTypeEnum::MANAGER, ShopStaffPositionTypeEnum::SALON_MANAGER], true)
+                ? 'staff_owner'
+                : 'staff';
 
             $this->user->fill($userData)->save();
-            $this->user->assignRole(Role::findByName('staff', 'shop'));
+            $this->user->assignRole(Role::findByName($role, 'shop'));
             $this->user->shopStaff()->create($staffData);
 
             $image = $convert['image'] ?? null;
