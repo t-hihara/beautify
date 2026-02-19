@@ -79,12 +79,17 @@ export const shopMenu: MenuItem[] = [
       {
         id: 1,
         label: "店舗情報",
-        route: "shop.profile",
+        route: "shop.index",
       },
       {
         id: 2,
         label: "店舗スタッフ一覧",
         route: "shop.staffs.index",
+      },
+      {
+        id: 3,
+        label: "店舋スタッフ登録",
+        route: "shop.staffs.create",
       },
     ],
   },

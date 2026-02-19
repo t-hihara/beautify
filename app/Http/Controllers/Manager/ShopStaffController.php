@@ -31,7 +31,7 @@ class ShopStaffController extends Controller
     public function create(
         PrepareShopStaffCreateUseCase $useCase
     ): Response {
-        $data = $useCase();
+        $data = $useCase($this->getShopId());
         return Inertia::render('ShopStaff/ShopStaffForm', $data);
     }
 

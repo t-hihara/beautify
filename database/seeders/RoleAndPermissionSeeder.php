@@ -104,6 +104,7 @@ class RoleAndPermissionSeeder extends BaseSeeder
                 'view.shops',
                 'manage.shops',
                 'view.staffs',
+                'manage.staffs',
                 'export.staffs',
             ],
             'staff' => [

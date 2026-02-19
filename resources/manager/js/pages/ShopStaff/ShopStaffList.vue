@@ -219,7 +219,7 @@ watch(
                   <span class="flex items-center gap-1"><user-icon class="size-3 mt-0.5" />{{ staff.name }}</span>
                   <span class="flex items-center gap-1"><envelope-icon class="size-3 mt-0.5" />{{ staff.email }}</span>
                   <text-link
-                    :href="guard === 'admin' ? route('admin.shops.show', staff.shop.id) : route('shop.profile')"
+                    :href="guard === 'admin' ? route('admin.shops.show', staff.shop.id) : route('shop.index')"
                     class="flex items-center gap-1"
                     @click.stop
                     ><building-office-icon class="size-3 mt-0.5" />{{ staff.shop.name }}</text-link

@@ -8,10 +8,10 @@ use App\Models\Shop;
 
 class PrepareShopStaffCreateUseCase
 {
-    public function __invoke(): array
+    public function __invoke(?int $shopId = null): array
     {
         return [
-            'shops'       => Shop::get(['id', 'name']),
+            'shops'       => Shop::when($shopId, fn($q) => $q->where('id', $shopId))->get(['id', 'name']),
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'positions'   => ShopStaffPositionTypeEnum::options(),
         ];
