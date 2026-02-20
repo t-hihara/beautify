@@ -44,6 +44,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/', 'store')->name('store');
                 Route::get('/{staff}/edit', 'edit')->name('edit');
                 Route::patch('/{staff}', 'update')->name('update');
+                Route::delete('/{staff}', 'destroy')->name('delete');
             });
             Route::middleware(['permission:export.staffs'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');

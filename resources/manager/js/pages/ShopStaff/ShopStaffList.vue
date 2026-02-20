@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, useForm } from "@inertiajs/vue3";
+import { Head, router, useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
@@ -17,6 +17,7 @@ import {
 } from "@/common/js/components/Ui/ButtonIndex";
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
+import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
 import Drawer from "@manager/components/Ui/Drawer.vue";
 import Spinner from "@/common/js/components/Ui/Spinner.vue";
 
@@ -62,6 +63,7 @@ type SearchFormType = {
 };
 
 const guard = useGuard();
+const showDeleteModal = ref<boolean>(false);
 const showDrawer = ref<boolean>(false);
 const targetStaff = ref<ShopStaffType | null>(null);
 const imageLoaded = ref<Record<number, boolean>>({});
@@ -91,9 +93,39 @@ const search = (): void => {
   });
 };
 
+const deleteStaff = (): void => {
+  router.delete(route(`${guard.value}.staffs.delete`, targetStaff.value?.id), {
+    preserveState: true,
+    preserveScroll: true,
+    onFinish: () => {
+      closeDeleteModal();
+    },
+  });
+};
+
+const openDeleteModal = (id: number): void => {
+  const staff = shopStaffs.find((staff) => staff.id === id);
+  targetStaff.value = staff ?? null;
+  showDeleteModal.value = true;
+};
+
+const closeDeleteModal = (): void => {
+  showDeleteModal.value = false;
+};
+
+const resetTargetStaff = (): void => {
+  targetStaff.value = null;
+};
+
 const openDrawer = (id: number): void => {
   targetStaff.value = shopStaffs.find((staff) => staff.id === id) ?? null;
   showDrawer.value = true;
+};
+
+const exportFile = (type: "excel" | "csv"): void => {
+  type === "excel"
+    ? searchForm.get(route(`${guard.value}.staffs.excel`))
+    : searchForm.get(route(`${guard.value}.staffs.csv`));
 };
 
 const closeDrawer = (): void => {
@@ -102,12 +134,6 @@ const closeDrawer = (): void => {
 
 const onImageLoad = (id: number): void => {
   imageLoaded.value = { ...imageLoaded.value, [id]: true };
-};
-
-const exportFile = (type: "excel" | "csv"): void => {
-  type === "excel"
-    ? searchForm.get(route(`${guard.value}.staffs.excel`))
-    : searchForm.get(route(`${guard.value}.staffs.csv`));
 };
 
 watch(
@@ -199,7 +225,13 @@ watch(
               v-for="staff in shopStaffs"
               :key="staff.id"
               class="hover:bg-rose-100/50 transition ease-in-out duration-300 cursor-pointer"
-              @click="(e) => !(e.target as Element).closest('a') && openDrawer(staff.id)"
+              @click="
+                (e) => {
+                  if ((e.target as Element).closest('a')) return;
+                  if ((e.target as Element).closest('button')) return;
+                  openDrawer(staff.id);
+                }
+              "
             >
               <td class="px-4 py-3 text-center">{{ staff.id }}</td>
               <td class="px-4 py-3 text-center">
@@ -243,6 +275,9 @@ watch(
                   <button-icon :href="route(`${guard}.staffs.edit`, staff.id)"
                     ><pencil-square-icon class="size-6"
                   /></button-icon>
+                  <button-icon-danger @click="openDeleteModal(staff.id)"
+                    ><trash-icon class="size-6"
+                  /></button-icon-danger>
                 </div>
               </td>
             </tr>
@@ -256,6 +291,25 @@ watch(
       </table>
     </div>
     <pagination :links="links" :pagination="pagination" :per-page="searchForm.perPage" class="mt-4" />
+    <dialog-modal
+      v-model="showDeleteModal"
+      title="店舗スタッフ削除"
+      show-close
+      dialog-class="max-w-2xl w-full"
+      @close="closeDeleteModal"
+      @after-leave="resetTargetStaff"
+    >
+      <div class="mt-4">
+        <div v-if="targetStaff" class="flex flex-col space-y-1">
+          <span>該当の店舗を削除しますか？</span>
+          <span class="font-semibold">{{ targetStaff.name }}</span>
+        </div>
+        <div class="mt-4 pt-4 flex justify-center items-center gap-4 border-t border-zinc-200">
+          <button-tertiary @click="closeDeleteModal">キャンセル</button-tertiary>
+          <button-primary @click="deleteStaff">削除する</button-primary>
+        </div>
+      </div>
+    </dialog-modal>
     <drawer
       v-model="showDrawer"
       show-close

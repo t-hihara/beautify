@@ -7,6 +7,7 @@ use App\Http\Requests\Manager\Form\FormShopStaffRequest;
 use App\Http\Requests\Manager\Search\SearchShopStaffRequest;
 use App\Models\ShopStaff;
 use App\UseCases\ShopStaff\CreateShopStaffUseCase;
+use App\UseCases\ShopStaff\DeleteShopStaffUseCase;
 use App\UseCases\ShopStaff\ExportShopStaffUseCase;
 use App\UseCases\ShopStaff\FetchShopStaffListUseCase;
 use App\UseCases\ShopStaff\PrepareShopStaffCreateUseCase;
@@ -72,6 +73,20 @@ class ShopStaffController extends Controller
         }
 
         return redirect()->route($this->getRoutePrefix() . '.staffs.index')->with('success', '更新に成功しました。');
+    }
+
+    public function destroy(
+        ShopStaff $staff,
+        DeleteShopStaffUseCase $useCase
+    ): RedirectResponse {
+        try {
+            $useCase($staff);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '削除に失敗しました。');
+        }
+
+        return back()->with('success', '削除に成功しました。');
     }
 
     public function exportExcel(
