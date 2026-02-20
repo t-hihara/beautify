@@ -16,7 +16,6 @@ class CreateShopStaffUseCase
 {
     public function __construct(
         private User $user,
-        private ShopStaff $staff,
     ) {}
 
     public function __invoke(array $payload): ?ShopStaff
@@ -31,12 +30,12 @@ class CreateShopStaffUseCase
 
             $this->user->fill($userData)->save();
             $this->user->assignRole(Role::findByName($role, 'shop'));
-            $this->user->shopStaff()->create($staffData);
+            $staff = $this->user->shopStaff()->create($staffData);
 
             $image = $convert['image'] ?? null;
             if ($image instanceof UploadedFile) {
                 $disk = config('filesystems.default');
-                $path = $image->store('shop_staffs/' . $this->staff->id, $disk);
+                $path = $image->store('shop_staffs/' . $staff->id, $disk);
                 $data = [
                     'disk'      => $disk,
                     'file_path' => $path,
@@ -45,13 +44,13 @@ class CreateShopStaffUseCase
                     'file_size' => $image->getSize(),
                 ];
 
-                if ($old = $this->staff->image) {
+                if ($old = $staff->image) {
                     Storage::disk($old->disk)->delete($old->file_path);
                 }
-                $this->staff->image()->create($data);
+                $staff->image()->create($data);
             }
 
-            return $this->staff;
+            return $staff;
         });
     }
 }

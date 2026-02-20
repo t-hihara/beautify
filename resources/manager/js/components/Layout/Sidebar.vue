@@ -15,12 +15,6 @@ import {
 } from "@heroicons/vue/24/outline";
 
 const page = usePage();
-const permissions = computed(() => {
-  const raw = (page.props as { permissions?: string }).permissions;
-  if (typeof raw !== "string") return [];
-  const data = JSON.parse(raw) as { permissions?: string[] };
-  return Array.isArray(data?.permissions) ? data.permissions : [];
-});
 const { count: unloadedExportFileCount } = useUnloadedExportFileCount();
 const guard = useGuard();
 const iconMap: Record<string, Component> = {
@@ -29,6 +23,12 @@ const iconMap: Record<string, Component> = {
   export: FolderIcon,
   log: DocumentDuplicateIcon,
 };
+const permissions = computed(() => {
+  const raw = (page.props as { permissions?: string }).permissions;
+  if (typeof raw !== "string") return [];
+  const data = JSON.parse(raw) as { permissions?: string[] };
+  return Array.isArray(data?.permissions) ? data.permissions : [];
+});
 const menus = computed(() => {
   const raw = guard.value === "admin" ? adminMenu : shopMenu;
   const canSee = (permission?: string) => !permission || permissions.value.includes(permission);
