@@ -236,13 +236,20 @@ watch(
               <td class="px-4 py-3 text-center">{{ staff.id }}</td>
               <td class="px-4 py-3 text-center">
                 <template v-if="staff.image">
-                  <img
-                    :src="staff.image.filePath"
-                    alt=""
-                    class="mx-auto w-16 h-16 aspect-square object-center rounded-md"
-                    @load="onImageLoad(staff.image.id)"
-                  />
-                  <spinner v-show="!imageLoaded[staff.image.id]" />
+                  <div class="relative inline-block w-16 h-16">
+                    <img
+                      :src="staff.image.filePath"
+                      alt=""
+                      class="w-full h-full aspect-square object-center rounded-md"
+                      @load="onImageLoad(staff.image.id)"
+                    />
+                    <div
+                      v-show="!imageLoaded[staff.image.id]"
+                      class="absolute inset-0 flex items-center justify-center rounded-md bg-zinc-100/80"
+                    >
+                      <spinner />
+                    </div>
+                  </div>
                 </template>
                 <span v-else class="mx-auto w-16 h-16 aspect-square rounded-md flex items-center justify-center"
                   >画像なし</span
