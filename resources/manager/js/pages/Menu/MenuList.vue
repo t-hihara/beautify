@@ -4,7 +4,7 @@ import { watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
-import { ButtonPrimary, TextLink } from "@/common/js/components/Ui/ButtonIndex";
+import { ButtonPrimary, ButtonIcon, TextLink } from "@/common/js/components/Ui/ButtonIndex";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
 import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
@@ -171,9 +171,15 @@ watch(
               <td class="px-4 py-3">{{ menu.duration }}分</td>
               <td class="px-4 py-3">{{ menu.activeFlag }}</td>
               <td class="px-4 py-3">
-                <span class="line-clamp-2">{{ menu.description }}</span>
+                <span class="line-clamp-2">{{ menu.description ?? "----" }}</span>
               </td>
-              <td class="px-4 py-3"></td>
+              <td class="px-4 py-3">
+                <div class="flex items-center justify-end gap-2">
+                  <button-icon :href="route(`${guard}.menus.edit`, menu.id)"
+                    ><pencil-square-icon class="size-6"
+                  /></button-icon>
+                </div>
+              </td>
             </tr>
           </template>
           <template v-else>
