@@ -13,7 +13,8 @@ class FetchMenuListUseCase
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
-        $menus = Menu::byName($convert['name'] ?? null)
+        $menus = Menu::with(['shop'])
+            ->byName($convert['name'] ?? null)
             ->byTypes($convert['menu_types'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
             ->paginate(20)
@@ -26,6 +27,10 @@ class FetchMenuListUseCase
                 'description' => $menu->description,
                 'activeFlag'  => $menu->active_flag->description(),
                 'sortOrder'   => $menu->sortOrder,
+                'shop'        => [
+                    'id'   => $menu->shop->id,
+                    'name' => $menu->shop->name,
+                ],
             ]);
 
         return [

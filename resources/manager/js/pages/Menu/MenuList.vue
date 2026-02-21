@@ -3,10 +3,10 @@ import { Head, router, useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
+import { useGuard } from "@manager/composables/useGuard";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
 import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
-import { useGuard } from "../../composables/useGuard";
 
 type FilterType = {
   name: string;
@@ -23,6 +23,7 @@ type MenuType = {
   description: string | null;
   activeFlag: string;
   sortOrder: number;
+  shop: EnumType;
 };
 
 type SearchFormType = {
@@ -96,6 +97,7 @@ watch(
               <div class="flex flex-col">
                 <span>タイプ</span>
                 <span>メニュー名</span>
+                <span>店舗名</span>
               </div>
             </th>
             <th scope="col" class="px-4 py-3">料金</th>
@@ -113,6 +115,7 @@ watch(
                 <div class="flex flex-col">
                   <span>{{ menu.type }}</span>
                   <span>{{ menu.name }}</span>
+                  <span>{{ menu.shop.name }}</span>
                 </div>
               </td>
               <td class="px-4 py-3">¥{{ menu.price.toLocaleString() }}</td>
