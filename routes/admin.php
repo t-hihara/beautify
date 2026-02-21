@@ -20,6 +20,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth:admin'])->group(function () {
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
         Route::prefix('shops')->name('shops.')->controller(ShopController::class)->group(function () {
             Route::middleware(['permission:manage.shops'])->group(function () {
                 Route::get('/create', 'create')->name('create');
@@ -38,6 +39,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/{shop}/staffs', 'staffs')->name('staff');
             });
         });
+
         Route::prefix('staffs')->name('staffs.')->controller(ShopStaffController::class)->group(function () {
             Route::middleware(['permission:view.staffs'])->get('/', 'index')->name('index');
             Route::middleware(['permission:manage.staffs'])->group(function () {
@@ -52,14 +54,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/export/csv', 'exportCsv')->name('csv');
             });
         });
+
         Route::prefix('menus')->name('menus.')->controller(MenuController::class)->group(function () {
             Route::middleware(['permission:view.menus'])->group(function () {
                 Route::get('/', 'index')->name('index');
             });
+            Route::middleware(['permission:export.menus'])->group(function () {
+                Route::get('/export/excel', 'exportExcel')->name('excel');
+                Route::get('/export/csv', 'exportCsv')->name('csv');
+            });
         });
+
         Route::prefix('logs')->name('logs.')->controller(ActivityLogController::class)->group(function () {
             Route::middleware('permission:view.logs')->get('/', 'index')->name('index');
         });
+
         Route::prefix('exports')->name('exports.')->controller(ExportFileController::class)->group(function () {
             Route::middleware('permission:view.exports')->group(function () {
                 Route::get('/', 'index')->name('index');

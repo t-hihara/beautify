@@ -27,12 +27,6 @@ Route::prefix('shop')->name('shop.')->group(function () {
             });
         });
 
-        Route::prefix('menus')->name('menus.')->controller(MenuController::class)->group(function () {
-            Route::middleware(['permission:view.menus'])->group(function () {
-                Route::get('/', 'index')->name('index');
-            });
-        });
-
         Route::prefix('staffs')->name('staffs.')->controller(ShopStaffController::class)->group(function () {
             Route::middleware(['permission:view.staffs'])->group(function () {
                 Route::get('/', 'index')->name('index');
@@ -45,6 +39,16 @@ Route::prefix('shop')->name('shop.')->group(function () {
                 Route::delete('/{staff}', 'destroy')->name('delete');
             });
             Route::middleware(['permission:export.staffs'])->group(function () {
+                Route::get('/export/excel', 'exportExcel')->name('excel');
+                Route::get('/export/csv', 'exportCsv')->name('csv');
+            });
+        });
+
+        Route::prefix('menus')->name('menus.')->controller(MenuController::class)->group(function () {
+            Route::middleware(['permission:view.menus'])->group(function () {
+                Route::get('/', 'index')->name('index');
+            });
+            Route::middleware(['permission:export.menus'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
                 Route::get('/export/csv', 'exportCsv')->name('csv');
             });
