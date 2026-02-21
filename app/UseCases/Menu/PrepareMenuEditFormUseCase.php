@@ -5,6 +5,7 @@ namespace App\UseCases\Menu;
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\MenuTypeEnum;
 use App\Models\Menu;
+use App\Models\Shop;
 
 class PrepareMenuEditFormUseCase
 {
@@ -13,6 +14,7 @@ class PrepareMenuEditFormUseCase
         return [
             'menu' => [
                 'id'          => $menu->id,
+                'shopId'      => $menu->shop_id,
                 'name'        => $menu->name,
                 'type'        => $menu->type->value,
                 'price'       => $menu->price,
@@ -22,6 +24,7 @@ class PrepareMenuEditFormUseCase
             ],
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'menuTypes'   => MenuTypeEnum::options(),
+            'shops'       => Shop::get(['id', 'name']),
         ];
     }
 }
