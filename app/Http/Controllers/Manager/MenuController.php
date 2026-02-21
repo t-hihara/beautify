@@ -33,13 +33,13 @@ class MenuController extends Controller
     public function update(FormMenuRequest $request, Menu $menu, UpdateMenuUseCase $useCase): RedirectResponse
     {
         try {
-            $useCase($request->validated());
+            $useCase($request->validated(), $menu);
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '更新に失敗しました。');
         }
 
-        return redirect()->route($this->getRoutePrefix() . '.menus.index') - with('success', '更新に成功しました。');
+        return redirect()->route($this->getRoutePrefix() . '.menus.index')->with('success', '更新に成功しました。');
     }
 
     public function exportExcel(SearchMenuRequest $request, ExportMenuUseCase $useCase): RedirectResponse
