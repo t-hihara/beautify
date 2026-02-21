@@ -11,7 +11,8 @@ import Pagination from "@manager/components/Ui/Pagination.vue";
 
 type FilterType = {
   name: string;
-  menuTypes: any[];
+  types: string[];
+  shopIds: number[];
   activeFlag: string;
 };
 
@@ -29,7 +30,8 @@ type MenuType = {
 
 type SearchFormType = {
   name: string;
-  menuTypes: any[];
+  types: string[];
+  shopIds: number[];
   activeFlag: string;
 };
 
@@ -40,12 +42,14 @@ const { filters } = defineProps<{
   filters: FilterType;
   menuTypes: EnumType[];
   activeFlags: EnumType[];
+  shops: EnumType[];
 }>();
 
 const guard = useGuard();
 const searchForm = useForm<SearchFormType>({
   name: filters.name || "",
-  menuTypes: filters.menuTypes || [],
+  types: filters.types || [],
+  shopIds: filters.shopIds || [],
   activeFlag: filters.activeFlag || "",
 });
 
@@ -74,9 +78,17 @@ watch(
       <div class="grid grid-cols-4 gap-4">
         <search-text v-model="searchForm.name" title="メニュー名" field="name" placeholder="メニュー名で検索" />
         <search-multi-select
-          v-model="searchForm.menuTypes"
+          v-if="guard === 'admin'"
+          v-model="searchForm.shopIds"
+          field="shopIds"
+          title="店舗"
+          show-clear
+          :items="shops"
+        />
+        <search-multi-select
+          v-model="searchForm.types"
           title="メニュータイプ"
-          field="menuTypes"
+          field="types"
           show-clear
           :items="menuTypes"
         />

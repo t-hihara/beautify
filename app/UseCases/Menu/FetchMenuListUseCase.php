@@ -5,6 +5,7 @@ namespace App\UseCases\Menu;
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\MenuTypeEnum;
 use App\Models\Menu;
+use App\Models\Shop;
 use App\Utilities\RecursiveCovert;
 
 class FetchMenuListUseCase
@@ -39,6 +40,7 @@ class FetchMenuListUseCase
             'filters'     => $filters,
             'menuTypes'   => MenuTypeEnum::options(),
             'activeFlags' => ActiveFlagTypeEnum::options(),
+            'shops'       => Shop::get(['id', 'name']),
             'menus'       => $menus->items(),
             'links'       => $menus->linkCollection(),
             'pagination'  => [
