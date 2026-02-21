@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Manager\Form\FormMenuRequest;
 use App\Http\Requests\Manager\Search\SearchMenuRequest;
 use App\Models\Menu;
 use App\UseCases\Menu\ExportMenuUseCase;
 use App\UseCases\Menu\FetchMenuListUseCase;
 use App\UseCases\Menu\PrepareMenuEditFormUseCase;
+use App\UseCases\Menu\UpdateMenuUseCase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -26,6 +28,18 @@ class MenuController extends Controller
     {
         $data = $useCase($menu);
         return Inertia::render('Menu/MenuForm', $data);
+    }
+
+    public function update(FormMenuRequest $request, Menu $menu, UpdateMenuUseCase $useCase): RedirectResponse
+    {
+        try {
+            $useCase($request->validated());
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '更新に失敗しました。');
+        }
+
+        return redirect()->route($this->getRoutePrefix() . '.menus.index') - with('success', '更新に成功しました。');
     }
 
     public function exportExcel(SearchMenuRequest $request, ExportMenuUseCase $useCase): RedirectResponse
@@ -59,5 +73,10 @@ class MenuController extends Controller
         }
 
         return auth()->user()->shopStaff?->shop_id;
+    }
+
+    private function getRoutePrefix(): string
+    {
+        return request()->is('admin/*') ? 'admin' : 'shop';
     }
 }
