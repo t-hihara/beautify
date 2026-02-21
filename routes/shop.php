@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Manager\AuthController;
+use App\Http\Controllers\Manager\MenuController;
 use App\Http\Controllers\Manager\ShopController;
 use App\Http\Controllers\Manager\ShopDashboardController;
 use App\Http\Controllers\Manager\ShopProfileController;
@@ -23,6 +24,12 @@ Route::prefix('shop')->name('shop.')->group(function () {
             Route::middleware(['permission:view.shops'])->group(function () {
                 Route::get('/profile', 'index')->name('index');
                 Route::get('/profile/staffs', 'staffs')->name('staff');
+            });
+        });
+
+        Route::prefix('menus')->name('menus.')->controller(MenuController::class)->group(function () {
+            Route::middleware(['permission:view.menus'])->group(function () {
+                Route::get('/', 'index')->name('index');
             });
         });
 
