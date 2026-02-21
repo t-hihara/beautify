@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Manager;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Search\SearchMenuRequest;
+use App\Models\Menu;
 use App\UseCases\Menu\ExportMenuUseCase;
 use App\UseCases\Menu\FetchMenuListUseCase;
+use App\UseCases\Menu\PrepareMenuEditFormUseCase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -18,6 +20,12 @@ class MenuController extends Controller
     {
         $data = $useCase($request->validated(), $this->getShopId());
         return Inertia::render('Menu/MenuList', $data);
+    }
+
+    public function exit(Menu $menu, PrepareMenuEditFormUseCase $useCase): Response
+    {
+        $data = $useCase($menu);
+        return Inertia::render('Menu/MenuForm', $data);
     }
 
     public function exportExcel(SearchMenuRequest $request, ExportMenuUseCase $useCase): RedirectResponse
