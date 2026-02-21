@@ -61,6 +61,14 @@ const activeFlag = computed<boolean>({
     form.activeFlag = v ? "active" : "inactive";
   },
 });
+
+const submit = (): void => {
+  if (isEdit.value) {
+    form.patch(route(`${guard.value}.menus.update`, form?.id));
+  } else {
+    //
+  }
+};
 </script>
 
 <template>
@@ -70,7 +78,7 @@ const activeFlag = computed<boolean>({
       <h2 class="text-3xl">{{ isEdit ? "メニュー編集" : "メニュー登録" }}</h2>
     </div>
     <div class="mt-6">
-      <form @submit.prevent>
+      <form @submit.prevent="submit">
         <div class="px-3 py-1 rounded-md bg-zinc-200">
           <p class="text-sm font-semibold text-zinc-800">メニュー情報</p>
         </div>
@@ -118,13 +126,7 @@ const activeFlag = computed<boolean>({
             required
             :error="form.errors"
           />
-          <form-switch-toggle
-            v-model="activeFlag"
-            title="有効状態"
-            field="activeFlag"
-            required
-            :error="form.errors"
-          />
+          <form-switch-toggle v-model="activeFlag" title="有効状態" field="activeFlag" required :error="form.errors" />
           <form-textarea
             v-model="form.description"
             title="説明"
