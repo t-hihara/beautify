@@ -27,9 +27,7 @@ class ShopController extends Controller
         SearchShopRequest $request,
         FetchShopListUseCase $useCase
     ): Response {
-        $filters = $request->validated();
-        $data    = $useCase($filters);
-
+        $data    = $useCase($request->validated());
         return Inertia::render('Shop/ShopList', $data);
     }
 
@@ -45,8 +43,7 @@ class ShopController extends Controller
         CreateShopUseCase $useCase
     ): RedirectResponse {
         try {
-            $validated = $request->validated();
-            $useCase($validated);
+            $useCase($request->validated());
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '登録に失敗しました。');
@@ -85,8 +82,7 @@ class ShopController extends Controller
         UpdateShopUseCase $useCase
     ): RedirectResponse {
         try {
-            $validated = $request->validated();
-            $useCase($validated, $shop);
+            $useCase($request->validated(), $shop);
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '更新に失敗しました。');
@@ -114,8 +110,7 @@ class ShopController extends Controller
         ExportShopUseCase $useCase
     ): RedirectResponse {
         try {
-            $validated = $request->validated();
-            $useCase(auth()->id(), $validated, 'xlsx');
+            $useCase(auth()->id(), $request->validated(), 'xlsx');
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', 'Excelエクスポートに失敗しました。');
@@ -129,8 +124,7 @@ class ShopController extends Controller
         ExportShopUseCase $useCase
     ): RedirectResponse {
         try {
-            $validated = $request->validated();
-            $useCase(auth()->id(), $validated, 'csv');
+            $useCase(auth()->id(), $request->validated(), 'csv');
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', 'CSVエクスポートに失敗しました。');

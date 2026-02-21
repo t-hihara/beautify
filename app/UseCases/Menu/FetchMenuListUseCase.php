@@ -2,6 +2,7 @@
 
 namespace App\UseCases\Menu;
 
+use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\MenuTypeEnum;
 use App\Models\Menu;
 use App\Utilities\RecursiveCovert;
@@ -12,7 +13,10 @@ class FetchMenuListUseCase
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
-        $menus = Menu::paginate(20)
+        $menus = Menu::byName($convert['name'] ?? null)
+            ->byTypes($convert['types'] ?? null)
+            ->byActiveFlag($convert['active_flag'] ?? null)
+            ->paginate(20)
             ->through(fn($menu) => [
                 'id'          => $menu->id,
                 'name'        => $menu->name,
@@ -25,10 +29,12 @@ class FetchMenuListUseCase
             ]);
 
         return [
-            'filters'    => $filters,
-            'menus'      => $menus->items(),
-            'links'      => $menus->linkCollection(),
-            'pagination' => [
+            'filters'     => $filters,
+            'menuTypes'   => MenuTypeEnum::options(),
+            'activeFlags' => ActiveFlagTypeEnum::options(),
+            'menus'       => $menus->items(),
+            'links'       => $menus->linkCollection(),
+            'pagination'  => [
                 'currentPage' => $menus->currentPage(),
                 'lastPage'    => $menus->lastPage(),
                 'prev'        => $menus->previousPageUrl(),

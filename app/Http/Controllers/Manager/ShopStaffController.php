@@ -41,8 +41,7 @@ class ShopStaffController extends Controller
         CreateShopStaffUseCase $useCase,
     ): RedirectResponse {
         try {
-            $validated = $request->validated();
-            $useCase($validated);
+            $useCase($request->validated());
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '作成に失敗しました。');
@@ -65,8 +64,7 @@ class ShopStaffController extends Controller
         UpdateShopStaffUseCase $useCase
     ): RedirectResponse {
         try {
-            $validated = $request->validated();
-            $useCase($validated, $staff);
+            $useCase($request->validated(), $staff);
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '更新に失敗しました。');
@@ -94,8 +92,7 @@ class ShopStaffController extends Controller
         ExportShopStaffUseCase $useCase,
     ): RedirectResponse {
         try {
-            $validated = $request->validated();
-            $useCase(auth()->id(), $validated, $this->getShopId(), 'xlsx');
+            $useCase(auth()->id(), $request->validated(), $this->getShopId(), 'xlsx');
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', 'Excelエクスポートに失敗しました。');
@@ -109,8 +106,7 @@ class ShopStaffController extends Controller
         ExportShopStaffUseCase $useCase,
     ): RedirectResponse {
         try {
-            $validated = $request->validated();
-            $useCase(auth()->id(), $validated, $this->getShopId(), 'csv');
+            $useCase(auth()->id(), $request->validated(), $this->getShopId(), 'csv');
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', 'Csvエクスポートに失敗しました。');

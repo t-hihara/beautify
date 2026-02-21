@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\MenuTypeEnum;
 use App\Models\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -38,6 +39,21 @@ class Menu extends Model
     /* ================================================================================
                                         アクセサ
     ================================================================================ */
+
+    public function scopeByName(Builder $query, ?string $name): Builder
+    {
+        return $query->when($name, fn($q) => $q->where('name', 'like', "%$name%"));
+    }
+
+    public function scopeByTypes(Builder $query, ?array $types): Builder
+    {
+        return $query->when($types, fn($q) => $q->whereIn("type", $types));
+    }
+
+    public function scopeByActiveFlag(Builder $query, ?string $flag): Builder
+    {
+        return $query->when($flag, fn($q) => $q->where('active_flag', $flag));
+    }
 
     /* ================================================================================
                                         スコープ
