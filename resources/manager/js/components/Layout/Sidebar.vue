@@ -8,10 +8,11 @@ import { adminMenu, shopMenu } from "@manager/config/SidebarMenu";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 import {
   BuildingStorefrontIcon,
-  HomeIcon,
+  ChevronDownIcon,
   DocumentDuplicateIcon,
   FolderIcon,
-  ChevronDownIcon,
+  HomeIcon,
+  ListBulletIcon,
 } from "@heroicons/vue/24/outline";
 
 const page = usePage();
@@ -20,6 +21,7 @@ const guard = useGuard();
 const iconMap: Record<string, Component> = {
   dashboard: HomeIcon,
   shop: BuildingStorefrontIcon,
+  menu: ListBulletIcon,
   export: FolderIcon,
   log: DocumentDuplicateIcon,
 };

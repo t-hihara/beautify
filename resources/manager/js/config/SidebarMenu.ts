@@ -54,6 +54,18 @@ export const adminMenu: MenuItem[] = [
     ],
   },
   {
+    id: 3,
+    label: "メニュー管理",
+    icon: "menu",
+    children: [
+      {
+        id: 1,
+        label: "メニュー一覧",
+        route: "admin.menus.index",
+      },
+    ],
+  },
+  {
     id: 98,
     label: "出力ファイル管理",
     icon: "export",
@@ -78,7 +90,7 @@ export const shopMenu: MenuItem[] = [
     children: [],
   },
   {
-    id: 3,
+    id: 2,
     label: "店舗管理",
     icon: "shop",
     children: [
@@ -99,6 +111,18 @@ export const shopMenu: MenuItem[] = [
         label: "店舋スタッフ登録",
         route: "shop.staffs.create",
         permission: "manage.staffs",
+      },
+    ],
+  },
+  {
+    id: 3,
+    label: "メニュー管理",
+    icon: "menu",
+    children: [
+      {
+        id: 1,
+        label: "メニュー一覧",
+        route: "shop.menus.index",
       },
     ],
   },
