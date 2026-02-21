@@ -17,7 +17,7 @@ class UpdateShopStaffUseCase
     {
         return DB::transaction(function () use ($payload, $staff) {
             $convert = RecursiveCovert::_convert($payload, 'snake');
-            $role = in_array($convert['position'], [ShopStaffPositionTypeEnum::MANAGER->value, ShopStaffPositionTypeEnum::SALON_MANAGER->value], true)
+            $role    = in_array($convert['position'], [ShopStaffPositionTypeEnum::MANAGER->value, ShopStaffPositionTypeEnum::SALON_MANAGER->value], true)
                 ? 'staff_owner'
                 : 'staff';
             $staff->fill(Arr::except($convert, 'image'))->save();

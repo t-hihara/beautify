@@ -24,7 +24,7 @@ class CreateShopStaffUseCase
             $convert   = RecursiveCovert::_convert($payload, 'snake');
             $userData  = Arr::except($convert, ['position', 'experience_years', 'image', 'description']);
             $staffData = Arr::except($convert, ['password', 'image']);
-            $role = in_array($convert['position'], [ShopStaffPositionTypeEnum::MANAGER->value, ShopStaffPositionTypeEnum::SALON_MANAGER->value], true)
+            $role      = in_array($convert['position'], [ShopStaffPositionTypeEnum::MANAGER->value, ShopStaffPositionTypeEnum::SALON_MANAGER->value], true)
                 ? 'staff_owner'
                 : 'staff';
 
