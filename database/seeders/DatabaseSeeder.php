@@ -27,12 +27,14 @@ class DatabaseSeeder extends Seeder
                 CustomerSeeder::class,
                 UploadedImageSeeder::class,
                 ExportFileSeeder::class,
+                MenuSeeder::class,
             ]);
         } finally {
             Schema::enableForeignKeyConstraints();
             $end = microtime(true);
             $time = $end - $start;
-            \Log::info("実行時間: {$time}秒");
+            \Log::info('==================================');
+            \Log::info("トータル実行時間: {$time}秒");
         }
     }
 }

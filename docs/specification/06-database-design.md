@@ -3,6 +3,9 @@
 ## 概要
 このドキュメントでは、美容室サロン予約システムのデータベース設計の概要を説明します。
 
+- **メニューとプラン**: 単品の施術は `menus`、複数メニューの組み合わせは `plans` で管理し、中間テーブル `plan_menu` で紐付ける。予約はプラン単位または単品メニュー単位で行う（`reservations.plan_id` / `reservations.menu_id` のいずれか）。
+- **メニューカテゴリ**: `menu_categories` でカット・カラー・パーマ等の種類をマスタ管理し、ユーザー・マネージャーによる検索・絞り込み・集計に利用する。画像はプラン単位で持つことを推奨（`uploaded_images` ポリモーフィック）。
+
 ## 主要テーブル
 
 ### 1. users（ユーザー）
@@ -64,6 +67,7 @@
 - `prefecture` (多対1) - 都道府県
 - `shop_images` (1対多) - 店舗画像
 - `menus` (1対多)
+- `plans` (1対多)
 - `staff` (1対多)
 - `reservations` (1対多)
 - `shop_managers` (多対多) - 店舗店長との関連
@@ -106,8 +110,9 @@
 - `updated_at` (timestamp)
 
 **リレーション**:
-- 親側（Shop, ShopStaff, Menu 等）が `morphMany(UploadedImage::class, 'imageable')` で複数枚保持
+- 親側（Shop, ShopStaff, Plan 等）が `morphMany(UploadedImage::class, 'imageable')` で複数枚保持
 - 「代表1枚」だけ欲しい場合は `morphOne` で先頭1件（orderBy で id 等を指定）。ギャラリーは `images` の2件目以降で取得
+- プラン画像は Plan に `morphOne` で持たせる想定（一覧・詳細の代表画像用）。メニュー単品の画像は任意（持たせる場合は同様にポリモーフィックで可）
 
 **インデックス**:
 - `imageable_type`, `imageable_id` - 親ごとの取得
@@ -118,26 +123,105 @@
 
 ---
 
+### 2.3 menu_categories（メニューカテゴリマスタ）
+メニューの種類（カット・カラー・パーマ等）を管理するマスタ。ユーザー・マネージャーによる検索・絞り込み・集計に利用する。
+
+**カラム**:
+- `id` (bigint, primary key)
+- `name` (string) - 表示名（例: カット、カラー、パーマ、トリートメント、ヘッドスパ）
+- `code` (string, nullable) - 識別用コード（cut, color, perm 等）。検索・Enum 連携用
+- `sort_order` (integer, nullable) - 表示順
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+**リレーション**:
+- `menus` (1対多)
+
+**備考**:
+- システム共通で固定する場合は `shop_id` を持たない1本のマスタとする。店舗ごとにカテゴリを変えたい場合は `shop_id` を追加して店舗ごとのマスタとする。
+
+---
+
 ### 3. menus（メニュー）
-ヘアメニューを管理するテーブル
+単品のヘアメニュー（施術）を管理するテーブル。プランは複数メニューの組み合わせとして別テーブル（plans / plan_menu）で管理する。
 
 **カラム**:
 - `id` (bigint, primary key)
 - `shop_id` (bigint, foreign key) - 店舗ID
-- `name` (string) - メニュー名（カット、カラー、パーマなど）
+- `menu_category_id` (bigint, foreign key, nullable) - メニューカテゴリID（検索・絞り込み・集計用）
+- `name` (string) - メニュー名（例: カット、全体カラー、縮毛矯正）
 - `description` (text, nullable) - 説明
 - `price` (decimal) - 料金
-- `duration` (integer) - 所要時間（分）（カット30分、カラー90分など）
-- `image_path` (string, nullable) - 画像パス
-- `category` (string, nullable) - カテゴリー（カット、カラー、パーマ、トリートメント、ヘッドスパなど）
+- `duration` (integer) - 所要時間（分）
 - `is_active` (boolean, default: true) - 公開状態
+- `sort_order` (integer, nullable) - 表示順
 - `created_at` (timestamp)
 - `updated_at` (timestamp)
 
 **リレーション**:
 - `shop` (多対1)
+- `menu_category` (多対1, nullable)
 - `reservations` (1対多)
 - `staff` (多対多) - 担当スタイリスト
+- `plans` (多対多) - このメニューを含むプラン（中間テーブル `plan_menu` 経由）
+
+**備考**:
+- 画像は任意。持たせる場合は `uploaded_images` のポリモーフィックで紐付ける。プラン側に代表画像を持たせる運用を推奨。
+
+---
+
+### 3.1 plans（プラン）
+複数メニューを組み合わせた「プラン」を管理するテーブル。予約時に選ばれる単位として、画像・割引・適用条件などをプラン単位で持つ。
+
+**カラム**:
+- `id` (bigint, primary key)
+- `shop_id` (bigint, foreign key) - 店舗ID
+- `name` (string) - プラン名（例: カット＋カラー＋トリートメント）
+- `description` (text, nullable) - 説明
+- `total_duration` (integer) - 総所要時間（分）
+- `list_price` (decimal, nullable) - 通常料金（割引前）
+- `selling_price` (decimal) - 販売料金（割引後。list_price が null の場合は単価として扱う）
+- `discount_label` (string, nullable) - 表示用ラベル（例: 20%OFF、初回限定）
+- `condition_type` (string, nullable) - 適用条件種別（first_visit / weekday / weekend / first_n_visits 等。Enum 推奨）
+- `condition_value` (integer, nullable) - 条件の値（例: first_n_visits の場合は回数）
+- `benefit_text` (text, nullable) - 特典文言（口コミで〇〇プレゼント等）
+- `is_active` (boolean, default: true) - 公開状態
+- `sort_order` (integer, nullable) - 表示順
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+**リレーション**:
+- `shop` (多対1)
+- `menus` (多対多) - このプランに含まれるメニュー（中間テーブル `plan_menu` 経由）
+- `image` (morphOne, UploadedImage) - プラン代表画像（一覧・詳細用）
+- `reservations` (1対多)
+
+**インデックス**:
+- `shop_id`, `is_active` - 店舗の公開プラン検索
+
+---
+
+### 3.2 plan_menu（プラン－メニュー 中間テーブル）
+プランに含まれるメニューを管理する中間テーブル。
+
+**カラム**:
+- `id` (bigint, primary key)
+- `plan_id` (bigint, foreign key) - プランID
+- `menu_id` (bigint, foreign key) - メニューID
+- `sort_order` (integer, nullable) - プラン内の表示順
+- `created_at` (timestamp)
+- `updated_at` (timestamp)
+
+**リレーション**:
+- `plan` (多対1)
+- `menu` (多対1)
+
+**ユニーク制約**:
+- `plan_id`, `menu_id` の組み合わせ
+
+**インデックス**:
+- `plan_id` - プランに含まれるメニュー取得
+- `menu_id` - メニューが含まれるプラン一覧取得
 
 ---
 
@@ -217,7 +301,8 @@
 - `shop_id` (bigint, foreign key) - 店舗ID
 - `user_id` (bigint, foreign key, nullable) - ユーザーID（ゲスト予約の場合はnull）
 - `customer_id` (bigint, foreign key, nullable) - 顧客ID（ログインユーザーの顧客プロフィール。ゲスト予約の場合はnull）
-- `menu_id` (bigint, foreign key) - メニューID
+- `plan_id` (bigint, foreign key, nullable) - プランID（プラン予約の場合。単品予約の場合はnull）
+- `menu_id` (bigint, foreign key, nullable) - メニューID（単品予約の場合。プラン予約の場合はnull）
 - `staff_id` (bigint, foreign key, nullable) - スタイリストID
 - `reservation_date` (date) - 予約日
 - `reservation_time` (time) - 予約時間
@@ -238,13 +323,17 @@
 - `shop` (多対1)
 - `user` (多対1, nullable)
 - `customer` (多対1, nullable)
-- `menu` (多対1)
+- `plan` (多対1, nullable)
+- `menu` (多対1, nullable)
 - `staff` (多対1, nullable)
 - `coupon` (多対1, nullable)
 - `visit_histories` (1対1, オプション)
 - `counseling_sheets` (1対1, オプション)
 - `treatment_photos` (1対多)
 - `sales` (1対1, オプション)
+
+**備考**:
+- 予約は「プラン単位」の場合は `plan_id` を設定し `menu_id` は null、「単品メニュー」の場合は `menu_id` を設定し `plan_id` は null とする。どちらか一方は必須とするビジネスルールを推奨。
 
 **インデックス**:
 - `shop_id`, `reservation_date`, `reservation_time`
@@ -349,15 +438,31 @@ shops
   ├── prefecture (多対1)
   ├── shop_images (1対多)
   ├── menus (1対多)
+  ├── plans (1対多)
   ├── staff (1対多)
   ├── reservations (1対多)
   ├── shifts (1対多)
   └── shop_managers (多対多)
 
+menu_categories
+  └── menus (1対多)
+
 menus
   ├── shop (多対1)
+  ├── menu_category (多対1, オプション)
   ├── reservations (1対多)
-  └── staff (多対多)
+  ├── staff (多対多)
+  └── plans (多対多, plan_menu 経由)
+
+plans
+  ├── shop (多対1)
+  ├── menus (多対多, plan_menu 経由)
+  ├── image (morphOne, オプション)
+  └── reservations (1対多)
+
+plan_menu
+  ├── plan (多対1)
+  └── menu (多対1)
 
 staff
   ├── shop (多対1)
@@ -369,7 +474,8 @@ staff
 reservations
   ├── shop (多対1)
   ├── user (多対1, オプション)
-  ├── menu (多対1)
+  ├── plan (多対1, オプション)
+  ├── menu (多対1, オプション)
   └── staff (多対1, オプション)
 
 shifts
@@ -397,8 +503,12 @@ shifts
 
 4. **menus テーブル**
    - `shop_id`, `is_active` - 店舗の公開メニュー検索
+   - `menu_category_id` - カテゴリでの絞り込み
 
-5. **staff テーブル**
+5. **plans テーブル**
+   - `shop_id`, `is_active` - 店舗の公開プラン検索
+
+6. **staff テーブル**
    - `shop_id`, `is_active` - 店舗の有効スタッフ検索
 
 ---
@@ -409,11 +519,16 @@ shifts
 - `shops.prefecture_id` → `prefectures.id`
 - `shop_images.shop_id` → `shops.id`（cascade on delete）
 - `menus.shop_id` → `shops.id`
+- `menus.menu_category_id` → `menu_categories.id`
+- `plans.shop_id` → `shops.id`
+- `plan_menu.plan_id` → `plans.id`
+- `plan_menu.menu_id` → `menus.id`
 - `staff.shop_id` → `shops.id`
 - `staff.user_id` → `users.id`
 - `reservations.shop_id` → `shops.id`
 - `reservations.user_id` → `users.id`
 - `reservations.customer_id` → `customers.id`
+- `reservations.plan_id` → `plans.id`
 - `reservations.menu_id` → `menus.id`
 - `reservations.staff_id` → `staff.id`
 - `reservations.coupon_id` → `coupons.id`
@@ -877,6 +992,7 @@ shops
   ├── prefecture (多対1)
   ├── shop_images (1対多)
   ├── menus (1対多)
+  ├── plans (1対多)
   ├── staff (1対多)
   ├── reservations (1対多)
   ├── shifts (1対多)
@@ -887,11 +1003,32 @@ shops
   ├── sales (1対多)
   └── shop_managers (多対多)
 
+menu_categories
+  └── menus (1対多)
+
+menus
+  ├── shop (多対1)
+  ├── menu_category (多対1, オプション)
+  ├── reservations (1対多)
+  ├── staff (多対多)
+  └── plans (多対多, plan_menu 経由)
+
+plans
+  ├── shop (多対1)
+  ├── menus (多対多, plan_menu 経由)
+  ├── image (morphOne, オプション)
+  └── reservations (1対多)
+
+plan_menu
+  ├── plan (多対1)
+  └── menu (多対1)
+
 reservations
   ├── shop (多対1)
   ├── user (多対1, オプション)
   ├── customer (多対1, オプション)
-  ├── menu (多対1)
+  ├── plan (多対1, オプション)
+  ├── menu (多対1, オプション)
   ├── staff (多対1, オプション)
   ├── visit_histories (1対1, オプション)
   ├── counseling_sheets (1対1, オプション)
@@ -945,7 +1082,6 @@ staff
 
 ### 検討中の追加テーブル
 - `shop_categories` - 店舗カテゴリー
-- `menu_categories` - メニューカテゴリー
 - `payments` - 決済情報（詳細）
 - `holidays` - 店舗の休業日管理
 - `point_rules` - ポイント付与ルール設定（予約・来店時の付与率など）

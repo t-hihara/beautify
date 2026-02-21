@@ -83,6 +83,11 @@ class Shop extends Model
         return $this->morphMany(UploadedImage::class, 'imageable');
     }
 
+    public function menus(): HasMany
+    {
+        return $this->hasMany(Menu::class);
+    }
+
     public function prefecture(): BelongsTo
     {
         return $this->belongsTo(Prefecture::class);
