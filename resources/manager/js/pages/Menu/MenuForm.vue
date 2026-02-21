@@ -105,6 +105,7 @@ const activeFlag = computed<boolean>({
             title="料金（税抜）"
             field="price"
             placeholder="0"
+            :min="0"
             required
             :error="form.errors"
           />
@@ -113,6 +114,7 @@ const activeFlag = computed<boolean>({
             title="所要時間（分）"
             field="duration"
             placeholder="0"
+            :min="0"
             required
             :error="form.errors"
           />
