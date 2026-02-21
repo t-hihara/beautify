@@ -8,6 +8,7 @@ use App\Http\Requests\Manager\Search\SearchMenuRequest;
 use App\Models\Menu;
 use App\UseCases\Menu\ExportMenuUseCase;
 use App\UseCases\Menu\FetchMenuListUseCase;
+use App\UseCases\Menu\PrepareMenuCreateFormUseCase;
 use App\UseCases\Menu\PrepareMenuEditFormUseCase;
 use App\UseCases\Menu\UpdateMenuUseCase;
 use Illuminate\Http\RedirectResponse;
@@ -22,6 +23,11 @@ class MenuController extends Controller
     {
         $data = $useCase($request->validated(), $this->getShopId());
         return Inertia::render('Menu/MenuList', $data);
+    }
+
+    public function create(PrepareMenuCreateFormUseCase $useCase): Response
+    {
+        return Inertia::render('Menu/MenuForm', $useCase());
     }
 
     public function edit(Menu $menu, PrepareMenuEditFormUseCase $useCase): Response
