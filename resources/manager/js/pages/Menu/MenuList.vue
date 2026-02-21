@@ -4,8 +4,9 @@ import { watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
-import { TextLink } from "@/common/js/components/Ui/ButtonIndex";
+import { ButtonPrimary, TextLink } from "@/common/js/components/Ui/ButtonIndex";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
+import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 
@@ -70,6 +71,12 @@ const search = (): void => {
   });
 };
 
+const exportFile = (type: "excel" | "csv"): void => {
+  type === "excel"
+    ? searchForm.get(route(`${guard.value}.menus.excel`))
+    : searchForm.get(route(`${guard.value}.menus.csv`));
+};
+
 watch(
   () => searchForm.data(),
   debounce(() => {
@@ -119,6 +126,14 @@ watch(
         :items="PER_PAGE_OPTIONS"
         class="max-w-28 w-full"
       />
+      <div class="flex items-center gap-2">
+        <button-primary @click="exportFile('excel')" class="flex items-center gap-2"
+          ><folder-arrow-down-icon class="size-4" />Excel</button-primary
+        >
+        <button-primary @click="exportFile('csv')" class="flex items-center gap-2"
+          ><folder-arrow-down-icon class="size-4" />CSV</button-primary
+        >
+      </div>
     </div>
     <div class="mt-4 bg-white shadow-sm rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-zinc-300 text-sm">
