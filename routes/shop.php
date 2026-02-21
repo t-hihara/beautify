@@ -50,6 +50,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
             });
             Route::middleware(['permission:manage.menus'])->group(function () {
                 Route::get('/{menu}/edit', 'edit')->name('edit');
+                Route::patch('/{menu}', 'update')->name('update');
             });
             Route::middleware(['permission:export.menus'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
