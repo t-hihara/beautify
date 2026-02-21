@@ -18,6 +18,7 @@ class SearchMenuRequest extends FormRequest
             'shopIds'    => ['nullable', 'array'],
             'shopIds.*'  => ['nullable', 'exists:shops,id'],
             'activeFlag' => ['nullable', Rule::enum(ActiveFlagTypeEnum::class)],
+            'perPage'    => ['nullable', 'integer'],
         ];
     }
 
@@ -30,6 +31,7 @@ class SearchMenuRequest extends FormRequest
             'shopIds'    => '店舗ID',
             'shopIds.*'  => '店舗ID',
             'activeFlag' => '公開状態',
+            'perPage'    => '表示件数',
         ];
     }
 }

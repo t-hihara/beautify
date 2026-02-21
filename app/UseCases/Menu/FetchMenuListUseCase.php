@@ -20,7 +20,7 @@ class FetchMenuListUseCase
             ->byShopIds($convert['shop_ids'] ?? null)
             ->byTypes($convert['types'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
-            ->paginate(20)
+            ->paginate($convert['per_page'] ?? 10)
             ->through(fn($menu) => [
                 'id'          => $menu->id,
                 'name'        => $menu->name,
