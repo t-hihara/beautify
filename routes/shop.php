@@ -48,6 +48,9 @@ Route::prefix('shop')->name('shop.')->group(function () {
             Route::middleware(['permission:view.menus'])->group(function () {
                 Route::get('/', 'index')->name('index');
             });
+            Route::middleware(['permission:manage.menus'])->group(function () {
+                Route::get('/{menu}/edit', 'edit')->name('edit');
+            });
             Route::middleware(['permission:export.menus'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
                 Route::get('/export/csv', 'exportCsv')->name('csv');
