@@ -63,6 +63,12 @@ export const adminMenu: MenuItem[] = [
         label: "メニュー一覧",
         route: "admin.menus.index",
       },
+      {
+        id: 2,
+        label: "メニュー登録",
+        route: "admin.menus.create",
+        permission: "manage.menus",
+      },
     ],
   },
   {
@@ -123,6 +129,12 @@ export const shopMenu: MenuItem[] = [
         id: 1,
         label: "メニュー一覧",
         route: "shop.menus.index",
+      },
+      {
+        id: 2,
+        label: "メニュー登録",
+        route: "shop.menus.create",
+        permission: "manage.menus",
       },
     ],
   },
