@@ -4,6 +4,7 @@ import { ref, watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
+import { TextLink } from "@/common/js/components/Ui/ButtonIndex";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
 import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
@@ -115,7 +116,9 @@ watch(
                 <div class="flex flex-col">
                   <span>{{ menu.type }}</span>
                   <span>{{ menu.name }}</span>
-                  <span>{{ menu.shop.name }}</span>
+                  <text-link :href="guard === 'admin' ? route('admin.shops.show', menu.shop.id) : route('shop.index')">
+                    <span>{{ menu.shop.name }}</span>
+                  </text-link>
                 </div>
               </td>
               <td class="px-4 py-3">¥{{ menu.price.toLocaleString() }}</td>
