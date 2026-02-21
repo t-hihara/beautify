@@ -278,7 +278,7 @@ watch(
               </td>
               <td class="px-4 py-3">{{ staff.activeFlag }}</td>
               <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center justify-end gap-2">
                   <button-icon :href="route(`${guard}.staffs.edit`, staff.id)"
                     ><pencil-square-icon class="size-6"
                   /></button-icon>
