@@ -50,6 +50,11 @@ class Menu extends Model
         return $query->when($types, fn($q) => $q->whereIn("type", $types));
     }
 
+    public function scopeByShopIds(Builder $query, ?array $shopIds): Builder
+    {
+        return $query->when($shopIds, fn($q) => $q->whereIn('shop_id', $shopIds));
+    }
+
     public function scopeByActiveFlag(Builder $query, ?string $flag): Builder
     {
         return $query->when($flag, fn($q) => $q->where('active_flag', $flag));

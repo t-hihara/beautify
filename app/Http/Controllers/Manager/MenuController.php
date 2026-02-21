@@ -13,7 +13,16 @@ class MenuController extends Controller
 {
     public function index(SearchMenuRequest $request, FetchMenuListUseCase $useCase): Response
     {
-        $data = $useCase($request->validated());
+        $data = $useCase($request->validated(), $this->getShopId());
         return Inertia::render('Menu/MenuList', $data);
+    }
+
+    private function getShopId(): ?int
+    {
+        if (auth()->getDefaultDriver() !== 'shop') {
+            return null;
+        }
+
+        return auth()->user()->shopStaff?->shop_id;
     }
 }

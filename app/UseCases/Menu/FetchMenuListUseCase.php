@@ -9,13 +9,15 @@ use App\Utilities\RecursiveCovert;
 
 class FetchMenuListUseCase
 {
-    public function __invoke(array $filters): array
+    public function __invoke(array $filters, ?int $shopId = null): array
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
+        $shopId ? $convert['shop_ids'] = $shopId : null;
 
         $menus = Menu::with(['shop'])
             ->byName($convert['name'] ?? null)
-            ->byTypes($convert['menu_types'] ?? null)
+            ->byShopIds($convert['shop_ids'] ?? null)
+            ->byTypes($convert['types'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
             ->paginate(20)
             ->through(fn($menu) => [
