@@ -14,7 +14,7 @@ class FetchMenuListUseCase
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
         $menus = Menu::byName($convert['name'] ?? null)
-            ->byTypes($convert['types'] ?? null)
+            ->byTypes($convert['menu_types'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
             ->paginate(20)
             ->through(fn($menu) => [
