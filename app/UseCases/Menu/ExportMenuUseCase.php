@@ -14,10 +14,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ExportMenuUseCase
 {
-    public function __construct(
-        private ExportMenu $exportMenu,
-    ) {}
-
     public function __invoke(int $userId, array $filters, ?int $shopId = null, string $type): ExportFile
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
@@ -43,7 +39,7 @@ class ExportMenuUseCase
                 default => ExcelType::CSV,
             };
 
-            Excel::queue($this->exportMenu($convert, $exportFile->id), $filepath, 's3', $exportType);
+            Excel::queue(new ExportMenu($convert, $exportFile->id), $filepath, 's3', $exportType);
 
             return $exportFile;
         });
