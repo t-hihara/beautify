@@ -22,7 +22,7 @@ class MenuController extends Controller
         return Inertia::render('Menu/MenuList', $data);
     }
 
-    public function exit(Menu $menu, PrepareMenuEditFormUseCase $useCase): Response
+    public function edit(Menu $menu, PrepareMenuEditFormUseCase $useCase): Response
     {
         $data = $useCase($menu);
         return Inertia::render('Menu/MenuForm', $data);
