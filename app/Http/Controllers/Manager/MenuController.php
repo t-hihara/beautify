@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Form\FormMenuRequest;
 use App\Http\Requests\Manager\Search\SearchMenuRequest;
 use App\Models\Menu;
+use App\UseCases\Menu\CreateMenuUseCase;
 use App\UseCases\Menu\ExportMenuUseCase;
 use App\UseCases\Menu\FetchMenuListUseCase;
 use App\UseCases\Menu\PrepareMenuCreateFormUseCase;
@@ -28,6 +29,18 @@ class MenuController extends Controller
     public function create(PrepareMenuCreateFormUseCase $useCase): Response
     {
         return Inertia::render('Menu/MenuForm', $useCase());
+    }
+
+    public function store(FormMenuRequest $request, CreateMenuUseCase $useCase): RedirectResponse
+    {
+        try {
+            $data = $useCase($request->validated());
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '登録に失敗しました。');
+        }
+
+        return redirect()->route($this->getRoutePrefix() . '.menus.index')->with('success', '登録に成功しました。');
     }
 
     public function edit(Menu $menu, PrepareMenuEditFormUseCase $useCase): Response
