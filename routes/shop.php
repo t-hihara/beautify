@@ -52,6 +52,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
                 Route::post('/', 'store')->name('store');
                 Route::get('/{menu}/edit', 'edit')->name('edit');
                 Route::patch('/{menu}', 'update')->name('update');
+                Route::delete('/{menu}', 'destroy')->name('delete');
             });
             Route::middleware(['permission:export.menus'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
