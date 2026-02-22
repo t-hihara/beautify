@@ -61,6 +61,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
             Route::middleware(['permission:manage.menus'])->group(function () {
                 Route::get('/create', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
                 Route::get('/{menu}/edit', 'edit')->name('edit');
                 Route::patch('/{menu}', 'update')->name('update');
             });
