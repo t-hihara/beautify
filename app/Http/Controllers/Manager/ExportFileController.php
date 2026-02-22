@@ -23,9 +23,8 @@ class ExportFileController extends Controller
         SearchExportFileRequest $request,
         FetchExportFileListUseCase $useCase,
     ): Response {
-        $validated = $request->validated();
-        $userId    = auth($request->attributes->get('auth_guard'))->id();
-        $data      = $useCase($validated, $userId);
+        $userId = auth($request->attributes->get('auth_guard'))->id();
+        $data   = $useCase($request->validated();, $userId);
 
         return Inertia::render('Export/ExportFileList', $data);
     }
