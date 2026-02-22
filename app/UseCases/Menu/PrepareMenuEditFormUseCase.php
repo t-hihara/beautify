@@ -21,6 +21,7 @@ class PrepareMenuEditFormUseCase
                 'duration'    => $menu->duration,
                 'description' => $menu->description,
                 'active_flag' => $menu->active_flag,
+                'sortOrder'   => $menu->sort_order,
             ],
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'menuTypes'   => MenuTypeEnum::options(),
