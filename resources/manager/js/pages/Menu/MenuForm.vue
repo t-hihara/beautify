@@ -22,6 +22,7 @@ type MenuType = {
   duration: number;
   description: string | null;
   activeFlag: string;
+  sortOrder: number;
 };
 
 type FormType = {
@@ -33,6 +34,7 @@ type FormType = {
   duration: number;
   description: string | null;
   activeFlag: string;
+  sortOrder: number;
 };
 
 const { menu } = defineProps<{
@@ -52,6 +54,7 @@ const form = useForm<FormType>({
   duration: menu?.duration ?? 0,
   description: menu?.description ?? null,
   activeFlag: menu?.activeFlag ?? "active",
+  sortOrder: menu?.sortOrder ?? 1,
 });
 
 const isEdit = computed<boolean>(() => route().current() === `${guard.value}.menus.edit`);
@@ -66,7 +69,7 @@ const submit = (): void => {
   if (isEdit.value) {
     form.patch(route(`${guard.value}.menus.update`, form?.id));
   } else {
-    //
+    form.post(route(`${guard.value}.menus.store`));
   }
 };
 </script>
@@ -121,6 +124,15 @@ const submit = (): void => {
             v-model="form.duration"
             title="所要時間（分）"
             field="duration"
+            placeholder="0"
+            :min="0"
+            required
+            :error="form.errors"
+          />
+          <form-number
+            v-model="form.sortOrder"
+            title="並び順"
+            field="sortOrder"
             placeholder="0"
             :min="0"
             required
