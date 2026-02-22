@@ -3,8 +3,8 @@
 use App\Http\Controllers\Manager\AuthController;
 use App\Http\Controllers\Manager\Shop\MenuController;
 use App\Http\Controllers\Manager\Shop\ShopDashboardController;
-use App\Http\Controllers\Manager\ShopProfileController;
-use App\Http\Controllers\Manager\ShopStaffController;
+use App\Http\Controllers\Manager\Shop\ProfileController;
+use App\Http\Controllers\Manager\Shop\ShopStaffController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('shop')->name('shop.')->group(function () {
@@ -19,7 +19,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
         Route::get('/dashboard', [ShopDashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-        Route::controller(ShopProfileController::class)->group(function () {
+        Route::controller(ProfileController::class)->group(function () {
             Route::middleware(['permission:view.shops'])->group(function () {
                 Route::get('/profile', 'index')->name('index');
                 Route::get('/profile/staffs', 'staffs')->name('staff');
