@@ -7,6 +7,7 @@ use App\Http\Requests\Manager\Form\FormMenuRequest;
 use App\Http\Requests\Manager\Search\SearchMenuRequest;
 use App\Models\Menu;
 use App\UseCases\Menu\CreateMenuUseCase;
+use App\UseCases\Menu\DeleteMenuUseCase;
 use App\UseCases\Menu\ExportMenuUseCase;
 use App\UseCases\Menu\FetchMenuListUseCase;
 use App\UseCases\Menu\PrepareMenuCreateFormUseCase;
@@ -59,6 +60,18 @@ class MenuController extends Controller
         }
 
         return redirect()->route('admin.menus.index')->with('success', '更新に成功しました。');
+    }
+
+    public function destroy(Menu $menu, DeleteMenuUseCase $useCase): RedirectResponse
+    {
+        try {
+            $useCase($menu);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '削除に失敗しました。');
+        }
+
+        return back()->with('success', '削除に成功しました。');
     }
 
     public function exportExcel(SearchMenuRequest $request, ExportMenuUseCase $useCase): RedirectResponse
