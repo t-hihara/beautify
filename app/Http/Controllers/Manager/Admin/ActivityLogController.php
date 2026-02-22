@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Manager;
+namespace App\Http\Controllers\Manager\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Search\SearchLogRequest;
@@ -14,9 +14,7 @@ class ActivityLogController extends Controller
         SearchLogRequest $request,
         FetchLogListUseCase $useCase
     ): Response {
-        $validated = $request->validated();
-        $data      = $useCase($validated);
-
+        $data = $useCase($request->validated());
         return Inertia::render('Log/LogIndex', $data);
     }
 }

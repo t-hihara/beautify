@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Manager\ActivityLogController;
+use App\Http\Controllers\Manager\Admin\ActivityLogController;
 use App\Http\Controllers\Manager\Admin\MenuController;
 use App\Http\Controllers\Manager\Admin\ShopController;
 use App\Http\Controllers\Manager\Admin\ShopStaffController;
