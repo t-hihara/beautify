@@ -13,7 +13,7 @@ class FetchMenuListUseCase
     public function __invoke(array $filters, ?int $shopId = null): array
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
-        $shopId ? $convert['shop_ids'] = $shopId : null;
+        $shopId ? $convert['shop_ids'] = [$shopId] : null;
 
         $menus = Menu::with(['shop'])
             ->byName($convert['name'] ?? null)
