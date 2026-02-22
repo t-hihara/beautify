@@ -14,7 +14,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ExportMenuUseCase
 {
-    public function __invoke(int $userId, array $filters, ?int $shopId = null, string $type): ExportFile
+    public function __invoke(int $userId, array $filters, string $type, ?int $shopId = null,): ExportFile
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 

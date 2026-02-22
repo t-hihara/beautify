@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Manager\AuthController;
-use App\Http\Controllers\Manager\MenuController;
+use App\Http\Controllers\Manager\Shop\MenuController;
 use App\Http\Controllers\Manager\ShopController;
 use App\Http\Controllers\Manager\ShopDashboardController;
 use App\Http\Controllers\Manager\ShopProfileController;

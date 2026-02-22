@@ -1,10 +1,10 @@
 <?php
 
 use App\Http\Controllers\Manager\ActivityLogController;
+use App\Http\Controllers\Manager\Admin\MenuController;
 use App\Http\Controllers\Manager\AdminDashboardController;
 use App\Http\Controllers\Manager\AuthController;
 use App\Http\Controllers\Manager\ExportFileController;
-use App\Http\Controllers\Manager\MenuController;
 use App\Http\Controllers\Manager\ShopController;
 use App\Http\Controllers\Manager\ShopStaffController;
 use Illuminate\Support\Facades\Route;
