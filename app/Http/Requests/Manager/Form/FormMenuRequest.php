@@ -18,6 +18,7 @@ class FormMenuRequest extends FormRequest
             'duration'    => ['required', 'integer', 'min:5', 'max:300'],
             'description' => ['nullable', 'string'],
             'activeFlag'  => ['required', Rule::enum(ActiveFlagTypeEnum::class)],
+            'sortOrder'   => ['required', 'integer', 'min:1'],
         ];
 
         if (!$this->route('menu')) {
@@ -37,6 +38,7 @@ class FormMenuRequest extends FormRequest
             'duration'    => '所要時間',
             'description' => 'メニュー説明',
             'activeFlag'  => '公開状態',
+            'sortOrder'   => '並び順',
         ];
     }
 }
