@@ -4,7 +4,7 @@ use App\Http\Controllers\Manager\ActivityLogController;
 use App\Http\Controllers\Manager\Admin\MenuController;
 use App\Http\Controllers\Manager\Admin\ShopController;
 use App\Http\Controllers\Manager\Admin\ShopStaffController;
-use App\Http\Controllers\Manager\AdminDashboardController;
+use App\Http\Controllers\Manager\Admin\AdminDashboardController;
 use App\Http\Controllers\Manager\AuthController;
 use App\Http\Controllers\Manager\ExportFileController;
 use Illuminate\Support\Facades\Route;
