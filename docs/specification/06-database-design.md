@@ -3,7 +3,7 @@
 ## 概要
 このドキュメントでは、美容室サロン予約システムのデータベース設計の概要を説明します。
 
-- **メニューとプラン**: 単品の施術は `menus`、複数メニューの組み合わせは `plans` で管理し、中間テーブル `plan_menu` で紐付ける。予約はプラン単位または単品メニュー単位で行う（`reservations.plan_id` / `reservations.menu_id` のいずれか）。
+- **メニューとプラン**: 単品の施術は `menus`、複数メニューの組み合わせは `plans` で管理し、中間テーブル `menu_plan` で紐付ける。予約はプラン単位または単品メニュー単位で行う（`reservations.plan_id` / `reservations.menu_id` のいずれか）。
 - **メニューカテゴリ**: `menu_categories` でカット・カラー・パーマ等の種類をマスタ管理し、ユーザー・マネージャーによる検索・絞り込み・集計に利用する。画像はプラン単位で持つことを推奨（`uploaded_images` ポリモーフィック）。
 
 ## 主要テーブル
@@ -143,7 +143,7 @@
 ---
 
 ### 3. menus（メニュー）
-単品のヘアメニュー（施術）を管理するテーブル。プランは複数メニューの組み合わせとして別テーブル（plans / plan_menu）で管理する。
+単品のヘアメニュー（施術）を管理するテーブル。プランは複数メニューの組み合わせとして別テーブル（plans / menu_plan）で管理する。
 
 **カラム**:
 - `id` (bigint, primary key)
@@ -163,7 +163,7 @@
 - `menu_category` (多対1, nullable)
 - `reservations` (1対多)
 - `staff` (多対多) - 担当スタイリスト
-- `plans` (多対多) - このメニューを含むプラン（中間テーブル `plan_menu` 経由）
+- `plans` (多対多) - このメニューを含むプラン（中間テーブル `menu_plan` 経由）
 
 **備考**:
 - 画像は任意。持たせる場合は `uploaded_images` のポリモーフィックで紐付ける。プラン側に代表画像を持たせる運用を推奨。
@@ -182,8 +182,10 @@
 - `list_price` (decimal, nullable) - 通常料金（割引前）
 - `selling_price` (decimal) - 販売料金（割引後。list_price が null の場合は単価として扱う）
 - `discount_label` (string, nullable) - 表示用ラベル（例: 20%OFF、初回限定）
-- `condition_type` (string, nullable) - 適用条件種別（first_visit / weekday / weekend / first_n_visits 等。Enum 推奨）
-- `condition_value` (integer, nullable) - 条件の値（例: first_n_visits の場合は回数）
+- `condition_type` (string, nullable) - 適用条件種別（first_visit / weekday / weekend / first_n_visits / period 等。Enum 推奨）。このプランが「いつ・誰に」適用されるかの**ルール定義**のみを保持する。「誰が初回か」「何日が平日か」は本テーブルでは持たない（後述のとおり他データから都度判定する）。
+- `condition_value` (integer, nullable) - 条件の値（例: first_n_visits の場合は「初回〜N回目」の N）。condition_type が数値を使う場合のみ使用。
+- `valid_from` (date, nullable) - 期間限定：予約受付・表示の開始日。null の場合は開始制限なし。
+- `valid_until` (date, nullable) - 期間限定：予約受付・表示の終了日。null の場合は終了制限なし。valid_from とセットで「〇月〇日〜〇月〇日限定」を表現する。
 - `benefit_text` (text, nullable) - 特典文言（口コミで〇〇プレゼント等）
 - `is_active` (boolean, default: true) - 公開状態
 - `sort_order` (integer, nullable) - 表示順
@@ -192,17 +194,24 @@
 
 **リレーション**:
 - `shop` (多対1)
-- `menus` (多対多) - このプランに含まれるメニュー（中間テーブル `plan_menu` 経由）
+- `menus` (多対多) - このプランに含まれるメニュー（中間テーブル `menu_plan` 経由）
 - `image` (morphOne, UploadedImage) - プラン代表画像（一覧・詳細用）
 - `reservations` (1対多)
+
+**適用条件の判定（どこで・どう管理するか）**:
+- **plans テーブルの役割**: 「このプランは初回限定」「平日のみ」といった**条件の種類と値**だけを保持する。判定に使う「事実」は持たない。
+- **初回 / 初回〜N回目（first_visit, first_n_visits）**: 判定に使うデータは **reservations**。同一 `user_id`（または顧客）＋ `shop_id` で、完了済み（またはカウント対象）の予約件数を集計し、「来店回数」を**都度計算**する。来店回数は専用テーブルで持たず、プラン一覧表示時・予約確定時のアプリケーション層（サービス・ユースケース等）で `reservations` を集計して判定する。
+- **平日 / 土日（weekday, weekend）**: 判定に使うデータは**予約しようとしている日付**。`reservations.reservation_date` や、ユーザーがカレンダーで選んだ日が平日か土日祝かを日付から算出する。こちらも専用テーブルは不要で、表示・予約確定時のアプリケーション層で判定する。
+- **期間限定（period）**: 判定に使うデータは**本テーブルの `valid_from` / `valid_until`**。予約日または「今日」がこの範囲内（valid_from ≤ 日付 ≤ valid_until）なら表示・予約可能。両方 null の場合は期間制限なし。オズモール等の「〇月限定」「春のキャンペーン」と同じ考え方。
+- **まとめ**: 条件の「定義」は plans、判定に使う「データ」は既存の reservations と選択日付。判定ロジックはアプリケーション層に実装する。将来的に来店回数をキャッシュする場合は、reservations の集計結果を別テーブルや Redis 等に持つ実装も可能（その場合も plans の condition カラムの役割は変わらない）。
 
 **インデックス**:
 - `shop_id`, `is_active` - 店舗の公開プラン検索
 
 ---
 
-### 3.2 plan_menu（プラン－メニュー 中間テーブル）
-プランに含まれるメニューを管理する中間テーブル。
+### 3.2 menu_plan（メニュー－プラン 中間テーブル）
+プランに含まれるメニューを管理する中間テーブル。中間テーブル名は関連モデル名のアルファベット順（Menu, Plan）に準拠。
 
 **カラム**:
 - `id` (bigint, primary key)
@@ -452,15 +461,15 @@ menus
   ├── menu_category (多対1, オプション)
   ├── reservations (1対多)
   ├── staff (多対多)
-  └── plans (多対多, plan_menu 経由)
+  └── plans (多対多, menu_plan 経由)
 
 plans
   ├── shop (多対1)
-  ├── menus (多対多, plan_menu 経由)
+  ├── menus (多対多, menu_plan 経由)
   ├── image (morphOne, オプション)
   └── reservations (1対多)
 
-plan_menu
+menu_plan
   ├── plan (多対1)
   └── menu (多対1)
 
@@ -521,8 +530,8 @@ shifts
 - `menus.shop_id` → `shops.id`
 - `menus.menu_category_id` → `menu_categories.id`
 - `plans.shop_id` → `shops.id`
-- `plan_menu.plan_id` → `plans.id`
-- `plan_menu.menu_id` → `menus.id`
+- `menu_plan.plan_id` → `plans.id`
+- `menu_plan.menu_id` → `menus.id`
 - `staff.shop_id` → `shops.id`
 - `staff.user_id` → `users.id`
 - `reservations.shop_id` → `shops.id`
@@ -1011,15 +1020,15 @@ menus
   ├── menu_category (多対1, オプション)
   ├── reservations (1対多)
   ├── staff (多対多)
-  └── plans (多対多, plan_menu 経由)
+  └── plans (多対多, menu_plan 経由)
 
 plans
   ├── shop (多対1)
-  ├── menus (多対多, plan_menu 経由)
+  ├── menus (多対多, menu_plan 経由)
   ├── image (morphOne, オプション)
   └── reservations (1対多)
 
-plan_menu
+menu_plan
   ├── plan (多対1)
   └── menu (多対1)
 
