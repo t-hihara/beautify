@@ -1,9 +1,9 @@
 <?php
 
-namespace App\UseCases\Menu;
+namespace App\UseCases\Plan;
 
 use App\Enum\ExportFileStatusTypeEnum;
-use App\Exports\ExportMenu;
+use App\Exports\ExportPlan;
 use App\Models\ExportFile;
 use App\Utilities\RecursiveCovert;
 use Carbon\Carbon;
@@ -12,21 +12,20 @@ use Illuminate\Support\Str;
 use Maatwebsite\Excel\Excel as ExcelType;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ExportMenuUseCase
+class ExportPlanUseCase
 {
-    public function __invoke(int $userId, array $filters, string $type, ?int $shopId = null,): ExportFile
+    public function __invoke(int $userId, array $filters, string $type, ?int $shopId = null): ExportFile
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
-        $shopId ? $convert['shop_ids'] = [$shopId] : null;
 
-        return DB::transaction(function () use ($userId, $convert, $shopId, $type) {
+        return DB::transaction(function () use ($convert, $shopId) {
             $datetime = Carbon::now()->format('Y-m-d H:i:s');
-            $filename = 'menu_' . Str::random(20) . '_' . $datetime . '.' . $type;
+            $filename = 'plan_' . Str::random(20) . '_' . $datetime . '.' . $type;
             $filepath = 'exports/' . $filename;
 
             $exportFile = ExportFile::create([
-                'user_id'   => $userId,
-                'subject'   => 'menu',
+                'user'      => $userId,
+                'subject'   => 'plan',
                 'filename'  => $filename,
                 'file_type' => $type,
                 'file_path' => $filepath,
@@ -40,7 +39,7 @@ class ExportMenuUseCase
                 default => ExcelType::CSV,
             };
 
-            Excel::queue(new ExportMenu($convert, $exportFile->id), $filepath, 's3', $exportType);
+            Excel::queue(new ExportPlan($convert, $exportFile->id), $filepath, 's3', $exportType);
 
             return $exportFile;
         });
