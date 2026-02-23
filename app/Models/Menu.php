@@ -26,9 +26,9 @@ class Menu extends Model
     ];
 
     protected $casts = [
-        'price' => 'integer',
-        'duration' => 'integer',
-        'type' => MenuTypeEnum::class,
+        'price'       => 'integer',
+        'duration'    => 'integer',
+        'type'        => MenuTypeEnum::class,
         'active_flag' => ActiveFlagTypeEnum::class,
     ];
 
@@ -49,6 +49,11 @@ class Menu extends Model
     public function scopeByTypes(Builder $query, ?array $types): Builder
     {
         return $query->when($types, fn(Builder $q) => $q->whereIn("type", $types));
+    }
+
+    public function scopeByShopId(Builder $query, ?int $shopId): Builder
+    {
+        return $query->when($shopId, fn(Builder $q) => $q->where('shop_id', $shopId));
     }
 
     public function scopeByShopIds(Builder $query, ?array $shopIds): Builder

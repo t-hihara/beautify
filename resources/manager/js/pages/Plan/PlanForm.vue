@@ -36,6 +36,14 @@ type ImageType = {
   filePath: string;
 };
 
+type MenuType = {
+  id: number;
+  name: string;
+  type: string;
+  price: number;
+  duration: number;
+};
+
 type FormType = {
   _method: "POST" | "PATCH";
   id?: number;

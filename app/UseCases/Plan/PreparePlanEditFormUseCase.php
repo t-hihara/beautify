@@ -4,6 +4,7 @@ namespace App\UseCases\Plan;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\PlanConditionTypeEnum;
+use App\Models\Menu;
 use App\Models\Plan;
 use Illuminate\Support\Facades\Storage;
 
@@ -32,9 +33,19 @@ class PreparePlanEditFormUseCase
                         ? $plan->image->file_path
                         : Storage::disk($plan->image->disk)->temporaryUrl($plan->image->file_path, now()->addMinutes(60)),
                 ] : null,
+                'menus' => $plan->menus
+                    ->sortBy('sort_order')
+                    ->map(fn($menu) => [
+                        'id'       => $menu->id,
+                        'name'     => $menu->name,
+                        'type'     => $menu->type->description(),
+                        'price'    => $menu->price,
+                        'duration' => $menu->duration,
+                    ]),
             ],
             'activeFlags'    => ActiveFlagTypeEnum::options(),
             'conditionTypes' => PlanConditionTypeEnum::options(),
+            'menus'          => Menu::byShopId($plan->shop_id)->get(['id', 'name']),
         ];
     }
 }

@@ -61,8 +61,8 @@ const handleModelUpdate = (value: Date | string | null): void => {
       {{ title }}<span v-if="required" class="text-red-500">※</span>
     </label>
     <vue-date-picker
-      :class="{ 'mt-1': title }"
       no-today
+      :class="{ 'mt-1': title }"
       :auto-apply="autoApply"
       :model-value="modelValue"
       :model-type="timePicker ? format : undefined"
