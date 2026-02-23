@@ -6,6 +6,7 @@ use App\Http\Controllers\Manager\Admin\ShopController;
 use App\Http\Controllers\Manager\Admin\ShopStaffController;
 use App\Http\Controllers\Manager\Admin\AdminDashboardController;
 use App\Http\Controllers\Manager\Admin\AuthController;
+use App\Http\Controllers\Manager\Admin\PlanController;
 use App\Http\Controllers\Manager\ExportFileController;
 use Illuminate\Support\Facades\Route;
 
@@ -69,6 +70,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::middleware(['permission:export.menus'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
                 Route::get('/export/csv', 'exportCsv')->name('csv');
+            });
+        });
+
+        Route::prefix('plans')->name('plans.')->controller(PlanController::class)->group(function () {
+            Route::middleware(['permission:view.plans'])->group(function () {
+                Route::get('/', 'index')->name('index');
             });
         });
 
