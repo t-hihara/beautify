@@ -24,6 +24,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
             Route::middleware(['permission:view.shops'])->group(function () {
                 Route::get('/profile', 'index')->name('index');
                 Route::get('/profile/staffs', 'staffs')->name('staff');
+                Route::get('/profile/plans', 'plans')->name('plans');
             });
         });
 
@@ -64,10 +65,6 @@ Route::prefix('shop')->name('shop.')->group(function () {
         Route::prefix('plans')->name('plans.')->controller(PlanController::class)->group(function () {
             Route::middleware(['permission:view.plans'])->group(function () {
                 Route::get('/', 'index')->name('index');
-            });
-            Route::middleware(['permission:export.plans'])->group(function () {
-                Route::get('/export/excel', 'exportExcel')->name('excel');
-                Route::get('/export/csv', 'exportCsv')->name('csv');
             });
         });
     });

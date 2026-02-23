@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manager\Shop;
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use App\UseCases\Shop\FetchShopDetailTopUseCase;
+use App\UseCases\Shop\FetchShopPlansUseCase;
 use App\UseCases\Shop\FetchShopStaffsUseCase;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -30,12 +31,17 @@ class ProfileController extends Controller
         return Inertia::render('Shop/ShopDetail', $data);
     }
 
+    public function plans(FetchShopPlansUseCase $useCase): Response
+    {
+        $shop = Shop::findOrFail($this->getShopId());
+        if (!$shop) abort(403, '店舗なし');
+
+        $data = $useCase($shop);
+        return Inertia::render('Shop/ShopDetail', $data);
+    }
+
     private function getShopId(): ?int
     {
-        if (auth()->getDefaultDriver() !== 'shop') {
-            return null;
-        }
-
-        return auth()->user()->shopStaff?->shop_id;
+        return auth('shop')->user()->shopStaff?->shop_id;
     }
 }

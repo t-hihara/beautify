@@ -12,6 +12,7 @@ use App\UseCases\Shop\ExportShopUseCase;
 use App\UseCases\Shop\FetchShopDetailTopUseCase;
 use App\UseCases\Shop\PrepareShopEditFormUseCase;
 use App\UseCases\Shop\FetchShopListUseCase;
+use App\UseCases\Shop\FetchShopPlansUseCase;
 use App\UseCases\Shop\FetchShopStaffsUseCase;
 use App\UseCases\Shop\PrepareShopCreateFormUseCase;
 use App\UseCases\Shop\UpdateShopUseCase;
@@ -63,6 +64,14 @@ class ShopController extends Controller
     public function staffs(
         Shop $shop,
         FetchShopStaffsUseCase $useCase
+    ): Response {
+        $data = $useCase($shop);
+        return Inertia::render('Shop/ShopDetail', $data);
+    }
+
+    public function plans(
+        Shop $shop,
+        FetchShopPlansUseCase $useCase,
     ): Response {
         $data = $useCase($shop);
         return Inertia::render('Shop/ShopDetail', $data);

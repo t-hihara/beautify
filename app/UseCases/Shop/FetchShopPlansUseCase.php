@@ -5,7 +5,7 @@ namespace App\UseCases\Shop;
 use App\Models\Shop;
 use Illuminate\Support\Facades\Storage;
 
-class FetchPlansUseCase
+class FetchShopPlansUseCase
 {
     public function __construct(
         private readonly FetchShopUseCase $useCase,
@@ -43,7 +43,7 @@ class FetchPlansUseCase
             ]);
 
         return [
-            'shop' => array_merge($data, ['plans' => $plans]);
+            'shop' => array_merge($data, ['plans' => $plans]),
         ];
     }
 }

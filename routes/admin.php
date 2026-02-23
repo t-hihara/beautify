@@ -38,6 +38,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/{shop}', 'show')->name('show');
                 Route::get('/{shop}/staffs', 'staffs')->name('staff');
+                Route::get('/{shop}/plans', 'plans')->name('plans');
             });
         });
 
