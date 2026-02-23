@@ -5,6 +5,7 @@ namespace App\UseCases\Menu;
 use App\Enum\ExportFileStatusTypeEnum;
 use App\Exports\ExportMenu;
 use App\Models\ExportFile;
+use App\Services\Export\ExportFileService;
 use App\Utilities\RecursiveCovert;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,10 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ExportMenuUseCase
 {
+    public function __construct(
+        private readonly ExportFileService $exportFileService,
+    ) {}
+
     public function __invoke(int $userId, array $filters, string $type, ?int $shopId = null,): ExportFile
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
@@ -24,21 +29,8 @@ class ExportMenuUseCase
             $filename = 'menu_' . Str::random(20) . '_' . $datetime . '.' . $type;
             $filepath = 'exports/' . $filename;
 
-            $exportFile = ExportFile::create([
-                'user_id'   => $userId,
-                'subject'   => 'menu',
-                'filename'  => $filename,
-                'file_type' => $type,
-                'file_path' => $filepath,
-                'status'    => ExportFileStatusTypeEnum::PENDING,
-                'filters'   => $convert,
-            ]);
-
-            $exportType = match (strtolower($type)) {
-                'xlsx'  => ExcelType::XLSX,
-                'csv'   => ExcelType::CSV,
-                default => ExcelType::CSV,
-            };
+            $exportFile = $this->exportFileService->createExportFile($userId, 'menu', $convert, $type);
+            $exportType = $this->exportFileService->resolveExcelType($type);
 
             Excel::queue(new ExportMenu($convert, $exportFile->id), $filepath, 's3', $exportType);
 
