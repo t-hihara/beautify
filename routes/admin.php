@@ -77,10 +77,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::middleware(['permission:view.plans'])->group(function () {
                 Route::get('/', 'index')->name('index');
             });
-        });
-
-        Route::prefix('logs')->name('logs.')->controller(ActivityLogController::class)->group(function () {
-            Route::middleware('permission:view.logs')->get('/', 'index')->name('index');
+            Route::middleware(['permission:export.plans'])->group(function () {
+                Route::get('/export/excel', 'exportExcel')->name('excel');
+                Route::get('/export/csv', 'exportCsv')->name('csv');
+            });
         });
 
         Route::prefix('exports')->name('exports.')->controller(ExportFileController::class)->group(function () {
@@ -92,6 +92,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::get('/download/{exportFile}', 'download')->name('download');
                 Route::delete('/download/{exportFile}', 'destroy')->name('delete');
             });
+        });
+
+        Route::prefix('logs')->name('logs.')->controller(ActivityLogController::class)->group(function () {
+            Route::middleware('permission:view.logs')->get('/', 'index')->name('index');
         });
     });
 });

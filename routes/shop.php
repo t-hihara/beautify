@@ -65,6 +65,10 @@ Route::prefix('shop')->name('shop.')->group(function () {
             Route::middleware(['permission:view.plans'])->group(function () {
                 Route::get('/', 'index')->name('index');
             });
+            Route::middleware(['permission:export.plans'])->group(function () {
+                Route::get('/export/excel', 'exportExcel')->name('excel');
+                Route::get('/export/csv', 'exportCsv')->name('csv');
+            });
         });
     });
 });
