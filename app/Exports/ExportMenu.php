@@ -5,7 +5,7 @@ namespace App\Exports;
 use App\Enum\ExportFileStatusTypeEnum;
 use App\Models\ExportFile;
 use App\Models\Menu;
-use DragonCode\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
