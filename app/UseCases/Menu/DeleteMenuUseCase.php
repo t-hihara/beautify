@@ -2,6 +2,7 @@
 
 namespace App\UseCases\Menu;
 
+use App\Models\Menu;
 use Illuminate\Support\Facades\DB;
 
 class DeleteMenuUseCase
