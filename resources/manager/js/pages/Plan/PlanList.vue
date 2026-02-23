@@ -144,11 +144,11 @@ watch(
             <th scope="col" class="px-4 py-3 text-center">ID</th>
             <th scope="col" class="px-4 py-3">
               <div class="flex flex-col">
-                <span>プラン名</span>
                 <span>店舗名</span>
+                <span>プラン名</span>
+                <span>メニュー</span>
               </div>
             </th>
-            <th scope="col" class="px-4 py-3">メニュー</th>
             <th scope="col" class="px-4 py-3 text-end">
               <div class="flex flex-col">
                 <span>所要時間</span>
@@ -168,21 +168,19 @@ watch(
             <tr v-for="plan in plans" :key="plan.id">
               <td class="px-4 py-3">{{ plan.id }}</td>
               <td class="px-4 py-3">
-                <div class="flex flex-col">
-                  <span>{{ plan.name }}</span>
+                <div class="flex flex-col gap-y-1">
                   <span>{{ plan.shop.name }}</span>
+                  <span>{{ plan.name }}</span>
+                  <div v-if="plan.menus.length > 0" class="flex flex-wrap gap-1 items-center w-fit">
+                    <template v-for="(menu, i) in plan.menus.slice(0, 2)" :key="menu.id">
+                      <span class="inline-flex items-center rounded-md bg-rose-100 px-2 py-0.5 text-xs text-zinc-800">{{
+                        menu.name
+                      }}</span>
+                    </template>
+                    <span v-if="plan.menus.length > 2" class="text-xs text-zinc-500">...</span>
+                  </div>
+                  <span v-else>----</span>
                 </div>
-              </td>
-              <td class="px-4 py-3">
-                <div v-if="plan.menus.length > 0" class="flex flex-wrap gap-1">
-                  <span
-                    v-for="menu in plan.menus"
-                    :key="menu.id"
-                    class="inline-flex rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-800"
-                    >{{ menu.name }}</span
-                  >
-                </div>
-                <span v-else>----</span>
               </td>
               <td class="px-4 py-3">
                 <div class="flex flex-col text-end">
@@ -211,7 +209,7 @@ watch(
           </template>
           <template v-else>
             <tr>
-              <td colspan="9" class="px-4 py-3 text-center">データがありません。</td>
+              <td colspan="8" class="px-4 py-3 text-center">データがありません。</td>
             </tr>
           </template>
         </tbody>
