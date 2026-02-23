@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Plan extends Model
 {
@@ -91,13 +92,18 @@ class Plan extends Model
                                         リレーション
     ================================================================================ */
 
-    public function shop(): BelongsTo
+    public function image(): MorphOne
     {
-        return $this->belongsTo(Shop::class);
+        return $this->morphOne(UploadedImage::class, 'imageable');
     }
 
     public function menus(): BelongsToMany
     {
         return $this->belongsToMany(Menu::class);
+    }
+
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(Shop::class);
     }
 }

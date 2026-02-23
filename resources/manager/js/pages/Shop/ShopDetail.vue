@@ -28,6 +28,7 @@ export type ShopType = {
   staffCount: number;
   images: ImageType[];
   staffs: StaffType[];
+  plans: PlanType[];
 };
 
 export type StaffType = {
@@ -35,6 +36,21 @@ export type StaffType = {
   name: string;
   position: string;
   description: string | null;
+  image: ImageType | null;
+};
+
+export type PlanType = {
+  id: number;
+  name: string;
+  totalDuration: number;
+  regularPrice: number;
+  sellingPrice: number;
+  conditionType: string | null;
+  activeFlag: string;
+  validFrom: string | null;
+  validTo: string | null;
+  discountPercent: number | null;
+  menuTypes: string[];
   image: ImageType | null;
 };
 

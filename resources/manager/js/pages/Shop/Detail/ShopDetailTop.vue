@@ -2,20 +2,20 @@
 import { ref, computed } from "vue";
 import { Link } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
-import { ChevronLeftIcon, ChevronRightIcon, UserGroupIcon } from "@heroicons/vue/24/outline";
-import type { ImageType, ShopType, StaffType } from "@manager/pages/Shop/ShopDetail.vue";
+import { ChevronLeftIcon, ChevronRightIcon, ClockIcon, UserGroupIcon } from "@heroicons/vue/24/outline";
+import type { ImageType, ShopType, StaffType, PlanType } from "@manager/pages/Shop/ShopDetail.vue";
 
 defineOptions({ name: "ShopDetailTop" });
 
 const { shop } = defineProps<{
   shop: ShopType;
-  staffs?: unknown[];
 }>();
 
 const currentImageIndex = ref<number>(0);
 const images = computed<ImageType[]>(() => shop?.images ?? []);
 const hasImages = computed<boolean>(() => (shop?.images?.length ?? 0) > 0);
 const displayStaffs = computed<StaffType[]>(() => (shop?.staffs ?? []).slice(0, 4));
+const displayPlans = computed<PlanType[]>(() => shop?.plans ?? []);
 
 const goPrev = (): void => {
   if (!hasImages.value) return;
@@ -132,6 +132,62 @@ const setIndex = (index: number): void => {
           <UserGroupIcon class="size-5" />
           スタッフ一覧を表示する
         </Link>
+      </div>
+    </section>
+    <section v-if="displayPlans.length > 0" class="space-y-4">
+      <h3 class="text-xl font-bold text-zinc-900 border-l-4 border-rose-500 pl-3">プラン</h3>
+      <div class="space-y-0 divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white overflow-hidden">
+        <article
+          v-for="plan in displayPlans"
+          :key="plan.id"
+          class="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6"
+        >
+          <div
+            class="sm:w-32 shrink-0 aspect-square sm:aspect-square rounded-lg overflow-hidden bg-zinc-100 border border-zinc-200"
+          >
+            <img
+              v-if="plan.image?.filePath"
+              :src="plan.image.filePath"
+              :alt="plan.name"
+              class="w-full h-full object-cover"
+            />
+            <div v-else class="w-full h-full flex items-center justify-center text-zinc-400 text-sm">画像なし</div>
+          </div>
+          <div class="flex-1 min-w-0 flex flex-col gap-2">
+            <div class="flex flex-wrap gap-1.5">
+              <span
+                v-if="plan.conditionType"
+                class="inline-flex items-center rounded-full bg-rose-100 px-2.5 py-0.5 text-xs font-medium text-rose-800"
+              >
+                {{ plan.conditionType }}
+              </span>
+              <span
+                v-for="menuType in (plan.menuTypes ?? [])"
+                :key="menuType"
+                class="inline-flex items-center rounded-full bg-zinc-100 px-2.5 py-0.5 text-xs font-medium text-zinc-700"
+              >
+                {{ menuType }}
+              </span>
+            </div>
+            <h3 class="font-bold text-zinc-800 text-base leading-snug">{{ plan.name }}</h3>
+            <div class="text-sm">
+              <span class="inline-flex items-center gap-1 text-zinc-600">
+                <ClockIcon class="size-4 shrink-0" />
+                {{ plan.totalDuration }}分
+              </span>
+              <div class="flex flex-wrap items-baseline gap-2">
+                <span v-if="plan.regularPrice > plan.sellingPrice" class="text-zinc-500 line-through">
+                  通常 {{ plan.regularPrice.toLocaleString() }}円
+                </span>
+                <template v-if="plan.discountPercent !== null">
+                  <span class="text-zinc-600">{{ plan.discountPercent }}%OFF</span>
+                  <span class="text-zinc-400">→</span>
+                </template>
+                <span class="font-bold text-rose-600 text-lg">{{ plan.sellingPrice.toLocaleString() }}円</span>
+              </div>
+            </div>
+          </div>
+        </article>
       </div>
     </section>
     <section class="rounded-xl bg-white">
