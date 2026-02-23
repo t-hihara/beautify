@@ -151,4 +151,17 @@ export const shopMenu: MenuItem[] = [
       },
     ],
   },
+  {
+    id: 5,
+    label: "プラン管理",
+    icon: "plan",
+    children: [
+      {
+        id: 1,
+        label: "プラン一覧",
+        route: "shop.plans.index",
+        permission: "view.plans",
+      },
+    ],
+  },
 ];
