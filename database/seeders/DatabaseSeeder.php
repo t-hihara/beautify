@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
                 ExportFileSeeder::class,
                 MenuSeeder::class,
                 PlanSeeder::class,
+                MenuPlanSeeder::class,
             ]);
         } finally {
             Schema::enableForeignKeyConstraints();
