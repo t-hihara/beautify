@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('name')->comment('プラン名');
             $table->text('description')->comment('メニュー説明');
             $table->unsignedInteger('total_duration')->comment('総所要時間');
-            $table->unsignedInteger('price')->comment('料金（税別）');
-            $table->string('discount_label')->nullable()->comment('割引ラベル');
+            $table->unsignedInteger('regular_price')->comment('定価価格');
+            $table->unsignedInteger('selling_price')->comment('販売料金');
             $table->enum('condition_type', PlanConditionTypeEnum::cases())->nullable()->comment('適応条件種別');
             $table->enum('active_flag', ActiveFlagTypeEnum::cases())->default('active')->comment('公開状態');
             $table->unsignedInteger('sort_order')->comment('並び順');
