@@ -25,11 +25,11 @@ class DatabaseSeeder extends Seeder
                 RoleAndPermissionSeeder::class,
                 ShopStaffSeeder::class,
                 CustomerSeeder::class,
-                UploadedImageSeeder::class,
-                ExportFileSeeder::class,
                 MenuSeeder::class,
                 PlanSeeder::class,
                 MenuPlanSeeder::class,
+                UploadedImageSeeder::class,
+                // ExportFileSeeder::class,
             ]);
         } finally {
             Schema::enableForeignKeyConstraints();
