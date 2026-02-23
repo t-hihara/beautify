@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\PlanConditionTypeEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -37,6 +38,16 @@ class Plan extends Model
     /* ================================================================================
                                         アクセサ
     ================================================================================ */
+
+    public function getValidFromAttribute($value): ?string
+    {
+        return $value ? Carbon::parse($value)->format('Y-m-d') : null;
+    }
+
+    public function getValidToAttribute($value): ?string
+    {
+        return $value ? Carbon::parse($value)->format('Y-m-d') : null;
+    }
 
     /* ================================================================================
                                         スコープ
