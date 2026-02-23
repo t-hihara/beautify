@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Search\SearchPlanRequest;
 use App\UseCases\Plan\ExportPlanUseCase;
 use App\UseCases\Plan\FetchPlanListUseCase;
+use App\UseCases\Plan\PreparePlanEditFormUseCase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -18,6 +19,12 @@ class PlanController extends Controller
         $shopId = auth('shop')->user()->shopStaff?->shop_id;
         $data   = $useCase($request->validated(), $shopId);
         return Inertia::render('Plan/PlanList', $data);
+    }
+
+    public function edit(Plan $plan, PreparePlanEditFormUseCase $useCase): Response
+    {
+        $data = $useCase($shop);
+        return Inertia::render('Plan/PlanForm', $data);
     }
 
     public function exportExcel(SearchPlanRequest $request, ExportPlanUseCase $useCase): RedirectResponse

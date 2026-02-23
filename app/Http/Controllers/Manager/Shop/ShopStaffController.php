@@ -21,26 +21,21 @@ use Throwable;
 
 class ShopStaffController extends Controller
 {
-    public function index(
-        SearchShopStaffRequest $request,
-        FetchShopStaffListUseCase $useCase
-    ): Response {
+    public function index(SearchShopStaffRequest $request, FetchShopStaffListUseCase $useCase): Response
+    {
         $shopId = auth('shop')->user()->shopStaff?->shop_id;
         $data   = $useCase($request->validated(), $shopId);
         return Inertia::render('ShopStaff/ShopStaffList', $data);
     }
 
-    public function create(
-        PrepareShopStaffCreateUseCase $useCase
-    ): Response {
+    public function create(PrepareShopStaffCreateUseCase $useCase): Response
+    {
         $data = $useCase($this->getShopId());
         return Inertia::render('ShopStaff/ShopStaffForm', $data);
     }
 
-    public function store(
-        FormShopStaffRequest $request,
-        CreateShopStaffUseCase $useCase,
-    ): RedirectResponse {
+    public function store(FormShopStaffRequest $request, CreateShopStaffUseCase $useCase): RedirectResponse
+    {
         try {
             $useCase($request->validated());
         } catch (Throwable $e) {
@@ -51,10 +46,8 @@ class ShopStaffController extends Controller
         return redirect()->route('shop.staffs.index')->with('success', '作成に成功しました。');
     }
 
-    public function edit(
-        ShopStaff $staff,
-        PrepareShopStaffEditFormUseCase $useCase
-    ): Response {
+    public function edit(ShopStaff $staff, PrepareShopStaffEditFormUseCase $useCase): Response
+    {
         $data = $useCase($staff);
         return Inertia::render("ShopStaff/ShopStaffForm", $data);
     }
@@ -74,10 +67,8 @@ class ShopStaffController extends Controller
         return redirect()->route('shop.staffs.index')->with('success', '更新に成功しました。');
     }
 
-    public function destroy(
-        ShopStaff $staff,
-        DeleteShopStaffUseCase $useCase
-    ): RedirectResponse {
+    public function destroy(ShopStaff $staff, DeleteShopStaffUseCase $useCase): RedirectResponse
+    {
         try {
             $useCase($staff);
         } catch (Throwable $e) {
@@ -103,10 +94,8 @@ class ShopStaffController extends Controller
         return back()->with('success', 'Excelエクスポートに成功しました。');
     }
 
-    public function exportCsv(
-        SearchShopStaffRequest $request,
-        ExportShopStaffUseCase $useCase,
-    ): RedirectResponse {
+    public function exportCsv(SearchShopStaffRequest $request, ExportShopStaffUseCase $useCase): RedirectResponse
+    {
         try {
             $shopId = auth('shop')->user()->shopStaff?->shop_id;
             $useCase(auth()->id(), $request->validated(), 'csv', $shopId);

@@ -24,17 +24,14 @@ use Throwable;
 
 class ShopController extends Controller
 {
-    public function index(
-        SearchShopRequest $request,
-        FetchShopListUseCase $useCase
-    ): Response {
+    public function index(SearchShopRequest $request, FetchShopListUseCase $useCase): Response
+    {
         $data    = $useCase($request->validated());
         return Inertia::render('Shop/ShopList', $data);
     }
 
-    public function create(
-        PrepareShopCreateFormUseCase $useCase
-    ): Response {
+    public function create(PrepareShopCreateFormUseCase $useCase): Response
+    {
         $data = $useCase();
         return Inertia::render('Shop/ShopForm', $data);
     }
@@ -53,43 +50,32 @@ class ShopController extends Controller
         return redirect()->route('admin.shops.index')->with('success', '登録に成功しました。');
     }
 
-    public function show(
-        Shop $shop,
-        FetchShopDetailTopUseCase $useCase
-    ): Response {
+    public function show(Shop $shop, FetchShopDetailTopUseCase $useCase): Response
+    {
         $data = $useCase($shop);
         return Inertia::render('Shop/ShopDetail', $data);
     }
 
-    public function staffs(
-        Shop $shop,
-        FetchShopStaffsUseCase $useCase
-    ): Response {
+    public function staffs(Shop $shop, FetchShopStaffsUseCase $useCase): Response
+    {
         $data = $useCase($shop);
         return Inertia::render('Shop/ShopDetail', $data);
     }
 
-    public function plans(
-        Shop $shop,
-        FetchShopPlansUseCase $useCase,
-    ): Response {
+    public function plans(Shop $shop, FetchShopPlansUseCase $useCase): Response
+    {
         $data = $useCase($shop);
         return Inertia::render('Shop/ShopDetail', $data);
     }
 
-    public function edit(
-        Shop $shop,
-        PrepareShopEditFormUseCase $useCase
-    ): Response {
+    public function edit(Shop $shop, PrepareShopEditFormUseCase $useCase): Response
+    {
         $data = $useCase($shop);
         return Inertia::render('Shop/ShopForm', $data);
     }
 
-    public function update(
-        FormShopRequest $request,
-        Shop $shop,
-        UpdateShopUseCase $useCase
-    ): RedirectResponse {
+    public function update(FormShopRequest $request, Shop $shop, UpdateShopUseCase $useCase): RedirectResponse
+    {
         try {
             $useCase($request->validated(), $shop);
         } catch (Throwable $e) {
@@ -100,10 +86,8 @@ class ShopController extends Controller
         return redirect()->route('admin.shops.index')->with('success', '更新に成功しました。');
     }
 
-    public function destroy(
-        Shop $shop,
-        DeleteShopUseCase $useCase
-    ): RedirectResponse {
+    public function destroy(Shop $shop, DeleteShopUseCase $useCase): RedirectResponse
+    {
         try {
             $useCase($shop);
         } catch (Throwable $e) {
@@ -114,10 +98,8 @@ class ShopController extends Controller
         return back()->with('success', '削除に成功しました。');
     }
 
-    public function exportExcel(
-        SearchShopRequest $request,
-        ExportShopUseCase $useCase
-    ): RedirectResponse {
+    public function exportExcel(SearchShopRequest $request, ExportShopUseCase $useCase): RedirectResponse
+    {
         try {
             $useCase(auth()->id(), $request->validated(), 'xlsx');
         } catch (Throwable $e) {
@@ -128,10 +110,8 @@ class ShopController extends Controller
         return back()->with('success', 'Excelエクスポートを開始しました。');
     }
 
-    public function exportCsv(
-        SearchShopRequest $request,
-        ExportShopUseCase $useCase
-    ): RedirectResponse {
+    public function exportCsv(SearchShopRequest $request, ExportShopUseCase $useCase): RedirectResponse
+    {
         try {
             $useCase(auth()->id(), $request->validated(), 'csv');
         } catch (Throwable $e) {

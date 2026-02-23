@@ -19,20 +19,16 @@ use Throwable;
 
 class ExportFileController extends Controller
 {
-    public function index(
-        SearchExportFileRequest $request,
-        FetchExportFileListUseCase $useCase,
-    ): Response {
+    public function index(SearchExportFileRequest $request, FetchExportFileListUseCase $useCase): Response
+    {
         $userId = auth($request->attributes->get('auth_guard'))->id();
         $data   = $useCase($request->validated(), $userId);
 
         return Inertia::render('Export/ExportFileList', $data);
     }
 
-    public function download(
-        ExportFile $exportFile,
-        DownloadExportFileUseCase $useCase
-    ): StreamedResponse|RedirectResponse {
+    public function download(ExportFile $exportFile, DownloadExportFileUseCase $useCase): StreamedResponse|RedirectResponse
+    {
         try {
             return $useCase($exportFile);
         } catch (Throwable $e) {
@@ -49,10 +45,8 @@ class ExportFileController extends Controller
         return response()->json(['unloadedExportFileCount' => $count]);
     }
 
-    public function destroy(
-        ExportFile $exportFile,
-        DeleteExportFileUseCase $useCase
-    ): RedirectResponse {
+    public function destroy(ExportFile $exportFile, DeleteExportFileUseCase $useCase): RedirectResponse
+    {
         try {
             $useCase($exportFile);
         } catch (Throwable $e) {
