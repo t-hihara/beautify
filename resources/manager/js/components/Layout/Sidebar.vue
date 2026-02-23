@@ -13,6 +13,7 @@ import {
   FolderIcon,
   HomeIcon,
   ScissorsIcon,
+  TicketIcon,
 } from "@heroicons/vue/24/outline";
 
 const page = usePage();
@@ -21,7 +22,8 @@ const guard = useGuard();
 const iconMap: Record<string, Component> = {
   dashboard: HomeIcon,
   shop: BuildingStorefrontIcon,
-  menu: ScissorsIcon,
+  menu: TicketIcon,
+  plan: ScissorsIcon,
   export: FolderIcon,
   log: DocumentDuplicateIcon,
 };

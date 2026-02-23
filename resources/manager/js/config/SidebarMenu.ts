@@ -72,6 +72,19 @@ export const adminMenu: MenuItem[] = [
     ],
   },
   {
+    id: 4,
+    label: "プラン管理",
+    icon: "plan",
+    children: [
+      {
+        id: 1,
+        label: "プラン一覧",
+        route: "admin.plans.index",
+        permission: "view.plans",
+      },
+    ],
+  },
+  {
     id: 98,
     label: "出力ファイル管理",
     icon: "export",
