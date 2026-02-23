@@ -12,17 +12,7 @@ use Illuminate\Database\Seeder;
 class MenuSeeder extends BaseSeeder
 {
     private Carbon $now;
-
-    private const CHUNK_SIZE           = 1000;
-    private const MIN_TYPES_PER_SHOP   = 5;
-    private const MAX_TYPES_PER_SHOP   = 10;
-    private const MIN_MENU_PER_TYPE    = 1;
-    private const MAX_MENU_PER_TYPE    = 2;
-    private const REQUIRED_TYPE_VALUES = [
-        MenuTypeEnum::CUT->value,
-        MenuTypeEnum::COLOR->value,
-        MenuTypeEnum::PERM->value,
-    ];
+    private const CHUNK_SIZE = 1000;
 
     public function __construct()
     {
@@ -33,27 +23,41 @@ class MenuSeeder extends BaseSeeder
     {
         $this->initialize();
 
-        $items      = [];
-        $menus      = $this->getMenus();
-        $types      = MenuTypeEnum::cases();
-        $typeValues = array_map(fn(MenuTypeEnum $type) => $type->value, $types);
+        $items = [];
+        $menus = $this->getMenus();
+        $types = MenuTypeEnum::cases();
+        $requiredTypes = [
+            MenuTypeEnum::CUT,
+            MenuTypeEnum::COLOR,
+            MenuTypeEnum::PERM,
+        ];
+        $optionalTypes = array_values(array_filter(
+            $types,
+            fn($type) => !in_array($type, $requiredTypes, true)
+        ));
 
-        $optionalTypeValues = array_values(array_diff($typeValues, self::REQUIRED_TYPE_VALUES));
-
-        Shop::chunkById(self::CHUNK_SIZE, function ($shops) use (&$items, $optionalTypeValues, $menus) {
+        Shop::chunkById(self::CHUNK_SIZE, function ($shops) use (
+            &$items,
+            $menus,
+            $types,
+            $requiredTypes,
+            $optionalTypes
+        ) {
             foreach ($shops as $shop) {
-                $numberOfTypes    = random_int(self::MIN_TYPES_PER_SHOP, self::MAX_TYPES_PER_SHOP);
-                $optionalCount    = $numberOfTypes - count(self::REQUIRED_TYPE_VALUES);
-                $selectedOptional = array_slice($optionalTypeValues, 0, max(0, min($optionalCount, count($optionalTypeValues))));
-                $selectedTypes    = array_merge(self::REQUIRED_TYPE_VALUES, $selectedOptional);
-                $sortOrder        = 1;
+                $numOptional     = random_int(2, 7);
+                $selectedOptions = $this->randomSelect($optionalTypes, $numOptional);
+                $selectedTypes   = array_merge($requiredTypes, $selectedOptions);
+                $sortOrder       = 1;
 
-                foreach ($selectedTypes as $typeValue) {
-                    if (!isset($menus[$typeValue])) continue;
-                    $menusInType = $menus[$typeValue];
+                foreach ($selectedTypes as $type) {
+                    $typeValue = $type->value;
+                    if (!isset($menus[$typeValue])) {
+                        continue;
+                    }
 
-                    $numberOfMenus = random_int(self::MIN_MENU_PER_TYPE, self::MAX_MENU_PER_TYPE);
-                    $selectedMenus = array_slice($menusInType, 0, min($numberOfMenus, count($menusInType)));
+                    $available     = $menus[$typeValue];
+                    $numMenus      = random_int(1, min(2, count($available)));
+                    $selectedMenus = $this->randomSelect($available, $numMenus);
 
                     foreach ($selectedMenus as $menu) {
                         $items[] = [
@@ -136,5 +140,17 @@ class MenuSeeder extends BaseSeeder
                 ['name' => '浴衣ヘアセット', 'price' => 3000, 'duration' => 30, 'description' => '浴衣用ヘアセット。'],
             ],
         ];
+    }
+
+    private function randomSelect(array $items, int $count): array
+    {
+        if ($count <= 0 || $count >= count($items)) {
+            return $items;
+        }
+
+        $keys = array_rand($items, $count);
+        $keys = is_array($keys) ? $keys : [$keys];
+
+        return array_map(fn($key) => $items[$key], $keys);
     }
 }
