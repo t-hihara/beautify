@@ -29,10 +29,7 @@ class FetchPlanListUseCase
                 'sortOrder'     => $plan->sort_order,
                 'validFrom'     => $plan->valid_from,
                 'validTo'       => $plan->valid_to,
-                'shop'          => [
-                    'id'   => $plan->shop->id,
-                    'name' => $plan->shop->name,
-                ],
+                'shop'          => $plan->shop->only(['id', 'name']),
             ]);
 
         return [

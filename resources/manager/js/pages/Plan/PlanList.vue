@@ -40,6 +40,7 @@ type PlanType = {
   sortOrder: number;
   validFrom: string | null;
   validTo: string | null;
+  shop: EnumType;
 };
 
 type SearchFormType = {
@@ -134,7 +135,12 @@ watch(
         <thead class="bg-zinc-200 font-medium text-zinc-600 text-left align-bottom tracking-wider">
           <tr>
             <th scope="col" class="px-4 py-3 text-center">ID</th>
-            <th scope="col" class="px-4 py-3">名前</th>
+            <th scope="col" class="px-4 py-3">
+              <div class="flex flex-col">
+                <span>プラン名</span>
+                <span>店舗名</span>
+              </div>
+            </th>
             <th scope="col" class="px-4 py-3 text-end">
               <div class="flex flex-col">
                 <span>所要時間</span>
@@ -154,7 +160,12 @@ watch(
           <template v-if="plans.length > 0">
             <tr v-for="plan in plans" :key="plan.id">
               <td class="px-4 py-3">{{ plan.id }}</td>
-              <td class="px-4 py-3">{{ plan.name }}</td>
+              <td class="px-4 py-3">
+                <div class="flex flex-col">
+                  <span>{{ plan.name }}</span>
+                  <span>{{ plan.shop.name }}</span>
+                </div>
+              </td>
               <td class="px-4 py-3">
                 <div class="flex flex-col text-end">
                   <span>{{ plan.totalDuration }}分</span>

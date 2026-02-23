@@ -30,10 +30,7 @@ class FetchMenuListUseCase
                 'description' => $menu->description,
                 'activeFlag'  => $menu->active_flag->description(),
                 'sortOrder'   => $menu->sortOrder,
-                'shop'        => [
-                    'id'   => $menu->shop->id,
-                    'name' => $menu->shop->name,
-                ],
+                'shop'        => $menu->shop->only(['id', 'name']),
             ]);
 
         return [
