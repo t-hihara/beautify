@@ -78,6 +78,9 @@ class RoleAndPermissionSeeder extends BaseSeeder
             'view.menus',
             'manage.menus',
             'export.menus',
+            'view.plans',
+            'manage.plans',
+            'export.plans',
             'view.reservations',
             'manage.reservations',
             'view.exports',
@@ -112,6 +115,9 @@ class RoleAndPermissionSeeder extends BaseSeeder
                 'view.menus',
                 'manage.menus',
                 'export.menus',
+                'view.plans',
+                'manage.plans',
+                'export.plans',
             ],
             'staff' => [
                 'view.exports',
@@ -120,6 +126,8 @@ class RoleAndPermissionSeeder extends BaseSeeder
                 'view.staffs',
                 'view.menus',
                 'export.menus',
+                'view.plans',
+                'export.plans',
             ],
             'user' => [
                 'view.reservations',
