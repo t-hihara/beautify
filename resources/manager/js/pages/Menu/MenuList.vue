@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { Head, useForm } from "@inertiajs/vue3";
-import { watch } from "vue";
+import { Head, router, useForm } from "@inertiajs/vue3";
+import { ref, watch } from "vue";
 import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
-import { ButtonPrimary, ButtonIcon, TextLink } from "@/common/js/components/Ui/ButtonIndex";
+import { ButtonPrimary, ButtonIcon, ButtonIconDanger, TextLink } from "@/common/js/components/Ui/ButtonIndex";
 import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
 import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
+import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -45,7 +46,7 @@ type SearchFormType = {
   perPage: number;
 };
 
-const { filters } = defineProps<{
+const { filters, menus } = defineProps<{
   menus: MenuType[];
   links: PaginationLinkType[];
   pagination: PaginationType;
@@ -56,6 +57,8 @@ const { filters } = defineProps<{
 }>();
 
 const guard = useGuard();
+const showDeleteModal = ref<boolean>(false);
+const targetMenu = ref<MenuType | null>(null);
 const searchForm = useForm<SearchFormType>({
   name: filters.name || "",
   types: filters.types || [],
@@ -75,6 +78,30 @@ const exportFile = (type: "excel" | "csv"): void => {
   type === "excel"
     ? searchForm.get(route(`${guard.value}.menus.excel`))
     : searchForm.get(route(`${guard.value}.menus.csv`));
+};
+
+const deleteMenu = (): void => {
+  router.delete(route(`${guard.value}.menus.delete`, targetMenu.value?.id), {
+    preserveState: true,
+    preserveScroll: true,
+    onFinish: () => {
+      closeDeleteModal();
+    },
+  });
+};
+
+const openDeleteModal = (id: number): void => {
+  const menu = menus.find((menu) => menu.id === id);
+  targetMenu.value = menu ?? null;
+  showDeleteModal.value = true;
+};
+
+const closeDeleteModal = (): void => {
+  showDeleteModal.value = false;
+};
+
+const resetTargetMenu = (): void => {
+  targetMenu.value = null;
 };
 
 watch(
@@ -178,6 +205,9 @@ watch(
                   <button-icon :href="route(`${guard}.menus.edit`, menu.id)"
                     ><pencil-square-icon class="size-6"
                   /></button-icon>
+                  <button-icon-danger @click="openDeleteModal(menu.id)">
+                    <trash-icon class="size-6" />
+                  </button-icon-danger>
                 </div>
               </td>
             </tr>
@@ -191,6 +221,25 @@ watch(
       </table>
     </div>
     <pagination :links="links" :pagination="pagination" :per-page="searchForm.perPage" class="mt-4" />
+    <dialog-modal
+      v-model="showDeleteModal"
+      title="メニュー削除"
+      show-close
+      dialog-class="max-w-2xl w-full"
+      @close="closeDeleteModal"
+      @after-leave="resetTargetMenu"
+    >
+      <div class="mt-4">
+        <div v-if="targetMenu" class="flex flex-col space-y-1">
+          <span>該当のメニューを削除しますか？</span>
+          <span class="font-semibold">{{ targetMenu.name }}</span>
+        </div>
+        <div class="mt-4 pt-4 flex justify-center items-center gap-4 border-t border-zinc-200">
+          <button-tertiary @click="closeDeleteModal">キャンセル</button-tertiary>
+          <button-primary @click="deleteMenu">削除する</button-primary>
+        </div>
+      </div>
+    </dialog-modal>
   </div>
 </template>
 
