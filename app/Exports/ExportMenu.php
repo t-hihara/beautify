@@ -86,8 +86,8 @@ class ExportMenu implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithH
                     : 0;
 
                 $file->update([
-                    'size'   => $fileSize,
-                    'status' => ExportFileStatusTypeEnum::COMPLETED,
+                    'file_size' => $fileSize,
+                    'status'    => ExportFileStatusTypeEnum::COMPLETED,
                 ]);
             }
         ];
