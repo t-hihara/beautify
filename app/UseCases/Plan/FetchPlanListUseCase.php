@@ -2,6 +2,7 @@
 
 namespace App\UseCases\Plan;
 
+use App\Enum\ActiveFlagTypeEnum;
 use App\Models\Plan;
 use App\Utilities\RecursiveCovert;
 
@@ -30,9 +31,11 @@ class FetchPlanListUseCase
             ]);
 
         return [
-            'plans'      => $plans->items(),
-            'links'      => $plans->linkCollection(),
-            'pagination' => [
+            'filters'     => $filters,
+            'activeFlags' => ActiveFlagTypeEnum::options(),
+            'plans'       => $plans->items(),
+            'links'       => $plans->linkCollection(),
+            'pagination'  => [
                 'currentPage' => $plans->currentPage(),
                 'lastPage'    => $plans->lastPage(),
                 'prev'        => $plans->previousPageUrl(),

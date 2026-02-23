@@ -1,7 +1,24 @@
 <script setup lang="ts">
-import { Head } from "@inertiajs/vue3";
-import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
+import { Head, useForm } from "@inertiajs/vue3";
+import { watch } from "vue";
+import { route } from "ziggy-js";
+import { debounce } from "lodash";
+import { useGuard } from "@manager/composables/useGuard";
+import {
+  SearchText,
+  SearchSingleSelect,
+  SearchMultiSelect,
+  SearchDateTime,
+} from "@/common/js/components/Form/SearchIndex";
+import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
+
+type Filters = {
+  name: string;
+  activeFlag: string;
+  validFrom: string | null;
+  validTo: string | null;
+};
 
 type PlanType = {
   id: number;
@@ -17,11 +34,43 @@ type PlanType = {
   validTo: string | null;
 };
 
-defineProps<{
+type SearchFormType = {
+  name: string;
+  activeFlag: string;
+  validFrom: string;
+  validTo: string;
+};
+
+const { filters } = defineProps<{
+  filters: Filters;
+  activeFlags: EnumType[];
   plans: PlanType[];
   links: PaginationLinkType[];
   pagination: PaginationType;
 }>();
+
+const searchForm = useForm<SearchFormType>({
+  name: filters.name || "",
+  activeFlag: filters.activeFlag || "active",
+  validFrom: filters.validFrom || "",
+  validTo: filters.validTo || "",
+});
+
+const guard = useGuard();
+
+const search = (): void => {
+  searchForm.get(route(`${guard.value}.plans.index`), {
+    preserveState: true,
+    preserveScroll: true,
+  });
+};
+
+watch(
+  () => searchForm.data(),
+  debounce(() => {
+    search();
+  }, 300),
+);
 </script>
 
 <template>
@@ -29,6 +78,37 @@ defineProps<{
     <Head title="プラン一覧" />
     <div>
       <h2 class="text-3xl">プラン一覧</h2>
+    </div>
+    <div class="mt-8 p-6 bg-white rounded-lg shadow-lg">
+      <div class="grid grid-cols-4 gap-4">
+        <search-text v-model="searchForm.name" field="name" title="プラン名" placeholder="プラン名" />
+        <search-single-select
+          v-model="searchForm.activeFlag"
+          title="運営状態"
+          field="activeFlag"
+          show-all
+          :items="activeFlags"
+        />
+        <div class="col-span-2 flex items-end gap-2">
+          <search-date-time
+            v-model="searchForm.validFrom"
+            field="fromDate"
+            title="作成日(開始)"
+            class="flex-1"
+            :min-date="null"
+            :error="searchForm.errors"
+          />
+          <span class="flex h-10 shrink-0 items-center justify-center self-end">〜</span>
+          <search-date-time
+            v-model="searchForm.validTo"
+            field="toDate"
+            title="作成日(終了)"
+            class="flex-1"
+            :min-date="null"
+            :error="searchForm.errors"
+          />
+        </div>
+      </div>
     </div>
     <div class="mt-4 bg-white shadow-sm rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-zinc-300 text-sm">
