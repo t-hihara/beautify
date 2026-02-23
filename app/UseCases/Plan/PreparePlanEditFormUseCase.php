@@ -45,7 +45,7 @@ class PreparePlanEditFormUseCase
             ],
             'activeFlags'    => ActiveFlagTypeEnum::options(),
             'conditionTypes' => PlanConditionTypeEnum::options(),
-            'menus'          => Menu::byShopId($plan->shop_id)->get(['id', 'name']),
+            'menus'          => Menu::byShopId($plan->shop_id)->get(['id', 'name', 'type', 'price', 'duration']),
         ];
     }
 }

@@ -28,6 +28,7 @@ type PlanType = {
   validFrom: string | null;
   validTo: string | null;
   image: ImageType | null;
+  menus: MenuType[];
 };
 
 type ImageType = {
@@ -64,6 +65,7 @@ const { plan } = defineProps<{
   plan?: PlanType;
   activeFlags: EnumType[];
   conditionTypes: EnumType[];
+  menus: MenuType[];
 }>();
 
 const guard = useGuard();
