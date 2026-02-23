@@ -83,6 +83,11 @@ class Shop extends Model
         return $this->morphMany(UploadedImage::class, 'imageable');
     }
 
+    public function plans(): HasMany
+    {
+        return $this->hasMany(Plan::class);
+    }
+
     public function menus(): HasMany
     {
         return $this->hasMany(Menu::class);

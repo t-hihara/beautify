@@ -8,6 +8,7 @@ use App\Models\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Menu extends Model
 {
@@ -67,6 +68,11 @@ class Menu extends Model
     /* ================================================================================
                                         リレーション
     ================================================================================ */
+
+    public function plans(): BelongsToMany
+    {
+        return $this->belongsToMany(Plan::class);
+    }
 
     public function shop(): BelongsTo
     {
