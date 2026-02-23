@@ -5,6 +5,7 @@ namespace App\UseCases\ShopStaff;
 use App\Enum\ExportFileStatusTypeEnum;
 use App\Exports\ExportShopStaff;
 use App\Models\ExportFile;
+use App\Services\Export\ExportFileService;
 use App\Utilities\RecursiveCovert;
 use Carbon\Carbon;
 use Illuminate\Foundation\Bus\PendingDispatch;
@@ -15,6 +16,10 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ExportShopStaffUseCase
 {
+    public function __construct(
+        private readonly ExportFileService $exportFileService,
+    ) {}
+
     public function __invoke(int $userId, array $filters, string $type, ?int $shopId = null): ExportFile
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
@@ -25,21 +30,8 @@ class ExportShopStaffUseCase
             $filename = 'shop-staff_' . Str::random(20) . '_' . $datetime . '.' . $type;
             $filepath = 'exports/' . $filename;
 
-            $exportFile = ExportFile::create([
-                'user_id'   => $userId,
-                'subject'   => 'shopStaff',
-                'filename'  => $filename,
-                'file_type' => $type,
-                'file_path' => $filepath,
-                'status'    => ExportFileStatusTypeEnum::PENDING,
-                'filters'   => $convert,
-            ]);
-
-            $exportType = match (strtolower($type)) {
-                'xlsx'  => ExcelType::XLSX,
-                'csv'   => ExcelType::CSV,
-                default => ExcelType::CSV,
-            };
+            $exportFile = $this->exportFileService->createExportFile($userId, 'shop-staff', $convert, $type);
+            $exportType = $this->exportFileService->resolveExcelType($type);
 
             Excel::queue(new ExportShopStaff($convert, $exportFile->id), $filepath, 's3', $exportType);
 
