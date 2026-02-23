@@ -3,12 +3,18 @@
 namespace App\UseCases\Plan;
 
 use App\Models\Plan;
+use App\Utilities\RecursiveCovert;
 
 class FetchPlanListUseCase
 {
     public function __invoke(array $filters, ?int $shopId = null): array
     {
-        $plans = Plan::paginate(20)
+        $convert = RecursiveCovert::_convert($filters, 'snake');
+
+        $plans = Plan::byName($convert['name'] ?? null)
+            ->byActiveFlag($convert['active_flag'] ?? null)
+            ->byValidDuration($convert['valid_from'] ?? null, $convert['valid_to'] ?? null)
+            ->paginate($convert['per_page'] ?? 20)
             ->through(fn($plan) => [
                 'id'            => $plan->id,
                 'name'          => $plan->name,
