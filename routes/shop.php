@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Manager\Shop\AuthController;
 use App\Http\Controllers\Manager\Shop\MenuController;
+use App\Http\Controllers\Manager\Shop\PlanController;
 use App\Http\Controllers\Manager\Shop\ShopDashboardController;
 use App\Http\Controllers\Manager\Shop\ProfileController;
 use App\Http\Controllers\Manager\Shop\ShopStaffController;
@@ -57,6 +58,12 @@ Route::prefix('shop')->name('shop.')->group(function () {
             Route::middleware(['permission:export.menus'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
                 Route::get('/export/csv', 'exportCsv')->name('csv');
+            });
+        });
+
+        Route::prefix('plans')->name('plans.')->controller(PlanController::class)->group(function () {
+            Route::middleware(['permission:view.plans'])->group(function () {
+                Route::get('/', 'index')->name('index');
             });
         });
     });

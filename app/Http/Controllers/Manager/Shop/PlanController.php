@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Manager\Admin;
+namespace App\Http\Controllers\Manager\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Search\SearchPlanRequest;
