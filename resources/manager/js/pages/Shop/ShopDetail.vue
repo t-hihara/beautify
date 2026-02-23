@@ -7,6 +7,7 @@ import { ButtonIcon, TextLink } from "@/common/js/components/Ui/ButtonIndex";
 import { useGuard } from "@manager/composables/useGuard";
 import ShopDetailTop from "./Detail/ShopDetailTop.vue";
 import ShopDetailStaff from "./Detail/ShopDetailStaff.vue";
+import ShopDetailPlan from "./Detail/ShopDetailPlan.vue";
 
 export type ImageType = {
   id: number;
@@ -58,10 +59,12 @@ const guard = useGuard();
 const RouteToTab: Record<string, string> = {
   "admin.shops.show": "top",
   "admin.shops.staff": "staff",
+  "admin.shops.plan": "plan",
   "shop.profile": "top",
   "shop.staff": "staff",
+  "shop.plan": "plan",
 };
-const tabComponentNames = ["ShopDetailTop", "ShopDetailStaff"];
+const tabComponentNames = ["ShopDetailTop", "ShopDetailStaff", "ShopDetailPlan"];
 
 defineProps<{
   shop: ShopType;
@@ -71,17 +74,20 @@ const TabList = computed(() =>
   guard.value === "admin"
     ? [
         { key: "top", label: "サロンTOP", route: "admin.shops.show" },
+        { key: "plan", label: "プラン", route: "admin.shops.plan" },
         { key: "staff", label: "スタッフ", route: "admin.shops.staff" },
       ]
     : [
         { key: "top", label: "サロンTOP", route: "shop.index" },
+        { key: "plan", label: "プラン", route: "shop.plan" },
         { key: "staff", label: "スタッフ", route: "shop.staff" },
       ],
 );
 const activeTab = computed(() => RouteToTab[route().current() ?? ""] ?? "top");
 const currentTabComponent = computed(() => {
-  const map: Record<string, typeof ShopDetailTop | typeof ShopDetailStaff> = {
+  const map: Record<string, typeof ShopDetailTop | typeof ShopDetailPlan | typeof ShopDetailStaff> = {
     top: ShopDetailTop,
+    plan: ShopDetailPlan,
     staff: ShopDetailStaff,
   };
   return map[activeTab.value] ?? ShopDetailTop;
@@ -150,7 +156,13 @@ const currentTabComponent = computed(() => {
       </section>
       <section>
         <KeepAlive :include="tabComponentNames">
-          <component :is="currentTabComponent" :key="activeTab" :shop="shop" :staffs="shop.staffs ?? []" />
+          <component
+            :is="currentTabComponent"
+            :key="activeTab"
+            :shop="shop"
+            :staffs="shop.staffs ?? []"
+            :plans="shop.plans ?? []"
+          />
         </KeepAlive>
       </section>
     </div>

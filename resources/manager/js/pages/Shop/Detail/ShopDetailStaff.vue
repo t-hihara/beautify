@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { StaffType } from "@manager/pages/Shop/ShopDetail.vue";
-defineOptions({ name: "ShopDetailStaff" });
 
+defineOptions({ name: "ShopDetailStaff" });
 defineProps<{
   shop: { id: number; name: string };
   staffs: StaffType[];
@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <div class="space-y-4">
     <div class="border-b border-zinc-200 pb-2">
-      <h3 class="text-xl font-bold text-zinc-900 border-l-4 border-rose-500 pl-3">スタッフ</h3>
+      <h3 class="text-xl font-bold text-zinc-800 border-l-4 border-rose-500 pl-3">スタッフ</h3>
     </div>
     <div v-if="staffs.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
       <article v-for="staff in staffs" :key="staff.id" class="flex flex-col h-full bg-white rounded-lg overflow-hidden">
