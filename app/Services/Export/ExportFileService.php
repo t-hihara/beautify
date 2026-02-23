@@ -35,7 +35,7 @@ class ExportFileService
         ]);
     }
 
-    public function resolveExcelType(string $type): ExcelType
+    public function resolveExcelType(string $type): string
     {
         return match (strtolower($type)) {
             'xlsx'  => ExcelType::XLSX,
