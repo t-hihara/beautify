@@ -209,7 +209,9 @@ watch(
               <td class="px-4 py-3">{{ plan.id }}</td>
               <td class="px-4 py-3">
                 <div class="flex flex-col gap-y-1">
-                  <span>{{ plan.shop.name }}</span>
+                  <text-link :href="guard === 'admin' ? route('admin.shops.show', plan.shop.id) : route('shop.index')">
+                    <span>{{ plan.shop.name }}</span>
+                  </text-link>
                   <span>{{ plan.name }}</span>
                   <div v-if="plan.menus.length > 0" class="flex flex-wrap gap-1 items-center w-fit">
                     <template v-for="menu in plan.menus.slice(0, 2)" :key="menu.id">
