@@ -43,22 +43,22 @@ class Menu extends Model
 
     public function scopeByName(Builder $query, ?string $name): Builder
     {
-        return $query->when($name, fn($q) => $q->where('name', 'like', "%$name%"));
+        return $query->when($name, fn(Builder $q) => $q->where('name', 'like', "%$name%"));
     }
 
     public function scopeByTypes(Builder $query, ?array $types): Builder
     {
-        return $query->when($types, fn($q) => $q->whereIn("type", $types));
+        return $query->when($types, fn(Builder $q) => $q->whereIn("type", $types));
     }
 
     public function scopeByShopIds(Builder $query, ?array $shopIds): Builder
     {
-        return $query->when($shopIds, fn($q) => $q->whereIn('shop_id', $shopIds));
+        return $query->when($shopIds, fn(Builder $q) => $q->whereIn('shop_id', $shopIds));
     }
 
     public function scopeByActiveFlag(Builder $query, ?string $flag): Builder
     {
-        return $query->when($flag, fn($q) => $q->where('active_flag', $flag));
+        return $query->when($flag, fn(Builder $q) => $q->where('active_flag', $flag));
     }
 
     /* ================================================================================

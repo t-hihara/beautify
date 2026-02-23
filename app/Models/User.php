@@ -79,11 +79,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
 
     public function scopeByEmail(Builder $query, ?string $email): Builder
     {
-        if ($email) {
-            return $query->where('email', $email);
-        }
-
-        return $query;
+        return $query->when($email, fn(Builder $q) => $q->where('email', $email));
     }
 
     /* ================================================================================

@@ -66,12 +66,12 @@ class ExportFile extends Model
 
     public function scopeBySubject(Builder $query, ?string $subject): Builder
     {
-        return $query->when($subject, fn($q) => $q->where('subject', 'like', "%$subject%"));
+        return $query->when($subject, fn(Builder $q) => $q->where('subject', 'like', "%$subject%"));
     }
 
     public function scopeByStatus(Builder $query, ?ExportFileStatusTypeEnum $status): Builder
     {
-        return $query->when($status, fn($q) => $q->where('status', $status));
+        return $query->when($status, fn(Builder $q) => $q->where('status', $status));
     }
 
     public function scopeByDownloaded(Builder $query, bool $downloaded = false): Builder

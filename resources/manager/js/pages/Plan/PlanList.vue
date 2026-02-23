@@ -184,7 +184,7 @@ watch(
                   <span>{{ plan.shop.name }}</span>
                   <span>{{ plan.name }}</span>
                   <div v-if="plan.menus.length > 0" class="flex flex-wrap gap-1 items-center w-fit">
-                    <template v-for="(menu, i) in plan.menus.slice(0, 2)" :key="menu.id">
+                    <template v-for="menu in plan.menus.slice(0, 2)" :key="menu.id">
                       <span class="inline-flex items-center rounded-md bg-rose-100 px-2 py-0.5 text-xs text-zinc-800">{{
                         menu.name
                       }}</span>
