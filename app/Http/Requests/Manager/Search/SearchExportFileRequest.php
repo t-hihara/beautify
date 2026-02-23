@@ -34,7 +34,9 @@ class SearchExportFileRequest extends FormRequest
             function (Validator $validator) {
                 $from = $this->input('fromDate');
                 $to   = $this->input('toDate');
-                if ($from || $to) return;
+                if (!$from || !$to) {
+                    return;
+                }
 
                 if (Carbon::parse($to)->gt(Carbon::parse($from)->addMonth())) {
                     $validator->errors()->add('toDate', '作成日(to)は、作成日(from)から1ヶ月以内にしてください。');
