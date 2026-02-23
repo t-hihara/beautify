@@ -9,10 +9,10 @@ use App\Models\Shop;
 use App\UseCases\Shop\CreateShopUseCase;
 use App\UseCases\Shop\DeleteShopUseCase;
 use App\UseCases\Shop\ExportShopUseCase;
+use App\UseCases\Shop\FetchShopDetailTopUseCase;
 use App\UseCases\Shop\PrepareShopEditFormUseCase;
 use App\UseCases\Shop\FetchShopListUseCase;
 use App\UseCases\Shop\FetchShopStaffsUseCase;
-use App\UseCases\Shop\FetchShopUseCase;
 use App\UseCases\Shop\PrepareShopCreateFormUseCase;
 use App\UseCases\Shop\UpdateShopUseCase;
 use Illuminate\Http\RedirectResponse;
@@ -54,7 +54,7 @@ class ShopController extends Controller
 
     public function show(
         Shop $shop,
-        FetchShopUseCase $useCase
+        FetchShopDetailTopUseCase $useCase
     ): Response {
         $data = $useCase($shop);
         return Inertia::render('Shop/ShopDetail', $data);

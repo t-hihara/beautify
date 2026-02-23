@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Manager\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
+use App\UseCases\Shop\FetchShopDetailTopUseCase;
 use App\UseCases\Shop\FetchShopStaffsUseCase;
-use App\UseCases\Shop\FetchShopUseCase;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class ProfileController extends Controller
 {
-    public function index(FetchShopUseCase $useCase): Response
+    public function index(FetchShopDetailTopUseCase $useCase): Response
     {
         $shop = Shop::findOrFail($this->getShopId());
         if (!$shop) abort(403, '店舗なし');

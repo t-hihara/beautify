@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\Storage;
 
 class FetchShopStaffsUseCase
 {
+    public function __construct(
+        private readonly FetchShopUseCase $useCase
+    ) {}
+
     public function __invoke(Shop $shop): array
     {
-        $data = (new FetchShopUseCase())($shop);
+        $data = ($this->useCase)($shop);
         $shop->load(['staffs.image']);
 
         $staffs = $shop->staffs
@@ -31,7 +35,7 @@ class FetchShopStaffsUseCase
             ]);
 
         return [
-            'shop' => array_merge($data['shop'], ['staffs' => $staffs->all()]),
+            'shop' => array_merge($data, ['staffs' => $staffs->all()]),
         ];
     }
 }
