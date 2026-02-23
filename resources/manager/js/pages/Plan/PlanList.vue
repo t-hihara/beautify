@@ -23,6 +23,7 @@ const PER_PAGE_OPTIONS = [
 type Filters = {
   name: string;
   activeFlag: string;
+  types: string[];
   validFrom: string | null;
   validTo: string | null;
   perPage: number;
@@ -53,6 +54,7 @@ type MenuType = {
 type SearchFormType = {
   name: string;
   activeFlag: string;
+  types: string[];
   validFrom: string;
   validTo: string;
   perPage: number;
@@ -61,6 +63,7 @@ type SearchFormType = {
 const { filters } = defineProps<{
   filters: Filters;
   activeFlags: EnumType[];
+  menuTypes: EnumType[];
   plans: PlanType[];
   links: PaginationLinkType[];
   pagination: PaginationType;
@@ -69,6 +72,7 @@ const { filters } = defineProps<{
 const searchForm = useForm<SearchFormType>({
   name: filters.name || "",
   activeFlag: filters.activeFlag || "active",
+  types: filters.types || [],
   validFrom: filters.validFrom || "",
   validTo: filters.validTo || "",
   perPage: filters.perPage || 10,
@@ -106,6 +110,14 @@ watch(
           field="activeFlag"
           show-all
           :items="activeFlags"
+        />
+        <search-multi-select
+          v-model="searchForm.types"
+          title="メニュー種別"
+          field="types"
+          show-clear
+          class="col-span-2"
+          :items="menuTypes"
         />
         <div class="col-span-2 flex items-end gap-2">
           <search-date-time

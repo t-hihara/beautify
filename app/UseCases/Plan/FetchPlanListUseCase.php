@@ -3,6 +3,7 @@
 namespace App\UseCases\Plan;
 
 use App\Enum\ActiveFlagTypeEnum;
+use App\Enum\MenuTypeEnum;
 use App\Models\Plan;
 use App\Utilities\RecursiveCovert;
 
@@ -15,6 +16,7 @@ class FetchPlanListUseCase
         $plans = Plan::with(['shop', 'menus'])
             ->byName($convert['name'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
+            ->byMenuTypes($convert['types'] ?? null)
             ->byValidDuration($convert['valid_from'] ?? null, $convert['valid_to'] ?? null)
             ->paginate($convert['per_page'] ?? 10)
             ->through(fn($plan) => [
@@ -38,6 +40,7 @@ class FetchPlanListUseCase
                 'perPage' => (int) ($filters['perPage'] ?? 10),
             ]),
             'activeFlags' => ActiveFlagTypeEnum::options(),
+            'menuTypes'   => MenuTypeEnum::options(),
             'plans'       => $plans->items(),
             'links'       => $plans->linkCollection(),
             'pagination'  => [

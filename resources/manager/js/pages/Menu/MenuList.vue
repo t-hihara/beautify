@@ -137,7 +137,7 @@ watch(
         />
         <search-multi-select
           v-model="searchForm.types"
-          title="メニュータイプ"
+          title="メニュー種別"
           field="types"
           show-clear
           :items="menuTypes"

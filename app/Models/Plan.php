@@ -56,12 +56,18 @@ class Plan extends Model
 
     public function scopeByName(Builder $query, ?string $name): Builder
     {
-        return $query->when($name, fn($q) => $q->where('name', 'like', "%$name%"));
+        return $query->when($name, fn(Builder $q) => $q->where('name', 'like', "%$name%"));
     }
 
     public function scopeByActiveFlag(Builder $query, ?string $flag): Builder
     {
-        return $query->when($flag, fn($q) => $q->where('active_flag', $flag));
+        return $query->when($flag, fn(Builder $q) => $q->where('active_flag', $flag));
+    }
+
+    public function scopeByMenuTypes(Builder $query, ?array $types): Builder
+    {
+        return $query->when($types, fn(Builder $q) => $q
+            ->whereHas('menus', fn(Builder $menuQuery) => $menuQuery->whereIn('type', $types)));
     }
 
     public function scopeByValidDuration(Builder $query, ?string $from, ?string $to): Builder
