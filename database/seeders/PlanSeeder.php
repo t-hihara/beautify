@@ -29,7 +29,7 @@ class PlanSeeder extends BaseSeeder
 
         Shop::chunkById(self::CHUNK_SIZE, function ($shops) use (&$items, $plans, $planKeys) {
             foreach ($shops as $shop) {
-                $numberOfPlans = random_int(1, 2);
+                $numberOfPlans = random_int(5, 10);
                 $selectedKeys  = $this->randomSelect($planKeys, $numberOfPlans);
                 $sortOrder     = 1;
 
@@ -57,7 +57,7 @@ class PlanSeeder extends BaseSeeder
         $this->insertData('plans', $items);
 
         $this->finalize('PlanSeeder', [
-            'プラン数' . count($items),
+            'プラン数' => count($items),
         ]);
     }
 

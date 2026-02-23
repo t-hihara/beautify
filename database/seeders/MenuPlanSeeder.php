@@ -34,7 +34,7 @@ class MenuPlanSeeder extends BaseSeeder
                     continue;
                 }
 
-                $menuTypeValues = array_map(fn ($menuType) => $menuType->value, $template['menu_types']);
+                $menuTypeValues = array_map(fn($menuType) => $menuType->value, $template['menu_types']);
                 $menus = Menu::where('shop_id', $plan->shop_id)
                     ->whereIn('type', $menuTypeValues)
                     ->orderBy('sort_order')
@@ -58,7 +58,7 @@ class MenuPlanSeeder extends BaseSeeder
         $this->insertData('menu_plan', $items);
 
         $this->finalize('MenuPlanSeeder', [
-            'メニュープラン数' . count($items),
+            'メニュープラン数' => count($items),
         ]);
     }
 
