@@ -10,8 +10,8 @@ import {
   SearchMultiSelect,
   SearchDateTime,
 } from "@/common/js/components/Form/SearchIndex";
-import { ButtonPrimary, TextLink } from "@/common/js/components/Ui/ButtonIndex";
-import { FolderArrowDownIcon } from "@heroicons/vue/24/solid";
+import { ButtonPrimary, ButtonIcon, TextLink } from "@/common/js/components/Ui/ButtonIndex";
+import { FolderArrowDownIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 
@@ -246,7 +246,13 @@ watch(
                 </template>
               </td>
               <td class="px-4 py-3 text-end">{{ plan.sortOrder }}</td>
-              <td class="px-4 py-3"></td>
+              <td class="px-4 py-3">
+                <div class="flex items-center justify-end gap-2">
+                  <button-icon :href="route(`${guard}.plans.edit`, plan.id)"
+                    ><pencil-square-icon class="size-6"
+                  /></button-icon>
+                </div>
+              </td>
             </tr>
           </template>
           <template v-else>

@@ -14,6 +14,7 @@ const {
   multiCalendars = 0,
   mode = "date",
   inputmode = "none",
+  disabled = false,
 } = defineProps<{
   modelValue: string | null;
   field: string;
@@ -27,6 +28,7 @@ const {
   multiCalendars?: number;
   mode?: Mode;
   inputmode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal";
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -59,6 +61,7 @@ const handleModelUpdate = (value: Date | string | null): void => {
       {{ title }}<span v-if="required" class="text-red-500">※</span>
     </label>
     <vue-date-picker
+      :class="{ 'mt-1': title }"
       no-today
       :auto-apply="autoApply"
       :model-value="modelValue"
@@ -70,6 +73,7 @@ const handleModelUpdate = (value: Date | string | null): void => {
       :formats="{ input: format }"
       :multi-calendars="multiCalendars"
       :week-start="0"
+      :disabled="disabled"
       :input-attrs="{
         clearable: true,
         inputmode: inputmode,

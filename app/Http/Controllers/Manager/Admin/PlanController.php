@@ -24,7 +24,7 @@ class PlanController extends Controller
 
     public function edit(Plan $plan, PreparePlanEditFormUseCase $useCase): Response
     {
-        $data = $useCase($shop);
+        $data = $useCase($plan);
         return Inertia::render('Plan/PlanForm', $data);
     }
 
