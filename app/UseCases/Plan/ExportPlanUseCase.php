@@ -17,14 +17,15 @@ class ExportPlanUseCase
     public function __invoke(int $userId, array $filters, string $type, ?int $shopId = null): ExportFile
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
+        $shopId ? $convert['shop_ids'] = [$shopId] : null;
 
-        return DB::transaction(function () use ($convert, $shopId) {
+        return DB::transaction(function () use ($userId, $convert, $type) {
             $datetime = Carbon::now()->format('Y-m-d H:i:s');
             $filename = 'plan_' . Str::random(20) . '_' . $datetime . '.' . $type;
             $filepath = 'exports/' . $filename;
 
             $exportFile = ExportFile::create([
-                'user'      => $userId,
+                'user_id'   => $userId,
                 'subject'   => 'plan',
                 'filename'  => $filename,
                 'file_type' => $type,

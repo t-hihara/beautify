@@ -29,6 +29,7 @@ class ExportPlan implements FromQuery, WithCustomCsvSettings, WithHeadings, With
         return Plan::with(['shop', 'menus'])
             ->byName($this->filters['name'] ?? null)
             ->byActiveFlag($this->filters['active_flag'] ?? null)
+            ->byShopIds($this->filters['shop_ids'] ?? null)
             ->byMenuTypes($this->filters['types'] ?? null)
             ->byValidDuration($this->filters['valid_from'] ?? null, $this->filters['valid_to'] ?? null)
             ->orderBy('shop_id')

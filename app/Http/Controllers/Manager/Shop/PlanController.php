@@ -37,7 +37,7 @@ class PlanController extends Controller
     {
         try {
             $shopId = auth('shop')->user()->shopStaff?->shop_id;
-            $useCase(auth()->id, $request->validated(), 'csv', $shopId);
+            $useCase(auth()->id(), $request->validated(), 'csv', $shopId);
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', 'ExcelCsvエクスポートに失敗しました。');

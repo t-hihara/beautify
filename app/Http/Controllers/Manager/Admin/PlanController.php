@@ -35,7 +35,7 @@ class PlanController extends Controller
     public function exportCsv(SearchPlanRequest $request, ExportPlanUseCase $useCase): RedirectResponse
     {
         try {
-            $useCase(auth()->id, $request->validated(), 'csv');
+            $useCase(auth()->id(), $request->validated(), 'csv');
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', 'ExcelCsvエクスポートに失敗しました。');
