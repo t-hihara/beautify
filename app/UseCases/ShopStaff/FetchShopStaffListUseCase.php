@@ -45,7 +45,9 @@ class FetchShopStaffListUseCase
             ]);
 
         return [
-            'filters'     => $filters,
+            'filters'     => array_merge($filters, [
+                'perPage' => (int) ($filters['perPage'] ?? 10),
+            ]),
             'shops'       => Shop::get(['id', 'name']),
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'positions'   => ShopStaffPositionTypeEnum::options(),

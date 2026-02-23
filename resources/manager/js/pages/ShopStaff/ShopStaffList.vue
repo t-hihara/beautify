@@ -83,7 +83,7 @@ const searchForm = useForm<SearchFormType>({
   shopIds: filters.shopIds || [],
   activeFlag: filters.activeFlag || null,
   positions: filters.positions || [],
-  perPage: Number(filters.perPage) || 10,
+  perPage: filters.perPage || 10,
 });
 
 const search = (): void => {

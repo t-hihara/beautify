@@ -12,7 +12,8 @@ class FetchPlanListUseCase
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
-        $plans = Plan::byName($convert['name'] ?? null)
+        $plans = Plan::with(['shop', 'menus'])
+            ->byName($convert['name'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
             ->byValidDuration($convert['valid_from'] ?? null, $convert['valid_to'] ?? null)
             ->paginate($convert['per_page'] ?? 10)
@@ -28,10 +29,16 @@ class FetchPlanListUseCase
                 'sortOrder'     => $plan->sort_order,
                 'validFrom'     => $plan->valid_from,
                 'validTo'       => $plan->valid_to,
+                'shop'          => [
+                    'id'   => $plan->shop->id,
+                    'name' => $plan->shop->name,
+                ],
             ]);
 
         return [
-            'filters'     => $filters,
+            'filters'     => array_merge($filters, [
+                'perPage' => (int) ($filters['perPage'] ?? 10),
+            ]),
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'plans'       => $plans->items(),
             'links'       => $plans->linkCollection(),

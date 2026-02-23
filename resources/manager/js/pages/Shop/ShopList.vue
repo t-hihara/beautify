@@ -81,7 +81,7 @@ const searchForm = useForm<SearchFormType>({
   phone: filters.phone || "",
   prefectureIds: filters.prefectureIds || [],
   activeFlag: filters.activeFlag || null,
-  perPage: Number(filters.perPage) || 10,
+  perPage: filters.perPage || 10,
 });
 
 const search = (): void => {
@@ -251,7 +251,7 @@ watch(
         </tbody>
       </table>
     </div>
-    <pagination :links="links" :pagination="pagination" :per-page="Number(filters.perPage) || 10" class="mt-4" />
+    <pagination :links="links" :pagination="pagination" :per-page="searchForm.perPage" class="mt-4" />
     <dialog-modal
       v-model="showDeleteModal"
       title="店舗削除"

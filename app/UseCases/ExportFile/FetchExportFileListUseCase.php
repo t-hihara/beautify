@@ -26,7 +26,9 @@ class FetchExportFileListUseCase
             ]);
 
         return [
-            'filters'    => $filters,
+            'filters'     => array_merge($filters, [
+                'perPage' => (int) ($filters['perPage'] ?? 10),
+            ]),
             'files'      => $files->items(),
             'links'      => $files->linkCollection(),
             'pagination' => [

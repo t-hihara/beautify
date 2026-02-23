@@ -29,7 +29,9 @@ class FetchLogListUseCase
             ]);
 
         return [
-            'filters'    => $filters,
+            'filters'     => array_merge($filters, [
+                'perPage' => (int) ($filters['perPage'] ?? 10),
+            ]),
             'logs'       => $logs->items(),
             'links'      => $logs->linkCollection(),
             'pagination' => [

@@ -42,7 +42,9 @@ class FetchShopListUseCase
             ]);
 
         return [
-            'filters'     => $filters,
+            'filters'     => array_merge($filters, [
+                'perPage' => (int) ($filters['perPage'] ?? 10),
+            ]),
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'prefectures' => Prefecture::get(['id', 'name']),
             'shops'       => $shops->items(),

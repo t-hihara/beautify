@@ -69,7 +69,7 @@ const searchForm = useForm<SearchFormType>({
   description: filters.description || "",
   fromDate: filters.fromDate || DateTime.now().minus({ month: 1 }).toISODate(),
   toDate: filters.toDate || null,
-  perPage: Number(filters.perPage) || 10,
+  perPage: filters.perPage || 10,
 });
 
 const search = (): void => {
@@ -188,7 +188,7 @@ watch(
         </tbody>
       </table>
     </div>
-    <pagination :links="links" :pagination="pagination" :per-page="Number(filters.perPage) || 10" class="mt-4" />
+    <pagination :links="links" :pagination="pagination" :per-page="searchForm.perPage" class="mt-4" />
     <dialog-modal
       v-model="showDetailModal"
       title="変更詳細"

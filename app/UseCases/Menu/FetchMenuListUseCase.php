@@ -37,7 +37,9 @@ class FetchMenuListUseCase
             ]);
 
         return [
-            'filters'     => $filters,
+            'filters'     => array_merge($filters, [
+                'perPage' => (int) ($filters['perPage'] ?? 10),
+            ]),
             'menuTypes'   => MenuTypeEnum::options(),
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'shops'       => Shop::get(['id', 'name']),
