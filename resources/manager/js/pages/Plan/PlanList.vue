@@ -23,6 +23,7 @@ const PER_PAGE_OPTIONS = [
 type Filters = {
   name: string;
   activeFlag: string;
+  shopIds: number[];
   types: string[];
   validFrom: string | null;
   validTo: string | null;
@@ -54,6 +55,7 @@ type MenuType = {
 type SearchFormType = {
   name: string;
   activeFlag: string;
+  shopIds: number[];
   types: string[];
   validFrom: string;
   validTo: string;
@@ -64,6 +66,7 @@ const { filters } = defineProps<{
   filters: Filters;
   activeFlags: EnumType[];
   menuTypes: EnumType[];
+  shops: EnumType[];
   plans: PlanType[];
   links: PaginationLinkType[];
   pagination: PaginationType;
@@ -72,6 +75,7 @@ const { filters } = defineProps<{
 const searchForm = useForm<SearchFormType>({
   name: filters.name || "",
   activeFlag: filters.activeFlag || "active",
+  shopIds: filters.shopIds || [],
   types: filters.types || [],
   validFrom: filters.validFrom || "",
   validTo: filters.validTo || "",
@@ -104,6 +108,14 @@ watch(
     <div class="mt-8 p-6 bg-white rounded-lg shadow-lg">
       <div class="grid grid-cols-4 gap-4">
         <search-text v-model="searchForm.name" field="name" title="プラン名" placeholder="プラン名" />
+        <search-multi-select
+          v-if="guard === 'admin'"
+          v-model="searchForm.shopIds"
+          field="shopIds"
+          title="店舗"
+          show-clear
+          :items="shops"
+        />
         <search-single-select
           v-model="searchForm.activeFlag"
           title="運営状態"
