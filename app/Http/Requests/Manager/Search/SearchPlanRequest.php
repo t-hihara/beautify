@@ -14,6 +14,8 @@ class SearchPlanRequest extends FormRequest
         return [
             'name'       => ['nullable', 'string'],
             'activeFlag' => ['nullable', Rule::enum(ActiveFlagTypeEnum::class)],
+            'shopIds'    => ['nullable', 'array'],
+            'shopIds.*'  => ['nullable', 'integer', 'exists:shops,id'],
             'types'      => ['nullable', 'array'],
             'types.*'    => ['nullable', Rule::enum(MenuTypeEnum::class)],
             'validFrom'  => ['nullable', 'date'],
@@ -27,6 +29,8 @@ class SearchPlanRequest extends FormRequest
         return [
             'name'       => 'プラン名',
             'activeFlag' => '公開状態',
+            'shopIds'    => '店舗ID',
+            'shopIds.*'  => '店舗ID',
             'types'      => 'メニュー種別',
             'types.*'    => 'メニュー種別',
             'validFrom'  => '期間限定（開始）',

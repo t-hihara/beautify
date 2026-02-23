@@ -64,6 +64,11 @@ class Plan extends Model
         return $query->when($flag, fn(Builder $q) => $q->where('active_flag', $flag));
     }
 
+    public function scopeByShopIds(Builder $query, ?array $shopIds): Builder
+    {
+        return $query->when($shopIds, fn(Builder $q) => $q->whereIn('shop_id', $shopIds));
+    }
+
     public function scopeByMenuTypes(Builder $query, ?array $types): Builder
     {
         return $query->when($types, fn(Builder $q) => $q

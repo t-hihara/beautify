@@ -5,6 +5,7 @@ namespace App\UseCases\Plan;
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\MenuTypeEnum;
 use App\Models\Plan;
+use App\Models\Shop;
 use App\Utilities\RecursiveCovert;
 
 class FetchPlanListUseCase
@@ -12,10 +13,12 @@ class FetchPlanListUseCase
     public function __invoke(array $filters, ?int $shopId = null): array
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
+        $shopId ? $convert['shop_ids'] = [$shopId] : null;
 
         $plans = Plan::with(['shop', 'menus'])
             ->byName($convert['name'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
+            ->byShopIds($convert['shop_ids'] ?? null)
             ->byMenuTypes($convert['types'] ?? null)
             ->byValidDuration($convert['valid_from'] ?? null, $convert['valid_to'] ?? null)
             ->paginate($convert['per_page'] ?? 10)
@@ -41,6 +44,7 @@ class FetchPlanListUseCase
             ]),
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'menuTypes'   => MenuTypeEnum::options(),
+            'shops'       => Shop::get(['id', 'name']),
             'plans'       => $plans->items(),
             'links'       => $plans->linkCollection(),
             'pagination'  => [
