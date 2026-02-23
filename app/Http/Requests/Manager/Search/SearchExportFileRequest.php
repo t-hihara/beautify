@@ -32,8 +32,8 @@ class SearchExportFileRequest extends FormRequest
     {
         return [
             function (Validator $validator) {
-                $from = $this->input('from');
-                $to   = $this->input('to');
+                $from = $this->input('fromDate');
+                $to   = $this->input('toDate');
                 if ($from || $to) return;
 
                 if (Carbon::parse($to)->gt(Carbon::parse($from)->addMonth())) {

@@ -38,9 +38,9 @@ class PlanController extends Controller
             $useCase(auth()->id(), $request->validated(), 'csv');
         } catch (Throwable $e) {
             report($e);
-            return back()->with('error', 'ExcelCsvエクスポートに失敗しました。');
+            return back()->with('error', 'CsSVクスポートに失敗しました。');
         }
 
-        return back()->with('success', 'ExcelCsvエクスポートを開始しました。');
+        return back()->with('success', 'CSVエクスポートを開始しました。');
     }
 }
