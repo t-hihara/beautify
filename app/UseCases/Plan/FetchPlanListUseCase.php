@@ -30,6 +30,7 @@ class FetchPlanListUseCase
                 'validFrom'     => $plan->valid_from,
                 'validTo'       => $plan->valid_to,
                 'shop'          => $plan->shop->only(['id', 'name']),
+                'menus'         => $plan->menus->map(fn($menu) => $menu->only(['id', 'name', 'type'])),
             ]);
 
         return [

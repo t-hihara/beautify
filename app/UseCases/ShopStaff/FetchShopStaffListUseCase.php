@@ -31,10 +31,7 @@ class FetchShopStaffListUseCase
                 'description'     => $staff->description,
                 'experienceYears' => $staff->experience_years,
                 'activeFlag'      => $staff->active_flag->description(),
-                'shop'            => [
-                    'id'   => $staff->shop->id,
-                    'name' => $staff->shop->name,
-                ],
+                'shop'            => $staff->shop->only(['id', 'name']),
                 'image' => $staff->image ? [
                     'id'       => $staff->image->id,
                     'fileName' => $staff->image->file_name,

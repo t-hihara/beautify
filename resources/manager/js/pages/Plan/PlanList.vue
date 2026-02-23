@@ -41,6 +41,13 @@ type PlanType = {
   validFrom: string | null;
   validTo: string | null;
   shop: EnumType;
+  menus: MenuType[];
+};
+
+type MenuType = {
+  id: number;
+  name: string;
+  type: string;
 };
 
 type SearchFormType = {
@@ -141,6 +148,7 @@ watch(
                 <span>店舗名</span>
               </div>
             </th>
+            <th scope="col" class="px-4 py-3">メニュー</th>
             <th scope="col" class="px-4 py-3 text-end">
               <div class="flex flex-col">
                 <span>所要時間</span>
@@ -150,7 +158,6 @@ watch(
             </th>
             <th scope="col" class="px-4 py-3">適用条件種別</th>
             <th scope="col" class="px-4 py-3">公開状態</th>
-            <th scope="col" class="px-4 py-3">メニュー説明</th>
             <th scope="col" class="px-4 py-3">期間限定</th>
             <th scope="col" class="px-4 py-3 text-end">並び順</th>
             <th scope="col" class="px-4 py-3"></th>
@@ -167,6 +174,17 @@ watch(
                 </div>
               </td>
               <td class="px-4 py-3">
+                <div v-if="plan.menus.length > 0" class="flex flex-wrap gap-1">
+                  <span
+                    v-for="menu in plan.menus"
+                    :key="menu.id"
+                    class="inline-flex rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-800"
+                    >{{ menu.name }}</span
+                  >
+                </div>
+                <span v-else>----</span>
+              </td>
+              <td class="px-4 py-3">
                 <div class="flex flex-col text-end">
                   <span>{{ plan.totalDuration }}分</span>
                   <span>¥{{ plan.regularPrice.toLocaleString() }}</span>
@@ -176,17 +194,14 @@ watch(
               <td class="px-4 py-3">{{ plan.conditionType ?? "----" }}</td>
               <td class="px-4 py-3">{{ plan.activeFlag }}</td>
               <td class="px-4 py-3">
-                <span class="line-clamp-2">{{ plan.description }}</span>
-              </td>
-              <td class="px-4 py-3">
                 <template v-if="!plan.validFrom && !plan.validTo">
                   <span>----</span>
                 </template>
                 <template v-else>
-                  <div class="flex flex-col justify-center">
-                    <span>{{ plan.validFrom ?? "----" }}</span>
-                    <span class="text-center">〜</span>
-                    <span>{{ plan.validTo ?? "----" }}</span>
+                  <div class="inline-flex flex-col items-start">
+                    <span :class="plan.validFrom ? 'self-center' : ''">{{ plan.validFrom ?? "----" }}</span>
+                    <span class="self-center">〜</span>
+                    <span :class="plan.validTo ? 'self-center' : ''">{{ plan.validTo ?? "----" }}</span>
                   </div>
                 </template>
               </td>
