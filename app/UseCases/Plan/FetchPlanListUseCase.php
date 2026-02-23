@@ -15,7 +15,7 @@ class FetchPlanListUseCase
         $plans = Plan::byName($convert['name'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
             ->byValidDuration($convert['valid_from'] ?? null, $convert['valid_to'] ?? null)
-            ->paginate($convert['per_page'] ?? 20)
+            ->paginate($convert['per_page'] ?? 10)
             ->through(fn($plan) => [
                 'id'            => $plan->id,
                 'name'          => $plan->name,

@@ -13,11 +13,19 @@ import {
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 
+const PER_PAGE_OPTIONS = [
+  { id: 10, name: "10件" },
+  { id: 20, name: "20件" },
+  { id: 50, name: "50件" },
+  { id: 100, name: "100件" },
+];
+
 type Filters = {
   name: string;
   activeFlag: string;
   validFrom: string | null;
   validTo: string | null;
+  perPage: number;
 };
 
 type PlanType = {
@@ -39,6 +47,7 @@ type SearchFormType = {
   activeFlag: string;
   validFrom: string;
   validTo: string;
+  perPage: number;
 };
 
 const { filters } = defineProps<{
@@ -54,6 +63,7 @@ const searchForm = useForm<SearchFormType>({
   activeFlag: filters.activeFlag || "active",
   validFrom: filters.validFrom || "",
   validTo: filters.validTo || "",
+  perPage: filters.perPage || 10,
 });
 
 const guard = useGuard();
@@ -109,6 +119,15 @@ watch(
           />
         </div>
       </div>
+    </div>
+    <div class="mt-6 flex items-end justify-between">
+      <search-single-select
+        v-model="searchForm.perPage"
+        title="表示件数"
+        field="perPage"
+        :items="PER_PAGE_OPTIONS"
+        class="max-w-28 w-full"
+      />
     </div>
     <div class="mt-4 bg-white shadow-sm rounded-lg overflow-hidden">
       <table class="min-w-full divide-y divide-zinc-300 text-sm">
@@ -172,6 +191,6 @@ watch(
         </tbody>
       </table>
     </div>
-    <pagination :links="links" :pagination="pagination" class="mt-4" />
+    <pagination :links="links" :pagination="pagination" :per-page="searchForm.perPage" class="mt-4" />
   </div>
 </template>
