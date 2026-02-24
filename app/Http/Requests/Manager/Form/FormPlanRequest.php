@@ -5,6 +5,7 @@ namespace App\Http\Requests\Manager\Form;
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\PlanConditionTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rule;
 
 class FormPlanRequest extends FormRequest
@@ -22,6 +23,16 @@ class FormPlanRequest extends FormRequest
             'sortOrder'     => ['required', 'integer', 'min:1'],
             'validFrom'     => ['nullable', 'date'],
             'validTo'       => ['nullable', 'date'],
+            'image'         => [
+                'nullable',
+                Rule::when(
+                    fn() => $this->file('image') instanceof UploadedFile,
+                    ['file', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+                    ['string'],
+                ),
+            ],
+            'menuIds'   => ['required', 'array'],
+            'menuIds.*' => ['required', 'integer', 'exists:menus,id'],
         ];
     }
 
@@ -38,6 +49,9 @@ class FormPlanRequest extends FormRequest
             'sortOrder'     => '並び順',
             'validFrom'     => '期間限定（開始）',
             'validTo'       => '期間限定（終了）'
+            'image'         => 'プラン画像',
+            'menuIds'       => 'メニュー',
+            'menuIds.*'     => 'メニュー',
         ];
     }
 }

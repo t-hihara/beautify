@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Manager\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Manager\Form\FormPlanRequest;
 use App\Http\Requests\Manager\Search\SearchPlanRequest;
 use App\Models\Plan;
 use App\UseCases\Plan\ExportPlanUseCase;
 use App\UseCases\Plan\FetchPlanListUseCase;
 use App\UseCases\Plan\PreparePlanEditFormUseCase;
+use App\UseCases\Plan\UpdatePlanUseCase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -26,6 +28,18 @@ class PlanController extends Controller
     {
         $data = $useCase($plan);
         return Inertia::render('Plan/PlanForm', $data);
+    }
+
+    public function update(FormPlanRequest $request, Plan $plan, UpdatePlanUseCase $useCase): RedirectResponse
+    {
+        try {
+            $useCase($request->validated(), $plan);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '更新に失敗しました。');
+        }
+
+        return redirect()->route('admin.plans.index')->with('success', '更新に成功しました。');
     }
 
     public function exportExcel(SearchPlanRequest $request, ExportPlanUseCase $useCase): RedirectResponse
