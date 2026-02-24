@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('file_type')->comment('ファイル形式');
             $table->string('file_path')->comment('ファイルパス');
             $table->unsignedBigInteger('file_size')->default(0)->comment('ファイルサイズ');
-            $table->enum('status', ExportFileStatusTypeEnum::cases())->default(ExportFileStatusTypeEnum::PENDING)->comment('ステータス');
+            $table->enum('status', ExportFileStatusTypeEnum::values())->default(ExportFileStatusTypeEnum::PENDING)->comment('ステータス');
             $table->json('filters')->comment('検索条件');
             $table->text('error_message')->nullable()->comment('エラーメッセージ');
             $table->timestamp('downloaded_at')->nullable()->comment('ダウンロード日');

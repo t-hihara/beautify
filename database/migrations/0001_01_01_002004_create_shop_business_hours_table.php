@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('shop_business_hours', function (Blueprint $table) {
             $table->id();
             $table->foreignId('shop_id')->constrained();
-            $table->enum('day_of_week', DayOfWeekTypeEnum::cases())->comment('曜日');
+            $table->enum('day_of_week', DayOfWeekTypeEnum::values())->comment('曜日');
             $table->time('open_time')->nullable()->comment('開始時間');
             $table->time('close_time')->nullable()->comment('終了時間');
             $table->timestamps();

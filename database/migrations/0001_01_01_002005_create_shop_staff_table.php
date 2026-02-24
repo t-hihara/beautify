@@ -20,11 +20,11 @@ return new class extends Migration
             $table->string('last_name')->comment('スタッフ名（姓）');
             $table->string('first_name')->comment('スタッフ名（名）');
             $table->string('email')->comment('メールアドレス');
-            $table->enum('position', ShopStaffPositionTypeEnum::cases())->comment('ポジション');
+            $table->enum('position', ShopStaffPositionTypeEnum::values())->comment('ポジション');
             $table->text('description')->nullable()->comment('スタッフ紹介');
             $table->string('image_path')->nullable()->comment('プロフィール画像');
             $table->unsignedInteger('experience_years')->comment('経歴年数');
-            $table->enum('active_flag', ActiveFlagTypeEnum::cases())->comment('有効状態');
+            $table->enum('active_flag', ActiveFlagTypeEnum::values())->comment('有効状態');
             $table->timestamps();
         });
     }

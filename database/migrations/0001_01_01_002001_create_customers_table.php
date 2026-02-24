@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('email')->comment('メールアドレス');
             $table->string('phone', 11)->nullable()->comment('電話番号');
             $table->date('dob')->nullable()->comment('生年月日');
-            $table->enum('gender', GenderTypeEnum::cases())->default(GenderTypeEnum::OTHER)->comment('性別');
+            $table->enum('gender', GenderTypeEnum::values())->default(GenderTypeEnum::OTHER)->comment('性別');
             $table->timestamps();
         });
     }

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable()->comment('メールアドレス認証');
             $table->string('password')->nullable()->comment('パスワード');
             $table->string('google_id')->nullable()->unique()->comment('googleId');
-            $table->enum('active_flag', ActiveFlagTypeEnum::cases())->default('active')->comment('アクティブ状態');
+            $table->enum('active_flag', ActiveFlagTypeEnum::values())->default('active')->comment('アクティブ状態');
             $table->rememberToken();
             $table->timestamps();
         });
