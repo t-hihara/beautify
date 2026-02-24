@@ -15,7 +15,7 @@ class FormPlanRequest extends FormRequest
         return [
             'name'          => ['required', 'string'],
             'description'   => ['required', 'string'],
-            'totalDuration' => ['required', 'integer', 'min:1'],
+            'duration'      => ['required', 'integer', 'min:1'],
             'regularPrice'  => ['required', 'integer', 'min:1'],
             'sellingPrice'  => ['required', 'integer', 'min:1'],
             'conditionType' => ['nullable', Rule::enum(PlanConditionTypeEnum::class)],
@@ -41,7 +41,7 @@ class FormPlanRequest extends FormRequest
         return [
             'name'          => 'プラン名',
             'description'   => 'プラン説明',
-            'totalDuration' => '所要時間',
+            'duration'      => '所要時間',
             'regularPrice'  => '通常価格',
             'sellingPrice'  => '表示価格',
             'conditionType' => '適用条件',

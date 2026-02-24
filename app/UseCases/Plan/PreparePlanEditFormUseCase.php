@@ -18,7 +18,7 @@ class PreparePlanEditFormUseCase
                 'id'            => $plan->id,
                 'name'          => $plan->name,
                 'description'   => $plan->description,
-                'totalDuration' => $plan->total_duration,
+                'duration'      => $plan->duration,
                 'regularPrice'  => $plan->regular_price,
                 'sellingPrice'  => $plan->selling_price,
                 'conditionType' => $plan->condition_type?->value,

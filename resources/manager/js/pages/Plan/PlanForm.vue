@@ -19,7 +19,7 @@ type PlanType = {
   id: number;
   name: string;
   description: string;
-  totalDuration: number;
+  duration: number;
   regularPrice: number;
   sellingPrice: number;
   conditionType: string | null;
@@ -61,7 +61,7 @@ type FormType = {
   id?: number;
   name: string;
   description: string;
-  totalDuration: number;
+  duration: number;
   regularPrice: number;
   sellingPrice: number;
   conditionType: string | null;
@@ -87,7 +87,7 @@ const form = useForm<FormType>({
   id: plan?.id ?? undefined,
   name: plan?.name ?? "",
   description: plan?.description ?? "",
-  totalDuration: plan?.totalDuration ?? 0,
+  duration: plan?.duration ?? 0,
   regularPrice: plan?.regularPrice ?? 0,
   sellingPrice: plan?.sellingPrice ?? 0,
   conditionType: plan?.conditionType ?? "",
@@ -135,7 +135,7 @@ const submit = (): void => {
 watch(
   totalDuration,
   (value) => {
-    form.totalDuration = value;
+    form.duration = value;
   },
   { immediate: true },
 );
@@ -170,7 +170,7 @@ watch(
             :error="form.errors"
           />
           <form-number
-            v-model="form.totalDuration"
+            v-model="form.duration"
             title="所要時間"
             field="totalDuration"
             placeholder="0"

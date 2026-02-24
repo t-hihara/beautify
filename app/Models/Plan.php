@@ -17,7 +17,7 @@ class Plan extends Model
         'shop_id',
         'name',
         'description',
-        'total_duration',
+        'duration',
         'regular_price',
         'selling_price',
         'condition_type',

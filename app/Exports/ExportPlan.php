@@ -68,7 +68,7 @@ class ExportPlan implements FromQuery, WithCustomCsvSettings, WithHeadings, With
             $plan->shop->name,
             $plan->name,
             $plan->menus->pluck('name')->implode('、') ?: '----',
-            $plan->total_duration,
+            $plan->duration,
             $plan->regular_price,
             $plan->selling_price,
             $plan->condition_type?->description() ?? '----',

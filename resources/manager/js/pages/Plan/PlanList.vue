@@ -36,7 +36,7 @@ type PlanType = {
   id: number;
   name: string;
   description: string;
-  totalDuration: number;
+  duration: number;
   regularPrice: number;
   sellingPrice: number;
   conditionType: string | null;
@@ -226,7 +226,7 @@ watch(
               </td>
               <td class="px-4 py-3">
                 <div class="flex flex-col text-end">
-                  <span>{{ plan.totalDuration }}分</span>
+                  <span>{{ plan.duration }}分</span>
                   <span>¥{{ plan.regularPrice.toLocaleString() }}</span>
                   <span>¥{{ plan.sellingPrice.toLocaleString() }}</span>
                 </div>
