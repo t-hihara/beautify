@@ -48,7 +48,7 @@ class FormPlanRequest extends FormRequest
             'activeFlag'    => '公開状態',
             'sortOrder'     => '並び順',
             'validFrom'     => '期間限定（開始）',
-            'validTo'       => '期間限定（終了）'
+            'validTo'       => '期間限定（終了）',
             'image'         => 'プラン画像',
             'menuIds'       => 'メニュー',
             'menuIds.*'     => 'メニュー',
