@@ -14,7 +14,6 @@ import {
   FormDateTime,
 } from "@/common/js/components/Form/FormIndex";
 import type { EnumType } from "@/common/js/lib";
-import { sum } from "lodash";
 
 type PlanType = {
   id: number;

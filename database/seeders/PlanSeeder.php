@@ -39,7 +39,7 @@ class PlanSeeder extends BaseSeeder
                         'shop_id'        => $shop->id,
                         'name'           => $plan['name'],
                         'description'    => $plan['description'],
-                        'total_duration' => $plan['total_duration'],
+                        'duration'       => $plan['duration'],
                         'regular_price'  => $plan['regular_price'],
                         'selling_price'  => $plan['selling_price'],
                         'condition_type' => $plan['condition_type'],

@@ -13,7 +13,7 @@ final class PlanTemplate
             'cut_color' => [
                 'name'           => 'カット＋カラー',
                 'description'    => 'カットとカラーがセットになったお得なプランです。',
-                'total_duration' => 135,
+                'duration' => 135,
                 'regular_price'  => 12000,
                 'selling_price'  => 10000,
                 'condition_type' => PlanConditionTypeEnum::FIRST_VISIT->value,
@@ -24,7 +24,7 @@ final class PlanTemplate
             'cut_color_treatment' => [
                 'name'           => 'カット＋カラー＋トリートメント',
                 'description'    => 'カット・カラー・トリートメントのフルセットプラン。',
-                'total_duration' => 165,
+                'duration' => 165,
                 'regular_price'  => 16000,
                 'selling_price'  => 13000,
                 'condition_type' => PlanConditionTypeEnum::WEEKDAY->value,
@@ -35,7 +35,7 @@ final class PlanTemplate
             'cut_perm' => [
                 'name'           => 'カット＋パーマ',
                 'description'    => 'カットとパーマのセットプラン。',
-                'total_duration' => 135,
+                'duration' => 135,
                 'regular_price'  => 13000,
                 'selling_price'  => 11000,
                 'condition_type' => null,
@@ -46,7 +46,7 @@ final class PlanTemplate
             'full_care' => [
                 'name'           => 'フルケアプラン',
                 'description'    => 'カット・カラー・トリートメント・ヘッドスパの総合プラン。',
-                'total_duration' => 210,
+                'duration' => 210,
                 'regular_price'  => 22000,
                 'selling_price'  => 18000,
                 'condition_type' => PlanConditionTypeEnum::PERIOD->value,
@@ -57,7 +57,7 @@ final class PlanTemplate
             'cut_head_spa' => [
                 'name'           => 'カット＋ヘッドスパ',
                 'description'    => 'カットと頭皮ケアのヘッドスパがセットになったプラン。',
-                'total_duration' => 105,
+                'duration' => 105,
                 'regular_price'  => 8000,
                 'selling_price'  => 7000,
                 'condition_type' => null,
@@ -68,7 +68,7 @@ final class PlanTemplate
             'cut_straightening' => [
                 'name'           => 'カット＋縮毛矯正',
                 'description'    => 'カットと縮毛矯正のセット。くせ毛をストレートに。',
-                'total_duration' => 165,
+                'duration' => 165,
                 'regular_price'  => 16000,
                 'selling_price'  => 14000,
                 'condition_type' => PlanConditionTypeEnum::WEEKEND->value,
@@ -79,7 +79,7 @@ final class PlanTemplate
             'cut_straightening_treatment' => [
                 'name'           => 'カット＋縮毛矯正＋トリートメント',
                 'description'    => '縮毛矯正と髪質ケアまで含んだフルプラン。',
-                'total_duration' => 195,
+                'duration' => 195,
                 'regular_price'  => 20000,
                 'selling_price'  => 17000,
                 'condition_type' => null,
@@ -90,7 +90,7 @@ final class PlanTemplate
             'color_treatment' => [
                 'name'           => 'カラー＋トリートメント',
                 'description'    => 'カラーと髪質ケアのトリートメントセット。',
-                'total_duration' => 120,
+                'duration' => 120,
                 'regular_price'  => 12000,
                 'selling_price'  => 10000,
                 'condition_type' => null,
@@ -101,7 +101,7 @@ final class PlanTemplate
             'perm_treatment' => [
                 'name'           => 'パーマ＋トリートメント',
                 'description'    => 'パーマと髪質ケアのトリートメントセット。',
-                'total_duration' => 120,
+                'duration' => 120,
                 'regular_price'  => 13000,
                 'selling_price'  => 11000,
                 'condition_type' => null,
@@ -112,7 +112,7 @@ final class PlanTemplate
             'mens_cut_shaving' => [
                 'name'           => 'メンズカット＋シェービング',
                 'description'    => 'メンズカットと首周りシェービングのセット。',
-                'total_duration' => 50,
+                'duration' => 50,
                 'regular_price'  => 5500,
                 'selling_price'  => 4800,
                 'condition_type' => PlanConditionTypeEnum::FIRST_VISIT->value,
@@ -123,7 +123,7 @@ final class PlanTemplate
             'cut_color_head_spa' => [
                 'name'           => 'カット＋カラー＋ヘッドスパ',
                 'description'    => 'カット・カラーにヘッドスパまで付いた贅沢プラン。',
-                'total_duration' => 195,
+                'duration' => 195,
                 'regular_price'  => 19500,
                 'selling_price'  => 16000,
                 'condition_type' => PlanConditionTypeEnum::WEEKDAY->value,
@@ -134,7 +134,7 @@ final class PlanTemplate
             'cut_hair_set' => [
                 'name'           => 'カット＋ヘアセット',
                 'description'    => 'カットとヘアセットのセット。結婚式・パーティ向け。',
-                'total_duration' => 120,
+                'duration' => 120,
                 'regular_price'  => 8500,
                 'selling_price'  => 7500,
                 'condition_type' => null,
@@ -145,7 +145,7 @@ final class PlanTemplate
             'retouch_color_treatment' => [
                 'name'           => 'リタッチカラー＋トリートメント',
                 'description'    => '根元リタッチとトリートメントで色持ちと髪質をケア。',
-                'total_duration' => 90,
+                'duration' => 90,
                 'regular_price'  => 9000,
                 'selling_price'  => 7800,
                 'condition_type' => null,
@@ -156,7 +156,7 @@ final class PlanTemplate
             'cut_eyebrow' => [
                 'name'           => 'カット＋眉カット',
                 'description'    => 'カットと眉の整えがセットになったプラン。',
-                'total_duration' => 55,
+                'duration' => 55,
                 'regular_price'  => 4500,
                 'selling_price'  => 4000,
                 'condition_type' => null,
@@ -167,7 +167,7 @@ final class PlanTemplate
             'straightening_treatment' => [
                 'name'           => '縮毛矯正＋トリートメント',
                 'description'    => '縮毛矯正と髪質ケアのトリートメントセット。',
-                'total_duration' => 150,
+                'duration' => 150,
                 'regular_price'  => 16000,
                 'selling_price'  => 14000,
                 'condition_type' => null,
@@ -178,7 +178,7 @@ final class PlanTemplate
             'cut_bang' => [
                 'name'           => 'カット＋前髪カット',
                 'description'    => 'カットと前髪の整えがセット。',
-                'total_duration' => 60,
+                'duration' => 60,
                 'regular_price'  => 5000,
                 'selling_price'  => 4500,
                 'condition_type' => null,
@@ -189,7 +189,7 @@ final class PlanTemplate
             'cut_color_perm' => [
                 'name'           => 'カット＋カラー＋パーマ',
                 'description'    => 'カット・カラー・パーマのフルチェンジプラン。',
-                'total_duration' => 210,
+                'duration' => 210,
                 'regular_price'  => 25000,
                 'selling_price'  => 21000,
                 'condition_type' => PlanConditionTypeEnum::PERIOD->value,
