@@ -14,8 +14,8 @@ class UpdatePlanUseCase
         $convert = RecursiveCovert::_convert($payload, 'snake');
 
         return DB::transaction(function () use ($convert, $plan) {
-            $planData = Arr::except($convert, ['image', 'menuIds']);
-            $menuIds  = Arr::only($convert, ['menuIds']);
+            $planData = Arr::except($convert, ['image', 'menu_ids']);
+            $menuIds  = $convert['menu_ids'];
 
             $plan->fill($planData)->save();
             $plan->menus()->sync($menuIds);
