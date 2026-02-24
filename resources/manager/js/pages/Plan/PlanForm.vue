@@ -120,6 +120,15 @@ const addMenu = (menuItem: MenuType["items"][number]): void => {
 const removeMenu = (menuId: number): void => {
   form.menuIds = form.menuIds.filter((id) => id !== menuId);
 };
+
+const submit = (): void => {
+  if (isEdit.value) {
+    form._method = "PATCH";
+    form.post(route(`${guard.value}.plans.update`, form.id));
+  } else {
+    //
+  }
+};
 </script>
 
 <template>
@@ -129,7 +138,7 @@ const removeMenu = (menuId: number): void => {
       <h2 class="text-3xl">{{ isEdit ? "プラン編集" : "プラン登録" }}</h2>
     </div>
     <div class="mt-6">
-      <form action="">
+      <form @submit.prevent="submit">
         <div class="px-3 py-1 rounded-md bg-zinc-200">
           <p class="text-sm font-semibold text-zinc-800">プラン情報</p>
         </div>
