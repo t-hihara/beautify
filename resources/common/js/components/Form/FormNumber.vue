@@ -9,6 +9,7 @@ const {
   placeholder,
   error,
   min,
+  disabled = false,
 } = defineProps<{
   modelValue: number | null;
   field: string;
@@ -16,8 +17,8 @@ const {
   required?: boolean;
   placeholder?: string;
   error?: Record<string, string>;
-  /** 最小値。指定時はこの値未満をこの値に補正（例: 0 でマイナス→0） */
   min?: number;
+  disabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -51,12 +52,17 @@ const onInput = (e: Event): void => {
           type="text"
           :value="displayValue()"
           :placeholder="placeholder"
-          :class="[error?.[field] ? 'border-red-600' : 'border-zinc-300', title ? 'mt-1' : '']"
+          :disabled="disabled"
+          :class="[
+            error?.[field] ? 'border-red-600' : 'border-zinc-300',
+            title ? 'mt-1' : '',
+            disabled ? 'bg-zinc-100' : '',
+          ]"
           class="w-full h-10 pl-3 pr-10 py-2 bg-white rounded-lg shadow-sm border focus:outline-none focus:ring-rose-300 focus:border-rose-300"
           @input="onInput"
         />
         <button
-          v-if="modelValue != null && !Number.isNaN(modelValue)"
+          v-if="modelValue != null && !Number.isNaN(modelValue) && !disabled"
           type="button"
           tabindex="-1"
           class="absolute top-1/2 right-2 -translate-y-1/2 flex items-center cursor-pointer transition ease-in-out duration-300 hover:text-rose-500"

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, useForm } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
 import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
@@ -14,6 +14,7 @@ import {
   FormDateTime,
 } from "@/common/js/components/Form/FormIndex";
 import type { EnumType } from "@/common/js/lib";
+import { sum } from "lodash";
 
 type PlanType = {
   id: number;
@@ -106,12 +107,14 @@ const activeFlag = computed<boolean>({
     form.activeFlag = v ? "active" : "inactive";
   },
 });
-const menuItems = computed(() => menus.flatMap((group) => group.items));
-const selectedMenus = computed(() =>
+const menuItems = computed<MenuType["items"][number][]>(() => menus.flatMap((group) => group.items));
+const selectedMenus = computed<MenuType["items"][number][]>(() =>
   form.menuIds
     .map((menuId) => menuItems.value.find((menu) => menu.id === menuId))
     .filter((menu): menu is MenuType["items"][number] => menu != null),
 );
+const totalDuration = computed<number>(() => selectedMenus.value.reduce((sum, menu) => sum + menu.duration, 0));
+const regularPrice = computed<number>(() => selectedMenus.value.reduce((sum, menu) => sum + menu.price, 0));
 
 const addMenu = (menuItem: MenuType["items"][number]): void => {
   if (form.menuIds.includes(menuItem.id)) return;
@@ -129,6 +132,22 @@ const submit = (): void => {
     //
   }
 };
+
+watch(
+  totalDuration,
+  (value) => {
+    form.totalDuration = value;
+  },
+  { immediate: true },
+);
+
+watch(
+  regularPrice,
+  (value) => {
+    form.regularPrice = value;
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -157,6 +176,7 @@ const submit = (): void => {
             field="totalDuration"
             placeholder="0"
             required
+            :disabled="true"
             :error="form.errors"
           />
           <form-number
@@ -165,6 +185,7 @@ const submit = (): void => {
             field="regularPrice"
             placeholder="0"
             required
+            :disabled="true"
             :error="form.errors"
           />
           <form-number
