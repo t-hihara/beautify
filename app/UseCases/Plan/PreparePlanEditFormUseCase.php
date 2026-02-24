@@ -47,6 +47,7 @@ class PreparePlanEditFormUseCase
             'conditionTypes' => PlanConditionTypeEnum::options(),
             'menus'          => Menu::byShopId($plan->shop_id)
                 ->orderBy('sort_order')
+                ->get()
                 ->map(fn($menu) => [
                     'id'       => $menu->id,
                     'name'     => $menu->name,

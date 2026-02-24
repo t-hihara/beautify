@@ -60,6 +60,7 @@ type FormType = {
   validFrom: string | null;
   validTo: string | null;
   image: File | string | null;
+  menuIds: number[];
 };
 
 const { plan, menus } = defineProps<{
@@ -85,6 +86,7 @@ const form = useForm<FormType>({
   validFrom: plan?.validFrom ?? null,
   validTo: plan?.validTo ?? null,
   image: (plan?.image?.filePath ?? null) as File | string | null,
+  menuIds: plan?.menus?.map((menu) => menu.id) ?? [],
 });
 
 const isEdit = computed<boolean>(() => route().current() === `${guard.value}.plans.edit`);
@@ -103,7 +105,20 @@ const menusByType = computed(() => {
   }
   return Array.from(map.entries());
 });
-const selectedMenus = computed(() => plan?.menus ?? []);
+const selectedMenus = computed(() => {
+  const list = form.menuIds
+    .map((id) => menus.find((menu) => menu.id === id))
+    .filter((menu): menu is MenuType => menu != null);
+  return list;
+});
+
+const addMenu = (menu: MenuType): void => {
+  if (form.menuIds.includes(menu.id)) return;
+  form.menuIds = [...form.menuIds, menu.id];
+};
+const removeMenu = (menuId: number): void => {
+  form.menuIds = form.menuIds.filter((id) => id !== menuId);
+};
 </script>
 
 <template>
@@ -219,23 +234,23 @@ const selectedMenus = computed(() => plan?.menus ?? []);
                     </span>
                     <button
                       type="button"
-                      class="shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-600"
+                      class="shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-600 cursor-pointer"
+                      @click="removeMenu(menu.id)"
                     >
                       ×
                     </button>
                   </div>
                 </li>
-                <li
+                <span
                   v-if="selectedMenus.length === 0"
                   class="rounded-md border border-dashed border-zinc-300 bg-white/50 py-6 text-center text-sm text-zinc-400"
                 >
                   メニューを右側から追加してください
-                </li>
+                </span>
               </ul>
             </div>
             <div class="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4">
               <h3 class="text-sm font-medium text-zinc-600">メニューを追加</h3>
-              <p class="mt-1 text-xs text-zinc-500">type 別に表示（レイアウトのみ）</p>
               <div class="mt-3 space-y-3">
                 <details
                   v-for="[label, items] in menusByType"
@@ -256,6 +271,8 @@ const selectedMenus = computed(() => plan?.menus ?? []);
                       v-for="menu in items"
                       :key="menu.id"
                       class="flex cursor-pointer items-center justify-between rounded px-2 py-1.5 text-sm hover:bg-zinc-100"
+                      :class="form.menuIds.includes(menu.id) && 'bg-rose-200/50 pointer-events-none'"
+                      @click="addMenu(menu)"
                     >
                       <span class="font-medium text-zinc-800">{{ menu.name }}</span>
                       <span class="text-zinc-500">{{ menu.duration }}分 · ¥{{ menu.price?.toLocaleString() }}</span>
