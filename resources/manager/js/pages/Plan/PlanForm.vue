@@ -191,8 +191,6 @@ const selectedMenus = computed(() => plan?.menus ?? []);
             :error="form.errors"
           />
         </div>
-
-        <!-- メニュー選択エリア（レイアウトのみ） -->
         <div class="mt-8 pt-8 border-t border-zinc-200">
           <div class="px-3 py-1 rounded-md bg-zinc-200">
             <p class="text-sm font-semibold text-zinc-800">プランに含まれるメニュー</p>
@@ -268,7 +266,6 @@ const selectedMenus = computed(() => plan?.menus ?? []);
             </div>
           </div>
         </div>
-
         <div class="mt-8 pt-8 border-t border-zinc-200 flex justify-end">
           <button-submit>{{ isEdit ? "更新する" : "登録する" }}</button-submit>
         </div>
