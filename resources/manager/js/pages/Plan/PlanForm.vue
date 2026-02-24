@@ -251,12 +251,12 @@ const submit = (): void => {
                     </button>
                   </div>
                 </li>
-                <span
+                <div
                   v-if="selectedMenus.length === 0"
-                  class="rounded-md border border-dashed border-zinc-300 bg-white/50 py-6 text-center text-sm text-zinc-400"
+                  class="rounded-md border border-dashed border-zinc-300 bg-white/50] px-3 py-4"
                 >
-                  メニューを右側から追加してください
-                </span>
+                  <span class="text-center text-sm text-zinc-400">メニューを右側から追加してください</span>
+                </div>
               </ul>
             </div>
             <div class="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4">
