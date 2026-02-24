@@ -22,7 +22,7 @@ class FormPlanRequest extends FormRequest
             'activeFlag'    => ['required', Rule::enum(ActiveFlagTypeEnum::class)],
             'sortOrder'     => ['required', 'integer', 'min:1'],
             'validFrom'     => ['nullable', 'date'],
-            'validTo'       => ['nullable', 'date'],
+            'validTo'       => ['nullable', 'date', 'after:validFrom'],
             'image'         => [
                 'nullable',
                 Rule::when(
