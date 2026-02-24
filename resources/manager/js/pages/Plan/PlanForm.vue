@@ -41,6 +41,7 @@ type MenuType = {
   id: number;
   name: string;
   type: string;
+  label: string;
   price: number;
   duration: number;
 };
@@ -61,7 +62,7 @@ type FormType = {
   image: File | string | null;
 };
 
-const { plan } = defineProps<{
+const { plan, menus } = defineProps<{
   plan?: PlanType;
   activeFlags: EnumType[];
   conditionTypes: EnumType[];
@@ -69,7 +70,6 @@ const { plan } = defineProps<{
 }>();
 
 const guard = useGuard();
-const isEdit = computed<boolean>(() => route().current() === `${guard.value}.plans.edit`);
 
 const form = useForm<FormType>({
   _method: "POST",
@@ -87,12 +87,23 @@ const form = useForm<FormType>({
   image: (plan?.image?.filePath ?? null) as File | string | null,
 });
 
+const isEdit = computed<boolean>(() => route().current() === `${guard.value}.plans.edit`);
 const activeFlag = computed<boolean>({
   get: () => form.activeFlag === "active",
   set: (v: boolean) => {
     form.activeFlag = v ? "active" : "inactive";
   },
 });
+const menusByType = computed(() => {
+  const map = new Map<string, MenuType[]>();
+  for (const menu of menus) {
+    const key = menu.label ?? menu.type;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(menu);
+  }
+  return Array.from(map.entries());
+});
+const selectedMenus = computed(() => plan?.menus ?? []);
 </script>
 
 <template>
@@ -180,6 +191,84 @@ const activeFlag = computed<boolean>({
             :error="form.errors"
           />
         </div>
+
+        <!-- メニュー選択エリア（レイアウトのみ） -->
+        <div class="mt-8 pt-8 border-t border-zinc-200">
+          <div class="px-3 py-1 rounded-md bg-zinc-200">
+            <p class="text-sm font-semibold text-zinc-800">プランに含まれるメニュー</p>
+          </div>
+          <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div class="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4">
+              <h3 class="text-sm font-medium text-zinc-600">選択中のメニュー</h3>
+              <ul class="mt-3 space-y-2">
+                <li
+                  v-for="(menu, index) in selectedMenus"
+                  :key="menu.id"
+                  class="flex items-center justify-between gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm"
+                >
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-zinc-200 text-xs text-zinc-600"
+                    >
+                      {{ index + 1 }}
+                    </span>
+                    <span class="font-medium text-zinc-800">{{ menu.name }}</span>
+                    <span class="text-zinc-500">{{ menu.type }}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="shrink-0 text-zinc-400">
+                      {{ menu.duration }}分 · ¥{{ menu.price?.toLocaleString() }}
+                    </span>
+                    <button
+                      type="button"
+                      class="shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-600"
+                    >
+                      ×
+                    </button>
+                  </div>
+                </li>
+                <li
+                  v-if="selectedMenus.length === 0"
+                  class="rounded-md border border-dashed border-zinc-300 bg-white/50 py-6 text-center text-sm text-zinc-400"
+                >
+                  メニューを右側から追加してください
+                </li>
+              </ul>
+            </div>
+            <div class="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4">
+              <h3 class="text-sm font-medium text-zinc-600">メニューを追加</h3>
+              <p class="mt-1 text-xs text-zinc-500">type 別に表示（レイアウトのみ）</p>
+              <div class="mt-3 space-y-3">
+                <details
+                  v-for="[label, items] in menusByType"
+                  :key="label"
+                  class="group rounded-md border border-zinc-200 bg-white"
+                >
+                  <summary
+                    class="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium text-zinc-800 [&::-webkit-details-marker]:hidden"
+                  >
+                    <span>{{ label }}</span>
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs text-zinc-500">（{{ items.length }}件）</span>
+                      <span class="transition group-open:rotate-180">▼</span>
+                    </div>
+                  </summary>
+                  <ul class="border-t border-zinc-100 p-2">
+                    <li
+                      v-for="menu in items"
+                      :key="menu.id"
+                      class="flex cursor-pointer items-center justify-between rounded px-2 py-1.5 text-sm hover:bg-zinc-100"
+                    >
+                      <span class="font-medium text-zinc-800">{{ menu.name }}</span>
+                      <span class="text-zinc-500">{{ menu.duration }}分 · ¥{{ menu.price?.toLocaleString() }}</span>
+                    </li>
+                  </ul>
+                </details>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="mt-8 pt-8 border-t border-zinc-200 flex justify-end">
           <button-submit>{{ isEdit ? "更新する" : "登録する" }}</button-submit>
         </div>
