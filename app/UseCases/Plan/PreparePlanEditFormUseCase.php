@@ -48,14 +48,17 @@ class PreparePlanEditFormUseCase
             'menus'          => Menu::byShopId($plan->shop_id)
                 ->orderBy('sort_order')
                 ->get()
-                ->map(fn($menu) => [
-                    'id'       => $menu->id,
-                    'name'     => $menu->name,
-                    'type'     => $menu->type->value,
-                    'label'    => $menu->type->description(),
-                    'price'    => $menu->price,
-                    'duration' => $menu->duration,
-                ]),
+                ->groupBy(fn($menu) => $menu->type->description())
+                ->map(fn($menus, $label) => [
+                    'label' => $label,
+                    'items' =>  $menus->map(fn($menu) => [
+                        'id'       => $menu->id,
+                        'name'     => $menu->name,
+                        'type'     => $menu->type->value,
+                        'price'    => $menu->price,
+                        'duration' => $menu->duration,
+                    ])->values()->toArray(),
+                ])->values()->toArray(),
         ];
     }
 }

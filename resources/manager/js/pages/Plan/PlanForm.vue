@@ -28,7 +28,7 @@ type PlanType = {
   validFrom: string | null;
   validTo: string | null;
   image: ImageType | null;
-  menus: MenuType[];
+  menus: PlanMenuType[];
 };
 
 type ImageType = {
@@ -37,13 +37,23 @@ type ImageType = {
   filePath: string;
 };
 
-type MenuType = {
+type PlanMenuType = {
   id: number;
   name: string;
   type: string;
-  label: string;
   price: number;
   duration: number;
+};
+
+type MenuType = {
+  label: string;
+  items: {
+    id: number;
+    name: string;
+    type: string;
+    price: number;
+    duration: number;
+  }[];
 };
 
 type FormType = {
@@ -96,25 +106,16 @@ const activeFlag = computed<boolean>({
     form.activeFlag = v ? "active" : "inactive";
   },
 });
-const menusByType = computed(() => {
-  const map = new Map<string, MenuType[]>();
-  for (const menu of menus) {
-    const key = menu.label ?? menu.type;
-    if (!map.has(key)) map.set(key, []);
-    map.get(key)!.push(menu);
-  }
-  return Array.from(map.entries());
-});
-const selectedMenus = computed(() => {
-  const list = form.menuIds
-    .map((id) => menus.find((menu) => menu.id === id))
-    .filter((menu): menu is MenuType => menu != null);
-  return list;
-});
+const menuItems = computed(() => menus.flatMap((group) => group.items));
+const selectedMenus = computed(() =>
+  form.menuIds
+    .map((menuId) => menuItems.value.find((menu) => menu.id === menuId))
+    .filter((menu): menu is MenuType["items"][number] => menu != null),
+);
 
-const addMenu = (menu: MenuType): void => {
-  if (form.menuIds.includes(menu.id)) return;
-  form.menuIds = [...form.menuIds, menu.id];
+const addMenu = (menuItem: MenuType["items"][number]): void => {
+  if (form.menuIds.includes(menuItem.id)) return;
+  form.menuIds = [...form.menuIds, menuItem.id];
 };
 const removeMenu = (menuId: number): void => {
   form.menuIds = form.menuIds.filter((id) => id !== menuId);
@@ -253,7 +254,7 @@ const removeMenu = (menuId: number): void => {
               <h3 class="text-sm font-medium text-zinc-600">メニューを追加</h3>
               <div class="mt-3 space-y-3">
                 <details
-                  v-for="[label, items] in menusByType"
+                  v-for="{ label, items } in menus"
                   :key="label"
                   class="group rounded-md border border-zinc-200 bg-white"
                 >
