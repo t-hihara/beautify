@@ -68,6 +68,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
             });
             Route::middleware(['permission:manage.plans'])->group(function () {
                 Route::get('/{plan}/edit', 'edit')->name('edit');
+                Route::patch('/{plan}', 'update')->name('update');
             });
             Route::middleware(['permission:export.plans'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
