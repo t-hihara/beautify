@@ -9,7 +9,6 @@ use App\Utilities\RecursiveCovert;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
 
 class CreateShopStaffUseCase
@@ -44,9 +43,6 @@ class CreateShopStaffUseCase
                     'file_size' => $image->getSize(),
                 ];
 
-                if ($old = $staff->image) {
-                    Storage::disk($old->disk)->delete($old->file_path);
-                }
                 $staff->image()->create($data);
             }
 
