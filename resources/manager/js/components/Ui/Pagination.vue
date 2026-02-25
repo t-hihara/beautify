@@ -80,10 +80,7 @@ const linkByPage = (page: number) => links.find((l) => l.label === String(page))
             item.link.label
           }}</span>
         </Link>
-        <span
-          v-else
-          class="flex p-2 items-center justify-center border border-zinc-200 bg-white text-zinc-800 text-sm"
-        >
+        <span v-else class="flex p-2 items-center justify-center border border-zinc-200 bg-white text-zinc-800 text-sm">
           <span class="inline-flex w-6 h-6 shrink-0 items-center justify-center">...</span>
         </span>
       </template>
