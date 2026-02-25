@@ -80,6 +80,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             });
             Route::middleware(['permission:manage.plans'])->group(function () {
                 Route::get('/create', 'create')->name('create');
+                Route::post('/', 'store')->name('store');
                 Route::get('/{plan}/edit', 'edit')->name('edit');
                 Route::patch('/{plan}', 'update')->name('update');
             });
