@@ -43,6 +43,7 @@ class PreparePlanEditFormUseCase
                         'duration' => $menu->duration,
                     ]),
             ],
+            'shops'          => [],
             'activeFlags'    => ActiveFlagTypeEnum::options(),
             'conditionTypes' => PlanConditionTypeEnum::options(),
             'menus'          => Menu::byShopId($plan->shop_id)

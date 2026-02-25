@@ -8,6 +8,7 @@ use App\Http\Requests\Manager\Search\SearchPlanRequest;
 use App\Models\Plan;
 use App\UseCases\Plan\ExportPlanUseCase;
 use App\UseCases\Plan\FetchPlanListUseCase;
+use App\UseCases\Plan\PreparePlanCreateFormUseCase;
 use App\UseCases\Plan\PreparePlanEditFormUseCase;
 use App\UseCases\Plan\UpdatePlanUseCase;
 use Illuminate\Http\RedirectResponse;
@@ -22,6 +23,12 @@ class PlanController extends Controller
     {
         $data = $useCase($request->validated());
         return Inertia::render('Plan/PlanList', $data);
+    }
+
+    public function create(PreparePlanCreateFormUseCase $useCase): Response
+    {
+        $data = $useCase();
+        return Inertia::render('Plan/PlanForm', $data);
     }
 
     public function edit(Plan $plan, PreparePlanEditFormUseCase $useCase): Response

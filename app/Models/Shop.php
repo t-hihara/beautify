@@ -40,6 +40,11 @@ class Shop extends Model
                                         アクセサ
     ================================================================================ */
 
+    public function scopeById(Builder $query, ?int $id): Builder
+    {
+        return $query->when($id, fn(Builder $q) => $q->where('id', $id));
+    }
+
     public function scopeByName(Builder $query, ?string $name): Builder
     {
         return $query->when($name, fn(Builder $q) => $q->where('name', 'like', "%$name%"));
