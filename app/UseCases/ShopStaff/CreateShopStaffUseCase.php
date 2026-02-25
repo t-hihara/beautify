@@ -5,6 +5,7 @@ namespace App\UseCases\ShopStaff;
 use App\Enum\ShopStaffPositionTypeEnum;
 use App\Models\ShopStaff;
 use App\Models\User;
+use App\Services\Media\UploadImageService;
 use App\Utilities\RecursiveCovert;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
@@ -15,6 +16,7 @@ class CreateShopStaffUseCase
 {
     public function __construct(
         private User $user,
+        private readonly UploadImageService $imageService,
     ) {}
 
     public function __invoke(array $payload): ?ShopStaff
@@ -33,17 +35,7 @@ class CreateShopStaffUseCase
 
             $image = $convert['image'] ?? null;
             if ($image instanceof UploadedFile) {
-                $disk = config('filesystems.default');
-                $path = $image->store('shop_staffs/' . $staff->id, $disk);
-                $data = [
-                    'disk'      => $disk,
-                    'file_path' => $path,
-                    'file_name' => $image->getClientOriginalName(),
-                    'mime_type' => $image->getMimeType(),
-                    'file_size' => $image->getSize(),
-                ];
-
-                $staff->image()->create($data);
+                $this->imageService->attach($imageData, $this->plan, 'shop-staffs');
             }
 
             return $staff;
