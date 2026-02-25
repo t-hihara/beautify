@@ -21,8 +21,8 @@ class FormPlanRequest extends FormRequest
             'conditionType' => ['nullable', Rule::enum(PlanConditionTypeEnum::class)],
             'activeFlag'    => ['required', Rule::enum(ActiveFlagTypeEnum::class)],
             'sortOrder'     => ['required', 'integer', 'min:1'],
-            'validFrom'     => ['nullable', 'date'],
-            'validTo'       => ['nullable', 'date', 'after:validFrom'],
+            'validFrom'     => ['nullable', 'required_if:conditionType,' . PlanConditionTypeEnum::PERIOD->value, 'date'],
+            'validTo'       => ['nullable', 'required_if:conditionType,' . PlanConditionTypeEnum::PERIOD->value, 'date', 'after:validFrom'],
             'image'         => [
                 'nullable',
                 Rule::when(
@@ -52,6 +52,14 @@ class FormPlanRequest extends FormRequest
             'image'         => 'プラン画像',
             'menuIds'       => 'メニュー',
             'menuIds.*'     => 'メニュー',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'validFrom.required_if' => ':attributeは適用条件が期間限定の時に設定が必要です。',
+            'validTo.required_if' => ':attributeは適用条件が期間限定の時に設定が必要です。',
         ];
     }
 }

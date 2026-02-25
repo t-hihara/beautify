@@ -203,27 +203,29 @@ watch(
             :items="conditionTypes"
             :error="form.errors"
           />
-          <div class="col-span-2 flex items-end gap-2">
+          <div class="col-span-2 flex items-start gap-2">
             <form-date-time
               v-model="form.validFrom"
               model="date"
               title="期間限定（開始）"
-              field="validForm"
+              field="validFrom"
               inputmode="text"
               format="yyyy/mm/dd"
               class="flex-1"
               :disabled="form.conditionType !== 'period'"
+              :error="form.errors"
             />
-            <span class="shrink-0 flex h-10 items-center justify-center text-zinc-400">～</span>
+            <span class="shrink-0 flex h-10 items-center justify-center text-zinc-400 mt-6">～</span>
             <form-date-time
-              v-model="form.validFrom"
+              v-model="form.validTo"
               model="date"
               title="期間限定（終了）"
-              field="validForm"
+              field="validTo"
               inputmode="text"
               format="yyyy/mm/dd"
               class="flex-1"
               :disabled="form.conditionType !== 'period'"
+              :error="form.errors"
             />
           </div>
           <form-switch-toggle v-model="activeFlag" title="公開状態" field="activeFlag" required :error="form.errors" />
