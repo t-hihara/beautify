@@ -67,6 +67,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
                 Route::get('/', 'index')->name('index');
             });
             Route::middleware(['permission:manage.plans'])->group(function () {
+                Route::get('/create', 'create')->name('create');
                 Route::get('/{plan}/edit', 'edit')->name('edit');
                 Route::patch('/{plan}', 'update')->name('update');
             });
