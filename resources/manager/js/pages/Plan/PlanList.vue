@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Head, useForm } from "@inertiajs/vue3";
-import { watch } from "vue";
+import { Head, router, useForm } from "@inertiajs/vue3";
+import { ref, watch } from "vue";
 import { route } from "ziggy-js";
 import { debounce } from "lodash";
 import { useGuard } from "@manager/composables/useGuard";
@@ -10,10 +10,17 @@ import {
   SearchMultiSelect,
   SearchDateTime,
 } from "@/common/js/components/Form/SearchIndex";
-import { ButtonPrimary, ButtonIcon, TextLink } from "@/common/js/components/Ui/ButtonIndex";
-import { FolderArrowDownIcon, PencilSquareIcon } from "@heroicons/vue/24/solid";
+import {
+  ButtonPrimary,
+  ButtonTertiary,
+  ButtonIcon,
+  ButtonIconDanger,
+  TextLink,
+} from "@/common/js/components/Ui/ButtonIndex";
+import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
+import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -64,7 +71,7 @@ type SearchFormType = {
   perPage: number;
 };
 
-const { filters } = defineProps<{
+const { filters, plans } = defineProps<{
   filters: Filters;
   activeFlags: EnumType[];
   menuTypes: EnumType[];
@@ -85,6 +92,8 @@ const searchForm = useForm<SearchFormType>({
 });
 
 const guard = useGuard();
+const showDeleteModal = ref<boolean>(false);
+const targetPlan = ref<PlanType | null>(null);
 
 const search = (): void => {
   searchForm.get(route(`${guard.value}.plans.index`), {
@@ -97,6 +106,30 @@ const exportFile = (type: "excel" | "csv"): void => {
   type === "excel"
     ? searchForm.get(route(`${guard.value}.plans.excel`))
     : searchForm.get(route(`${guard.value}.plans.csv`));
+};
+
+const deleteMenu = (): void => {
+  router.delete(route(`${guard.value}.plans.delete`, targetPlan.value?.id), {
+    preserveState: true,
+    preserveScroll: true,
+    onFinish: () => {
+      closeDeleteModal();
+    },
+  });
+};
+
+const openDeleteModal = (id: number): void => {
+  const plan = plans.find((plan) => plan.id === id);
+  targetPlan.value = plan ?? null;
+  showDeleteModal.value = true;
+};
+
+const closeDeleteModal = (): void => {
+  showDeleteModal.value = false;
+};
+
+const resetTargetMenu = (): void => {
+  targetPlan.value = null;
 };
 
 watch(
@@ -206,7 +239,7 @@ watch(
         <tbody class="divide-y divide-zinc-300 text-zinc-600">
           <template v-if="plans.length > 0">
             <tr v-for="plan in plans" :key="plan.id">
-              <td class="px-4 py-3">{{ plan.id }}</td>
+              <td class="px-4 py-3 text-center">{{ plan.id }}</td>
               <td class="px-4 py-3">
                 <div class="flex flex-col gap-y-1">
                   <text-link :href="guard === 'admin' ? route('admin.shops.show', plan.shop.id) : route('shop.index')">
@@ -251,6 +284,9 @@ watch(
                   <button-icon :href="route(`${guard}.plans.edit`, plan.id)"
                     ><pencil-square-icon class="size-6"
                   /></button-icon>
+                  <button-icon-danger @click="openDeleteModal(plan.id)">
+                    <trash-icon class="size-6" />
+                  </button-icon-danger>
                 </div>
               </td>
             </tr>
@@ -264,5 +300,24 @@ watch(
       </table>
     </div>
     <pagination :links="links" :pagination="pagination" :per-page="searchForm.perPage" class="mt-4" />
+    <dialog-modal
+      v-model="showDeleteModal"
+      title="メニュー削除"
+      show-close
+      dialog-class="max-w-2xl w-full"
+      @close="closeDeleteModal"
+      @after-leave="resetTargetMenu"
+    >
+      <div class="mt-4">
+        <div v-if="targetPlan" class="flex flex-col space-y-1">
+          <span>該当のメニューを削除しますか？</span>
+          <span class="font-semibold">{{ targetPlan.name }}</span>
+        </div>
+        <div class="mt-4 pt-4 flex justify-center items-center gap-4 border-t border-zinc-200">
+          <button-tertiary @click="closeDeleteModal">キャンセル</button-tertiary>
+          <button-primary @click="deleteMenu">削除する</button-primary>
+        </div>
+      </div>
+    </dialog-modal>
   </div>
 </template>
