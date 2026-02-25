@@ -274,6 +274,9 @@ watch(
                       ×
                     </button>
                   </div>
+                  <div v-if="form.errors[`menuIds.${index}`]" class="mt-2">
+                    <span class="text-red-500 text-xs">{{ form.errors[`menuIds.${index}`] }}</span>
+                  </div>
                 </li>
                 <div
                   v-if="selectedMenus.length === 0"
