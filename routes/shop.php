@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Manager\ExportFileController;
 use App\Http\Controllers\Manager\Shop\AuthController;
 use App\Http\Controllers\Manager\Shop\MenuController;
 use App\Http\Controllers\Manager\Shop\PlanController;
@@ -76,6 +77,17 @@ Route::prefix('shop')->name('shop.')->group(function () {
             Route::middleware(['permission:export.plans'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
                 Route::get('/export/csv', 'exportCsv')->name('csv');
+            });
+        });
+
+        Route::prefix('exports')->name('exports.')->controller(ExportFileController::class)->group(function () {
+            Route::middleware('permission:view.exports')->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/unloaded-count', 'unloadedCount')->name('unloaded-count');
+            });
+            Route::middleware('permission:manage.exports')->group(function () {
+                Route::get('/download/{exportFile}', 'download')->name('download');
+                Route::delete('/download/{exportFile}', 'destroy')->name('delete');
             });
         });
     });

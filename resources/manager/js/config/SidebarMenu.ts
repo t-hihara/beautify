@@ -176,4 +176,12 @@ export const shopMenu: MenuItem[] = [
       },
     ],
   },
+  {
+    id: 98,
+    label: "出力ファイル管理",
+    icon: "export",
+    route: "shop.exports.index",
+    permission: "view.exports",
+    children: [],
+  },
 ];
