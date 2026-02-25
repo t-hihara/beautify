@@ -13,6 +13,7 @@ use App\UseCases\Menu\FetchMenuListUseCase;
 use App\UseCases\Menu\PrepareMenuCreateFormUseCase;
 use App\UseCases\Menu\PrepareMenuEditFormUseCase;
 use App\UseCases\Menu\UpdateMenuUseCase;
+use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -67,6 +68,8 @@ class MenuController extends Controller
     {
         try {
             $useCase($menu);
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '削除に失敗しました。');
