@@ -53,7 +53,7 @@ const remove = (): void => {
     <label v-if="title" class="text-sm font-medium text-zinc-800 flex items-center gap-1">
       {{ title }}<span v-if="required" class="text-red-500">※</span>
     </label>
-    <div :class="title ? 'mt-1' : ''">
+    <div :class="title ? 'mt-2' : ''">
       <input ref="fileInputRef" type="file" class="hidden" @change="onFileChange" />
       <button-primary @click="openFileDialog">{{ previewUrl ? "画像を変更する" : "画像を追加する" }}</button-primary>
       <div v-if="previewUrl" class="mt-4">

@@ -111,7 +111,6 @@ const activeFlag = computed<boolean>({
     form.activeFlag = v ? "active" : "inactive";
   },
 });
-
 const menusForSelectedShop = computed<MenuType[]>(() => {
   return menus
     .map((group) => ({
@@ -148,7 +147,7 @@ const submit = (): void => {
     form._method = "PATCH";
     form.post(route(`${guard.value}.plans.update`, form.id));
   } else {
-    //
+    form.post(route(`${guard.value}.plans.store`));
   }
 };
 
@@ -197,6 +196,7 @@ watch(
             :error="form.errors"
           />
           <form-single-select
+            v-if="!isEdit"
             v-model="form.shopId"
             field="shopId"
             title="店舗"
@@ -264,7 +264,13 @@ watch(
             />
           </div>
           <form-switch-toggle v-model="activeFlag" title="公開状態" field="activeFlag" required :error="form.errors" />
-          <form-single-image v-model="form.image" field="image" title="プラン画像" :error="form.errors" />
+          <form-single-image
+            v-model="form.image"
+            field="image"
+            title="プラン画像"
+            :required="!isEdit"
+            :error="form.errors"
+          />
           <form-textarea
             v-model="form.description"
             title="説明"
