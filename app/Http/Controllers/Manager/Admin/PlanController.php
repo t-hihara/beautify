@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Form\FormPlanRequest;
 use App\Http\Requests\Manager\Search\SearchPlanRequest;
 use App\Models\Plan;
+use App\UseCases\Plan\CreatePlanUseCase;
 use App\UseCases\Plan\ExportPlanUseCase;
 use App\UseCases\Plan\FetchPlanListUseCase;
 use App\UseCases\Plan\PreparePlanCreateFormUseCase;
@@ -29,6 +30,18 @@ class PlanController extends Controller
     {
         $data = $useCase();
         return Inertia::render('Plan/PlanForm', $data);
+    }
+
+    public function store(FormPlanRequest $request, CreatePlanUseCase $useCase): RedirectResponse
+    {
+        try {
+            $useCase($request->validated());
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '登録に失敗しました。');
+        }
+
+        return redirect()->route('admin.plans.index')->with('success', '登録に成功しました。');
     }
 
     public function edit(Plan $plan, PreparePlanEditFormUseCase $useCase): Response
