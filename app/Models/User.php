@@ -73,6 +73,11 @@ class User extends Authenticatable implements MustVerifyEmailContract
         return $this->last_name_kana || $this->first_name_kana ? $this->last_name_kana . ' ' . $this->first_name_kana : null;
     }
 
+    public function getShopIdAttribute(): ?int
+    {
+        return $this->shopStaff?->shop_id;
+    }
+
     /* ================================================================================
                                         スコープ
     ================================================================================ */
