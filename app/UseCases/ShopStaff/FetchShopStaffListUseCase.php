@@ -14,7 +14,9 @@ class FetchShopStaffListUseCase
     public function __invoke(array $filters, ?int $shopId = null): array
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
-        $shopId ? $convert['shop_ids'] = [$shopId] : null;
+        if ($shopId) {
+            $convert['shop_ids'] = [$shopId];
+        }
 
         $staffs = ShopStaff::with(['image', 'shop'])
             ->byName($convert['name'] ?? null)

@@ -23,7 +23,9 @@ class ExportShopStaffUseCase
     public function __invoke(int $userId, array $filters, string $type, ?int $shopId = null): ExportFile
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
-        $shopId ? $convert['shop_ids'] = [$shopId] : null;
+        if ($shopId) {
+            $convert['shop_ids'] = [$shopId];
+        }
 
         return DB::transaction(function () use ($userId, $convert, $type) {
             $datetime = Carbon::now()->format('Y-m-d H:i:s');
