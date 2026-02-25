@@ -7,6 +7,7 @@ use App\Http\Requests\Manager\Form\FormPlanRequest;
 use App\Http\Requests\Manager\Search\SearchPlanRequest;
 use App\Models\Plan;
 use App\UseCases\Plan\CreatePlanUseCase;
+use App\UseCases\Plan\DeletePlanUseCase;
 use App\UseCases\Plan\ExportPlanUseCase;
 use App\UseCases\Plan\FetchPlanListUseCase;
 use App\UseCases\Plan\PreparePlanCreateFormUseCase;
@@ -60,6 +61,18 @@ class PlanController extends Controller
         }
 
         return redirect()->route('admin.plans.index')->with('success', '更新に成功しました。');
+    }
+
+    public function destroy(Plan $plan, DeletePlanUseCase $useCase): RedirectResponse
+    {
+        try {
+            $useCase($plan);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '削除に失敗しました。');
+        }
+
+        return back()->with('success', '削除に成功しました。');
     }
 
     public function exportExcel(SearchPlanRequest $request, ExportPlanUseCase $useCase): RedirectResponse

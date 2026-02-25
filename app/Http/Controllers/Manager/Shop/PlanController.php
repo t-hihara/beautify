@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Manager\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Search\SearchPlanRequest;
+use App\UseCases\Plan\DeletePlanUseCase;
 use App\UseCases\Plan\ExportPlanUseCase;
 use App\UseCases\Plan\FetchPlanListUseCase;
 use App\UseCases\Plan\PreparePlanCreateFormUseCase;
@@ -12,6 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 class PlanController extends Controller
 {
@@ -33,6 +35,18 @@ class PlanController extends Controller
     {
         $data = $useCase($plan);
         return Inertia::render('Plan/PlanForm', $data);
+    }
+
+    public function destroy(Plan $plan, DeletePlanUseCase $useCase): RedirectResponse
+    {
+        try {
+            $useCase($plan);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '削除に失敗しました。');
+        }
+
+        return back()->with('success', '削除に成功しました。');
     }
 
     public function exportExcel(SearchPlanRequest $request, ExportPlanUseCase $useCase): RedirectResponse
