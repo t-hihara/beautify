@@ -23,6 +23,7 @@ class PreparePlanCreateFormUseCase
                     'label' => $label,
                     'items' =>  $menus->map(fn($menu) => [
                         'id'       => $menu->id,
+                        'shopId'   => $menu->shop_id,
                         'name'     => $menu->name,
                         'type'     => $menu->type->value,
                         'price'    => $menu->price,

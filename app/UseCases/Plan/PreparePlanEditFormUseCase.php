@@ -16,6 +16,7 @@ class PreparePlanEditFormUseCase
         return [
             'plan' => [
                 'id'            => $plan->id,
+                'shopId'        => $plan->shop_id,
                 'name'          => $plan->name,
                 'description'   => $plan->description,
                 'duration'      => $plan->duration,
@@ -54,6 +55,7 @@ class PreparePlanEditFormUseCase
                     'label' => $label,
                     'items' =>  $menus->map(fn($menu) => [
                         'id'       => $menu->id,
+                        'shopId'   => $menu->shop_id,
                         'name'     => $menu->name,
                         'type'     => $menu->type->value,
                         'price'    => $menu->price,
