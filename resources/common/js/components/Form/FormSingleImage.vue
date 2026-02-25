@@ -58,7 +58,7 @@ const remove = (): void => {
       <button-primary @click="openFileDialog">{{ previewUrl ? "画像を変更する" : "画像を追加する" }}</button-primary>
       <div v-if="previewUrl" class="mt-4">
         <div class="w-40 h-40 relative">
-          <img :src="previewUrl" alt="" class="aspect-square object-center rounded-lg" />
+          <img :src="previewUrl" alt="" class="aspect-square object-cover rounded-lg" />
           <button
             type="button"
             @click="remove()"

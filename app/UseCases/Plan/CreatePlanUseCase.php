@@ -3,6 +3,7 @@
 namespace App\UseCases\Plan;
 
 use App\Models\Plan;
+use App\Services\Media\UploadImageService;
 use App\Utilities\RecursiveCovert;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
@@ -12,6 +13,7 @@ class CreatePlanUseCase
 {
     public function __construct(
         private Plan $plan,
+        private readonly UploadImageService $imageService,
     ) {}
 
     public function __invoke(array $payload): ?Plan
@@ -27,17 +29,7 @@ class CreatePlanUseCase
             $this->plan->menus()->sync($menuIds);
 
             if ($imageData instanceof UploadedFile) {
-                $disk = config('filesystems.default');
-                $path = $imageData->store('plans/' . $this->plan->id, $disk);
-                $data = [
-                    'disk'      => $disk,
-                    'file_path' => $path,
-                    'file_name' => $imageData->getClientOriginalName(),
-                    'mime_type' => $imageData->getMimeType(),
-                    'file_size' => $imageData->getSize(),
-                ];
-
-                $this->plan->image()->create($data);
+                $this->imageService->attach($imageData, $this->plan, 'plans');
             }
             return $this->plan;
         });
