@@ -19,7 +19,7 @@ class CreatePlanUseCase
         $convert = RecursiveCovert::_convert($payload, 'snake');
 
         return DB::transaction(function () use ($convert) {
-            $planData  = Arr::except($covert, ['image', 'menu_ids']);
+            $planData  = Arr::except($convert, ['image', 'menu_ids']);
             $imageData = $convert['image'];
             $menuIds   = $convert['menu_ids'];
 
