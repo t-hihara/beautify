@@ -199,6 +199,7 @@ watch(
             v-model="form.conditionType"
             title="適用条件"
             field="conditionType"
+            allow-empty
             :items="conditionTypes"
             :error="form.errors"
           />
@@ -303,7 +304,7 @@ watch(
                       <span class="transition group-open:rotate-180">▼</span>
                     </div>
                   </summary>
-                  <ul class="border-t border-zinc-100 p-2">
+                  <ul class="border-t border-zinc-100 p-2 space-y-1.5">
                     <li
                       v-for="menu in items"
                       :key="menu.id"

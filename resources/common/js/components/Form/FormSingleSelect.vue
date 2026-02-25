@@ -8,25 +8,38 @@ const {
   modelValue,
   items,
   required = false,
+  allowEmpty = false,
 } = defineProps<{
   modelValue: string | number | null;
   field: string;
   title?: string;
   required?: boolean;
   items: EnumType[];
+  allowEmpty?: boolean;
   error?: Record<string, string>;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   "update:modelValue": [value: string | number | null];
 }>();
 
-const selectedItem = computed(() => items.find((item) => item.id === modelValue));
+const emptyOption: EnumType = { id: "", name: "選択無し" };
+const options = computed(() => (allowEmpty ? [emptyOption, ...items] : items));
+const selectedItem = computed(() => {
+  const hasNoSelection = modelValue === null || modelValue === "";
+  if (allowEmpty && hasNoSelection) return emptyOption;
+  return options.value.find((item) => item.id === modelValue) ?? null;
+});
+
+const onSelect = (item: EnumType): void => {
+  const value = item.id === "" ? null : item.id;
+  emit("update:modelValue", value);
+};
 </script>
 
 <template>
   <div>
-    <listbox :model-value="selectedItem" @update:model-value="(item) => $emit('update:modelValue', item.id)">
+    <listbox :model-value="selectedItem" @update:model-value="onSelect">
       <listbox-label v-if="title" class="flex items-center gap-1 text-sm font-medium text-zinc-800">
         {{ title }}<span v-if="required" class="text-red-500">※</span>
       </listbox-label>
@@ -44,7 +57,7 @@ const selectedItem = computed(() => items.find((item) => item.id === modelValue)
             class="absolute z-10 w-full mt-1 bg-white rounded-lg border border-zinc-300 shadow-lg max-h-60 overflow-scroll"
           >
             <listbox-option
-              v-for="item in items"
+              v-for="item in options"
               :key="item.id"
               :value="item"
               :class="selectedItem?.id === item.id ? 'bg-rose-100/70' : ''"
