@@ -63,7 +63,7 @@ type MenuType = {
 
 type SearchFormType = {
   name: string;
-  activeFlag: string;
+  activeFlag: string | null;
   shopIds: number[];
   types: string[];
   validFrom: string;
@@ -83,7 +83,7 @@ const { filters, plans } = defineProps<{
 
 const searchForm = useForm<SearchFormType>({
   name: filters.name || "",
-  activeFlag: filters.activeFlag || "active",
+  activeFlag: filters.activeFlag || null,
   shopIds: filters.shopIds || [],
   types: filters.types || [],
   validFrom: filters.validFrom || "",

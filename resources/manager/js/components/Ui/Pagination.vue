@@ -60,13 +60,19 @@ const linkByPage = (page: number) => links.find((l) => l.label === String(page))
       >
     </div>
     <nav class="flex -space-x-px">
-      <Link v-if="pagination.prev" :href="pagination.prev" class="p-2 border border-zinc-200 bg-white text-zinc-800">
+      <Link
+        v-if="pagination.prev"
+        :href="pagination.prev"
+        preserve-state
+        class="p-2 border border-zinc-200 bg-white text-zinc-800"
+      >
         <span class="inline-flex min-w-6 min-h-6 shrink-0 items-center justify-center text-sm"><</span>
       </Link>
       <template v-for="(item, i) in visibleLinks" :key="i">
         <Link
           v-if="item.type === 'page'"
           :href="item.link.url"
+          preserve-state
           class="p-2 border border-zinc-200 text-zinc-800"
           :class="item.link.active ? 'bg-rose-200' : 'bg-white'"
         >
@@ -81,7 +87,12 @@ const linkByPage = (page: number) => links.find((l) => l.label === String(page))
           <span class="inline-flex w-6 h-6 shrink-0 items-center justify-center">...</span>
         </span>
       </template>
-      <Link v-if="pagination.next" :href="pagination.next" class="p-2 border border-zinc-200 bg-white text-zinc-800">
+      <Link
+        v-if="pagination.next"
+        :href="pagination.next"
+        preserve-state
+        class="p-2 border border-zinc-200 bg-white text-zinc-800"
+      >
         <span class="inline-flex min-w-6 min-h-6 shrink-0 items-center justify-center text-sm">></span>
       </Link>
     </nav>
