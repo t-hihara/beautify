@@ -24,13 +24,13 @@ class MenuController extends Controller
 {
     public function index(SearchMenuRequest $request, FetchMenuListUseCase $useCase): Response
     {
-        $shopId = auth('shop')->user()->shopStaff?->shop_id;
+        $shopId = auth('shop')->user()?->shop_id;
         return Inertia::render('Menu/MenuList', $useCase($request->validated(), $shopId));
     }
 
     public function create(PrepareMenuCreateFormUseCase $useCase): Response
     {
-        $shopId = auth('shop')->user()->shopStaff?->shop_id;
+        $shopId = auth('shop')->user()?->shop_id;
         return Inertia::render('Menu/MenuForm', $useCase($shopId));
     }
 
