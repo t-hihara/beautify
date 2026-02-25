@@ -25,7 +25,7 @@ class PrepareMenuEditFormUseCase
             ],
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'menuTypes'   => MenuTypeEnum::options(),
-            'shops'       => Shop::get(['id', 'name']),
+            'shops'       => Shop::byShopId($menu->shop_id)->get(['id', 'name']),
         ];
     }
 }
