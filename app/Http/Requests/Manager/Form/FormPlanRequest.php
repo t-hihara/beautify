@@ -4,9 +4,11 @@ namespace App\Http\Requests\Manager\Form;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\PlanConditionTypeEnum;
+use App\Models\Menu;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class FormPlanRequest extends FormRequest
 {
@@ -66,6 +68,33 @@ class FormPlanRequest extends FormRequest
         return [
             'validFrom.required_if' => ':attributeは適用条件が期間限定の時に設定が必要です。',
             'validTo.required_if'   => ':attributeは適用条件が期間限定の時に設定が必要です。',
+        ];
+    }
+
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                $shopId = $this->route('plan')?->shop_id ?? $this->input('shopId');
+                $menuIds = $this->input('menuIds');
+                if (!is_array($menuIds) || empty($menuIds)) {
+                    return;
+                }
+
+                $menuIdsInShop = Menu::whereIn('id', $menuIds)
+                    ->where('shop_id', $shopId)
+                    ->pluck('id')
+                    ->toArray();
+
+                foreach ($menuIds as $index => $menuId) {
+                    if (!in_array((int) $menuId, $menuIdsInShop, true)) {
+                        $validator->errors()->add(
+                            "menuIds.{$index}",
+                            '選択されたメニューは指定店舗に属していません。',
+                        );
+                    }
+                }
+            }
         ];
     }
 }
