@@ -15,7 +15,8 @@ class ProfileController extends Controller
 {
     public function index(FetchShopDetailTopUseCase $useCase): Response
     {
-        $shop = Shop::findOrFail($this->getShopId());
+        $shopId = auth('shop')->user()?->shop_id;
+        $shop = Shop::findOrFail($shopId);
         if (!$shop) abort(403, '店舗なし');
 
         $data = $useCase($shop);
@@ -24,7 +25,8 @@ class ProfileController extends Controller
 
     public function staffs(FetchShopStaffsUseCase $useCase): Response
     {
-        $shop = Shop::findOrFail($this->getShopId());
+        $shopId = auth('shop')->user()?->shop_id;
+        $shop = Shop::findOrFail($shopId);
         if (!$shop) abort(403, '店舗なし');
 
         $data = $useCase($shop);
@@ -33,15 +35,11 @@ class ProfileController extends Controller
 
     public function plans(FetchShopPlansUseCase $useCase): Response
     {
-        $shop = Shop::findOrFail($this->getShopId());
+        $shopId = auth('shop')->user()?->shop_id;
+        $shop = Shop::findOrFail($shopId);
         if (!$shop) abort(403, '店舗なし');
 
         $data = $useCase($shop);
         return Inertia::render('Shop/ShopDetail', $data);
-    }
-
-    private function getShopId(): ?int
-    {
-        return auth('shop')->user()->shopStaff?->shop_id;
     }
 }
