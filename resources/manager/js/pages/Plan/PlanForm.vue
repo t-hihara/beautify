@@ -17,6 +17,7 @@ import type { EnumType } from "@/common/js/lib";
 
 type PlanType = {
   id: number;
+  shopId: number;
   name: string;
   description: string;
   duration: number;
@@ -49,6 +50,7 @@ type MenuType = {
   label: string;
   items: {
     id: number;
+    shopId: number;
     name: string;
     type: string;
     price: number;
@@ -59,6 +61,7 @@ type MenuType = {
 type FormType = {
   _method: "POST" | "PATCH";
   id?: number;
+  shopId: number | null;
   name: string;
   description: string;
   duration: number;
@@ -77,6 +80,7 @@ const { plan, menus } = defineProps<{
   plan?: PlanType;
   activeFlags: EnumType[];
   conditionTypes: EnumType[];
+  shops: EnumType[];
   menus: MenuType[];
 }>();
 
@@ -85,6 +89,7 @@ const guard = useGuard();
 const form = useForm<FormType>({
   _method: "POST",
   id: plan?.id ?? undefined,
+  shopId: plan?.shopId ?? null,
   name: plan?.name ?? "",
   description: plan?.description ?? "",
   duration: plan?.duration ?? 0,
@@ -106,7 +111,18 @@ const activeFlag = computed<boolean>({
     form.activeFlag = v ? "active" : "inactive";
   },
 });
-const menuItems = computed<MenuType["items"][number][]>(() => menus.flatMap((group) => group.items));
+
+const menusForSelectedShop = computed<MenuType[]>(() => {
+  return menus
+    .map((group) => ({
+      label: group.label,
+      items: group.items.filter((item) => item.shopId === form.shopId),
+    }))
+    .filter((group) => group.items.length > 0);
+});
+const menuItems = computed<MenuType["items"][number][]>(() =>
+  menusForSelectedShop.value.flatMap((group) => group.items),
+);
 const selectedMenus = computed<MenuType["items"][number][]>(() =>
   form.menuIds
     .map((menuId) => menuItems.value.find((menu) => menu.id === menuId))
@@ -114,6 +130,10 @@ const selectedMenus = computed<MenuType["items"][number][]>(() =>
 );
 const totalDuration = computed<number>(() => selectedMenus.value.reduce((sum, menu) => sum + menu.duration, 0));
 const regularPrice = computed<number>(() => selectedMenus.value.reduce((sum, menu) => sum + menu.price, 0));
+const showMenuList = computed<boolean>(() => {
+  if (guard.value !== "admin" || isEdit.value) return true;
+  return form.shopId !== null;
+});
 
 const addMenu = (menuItem: MenuType["items"][number]): void => {
   if (form.menuIds.includes(menuItem.id)) return;
@@ -131,6 +151,13 @@ const submit = (): void => {
     //
   }
 };
+
+watch(
+  () => form.id,
+  () => {
+    form.menuIds = [];
+  },
+);
 
 watch(
   totalDuration,
@@ -167,6 +194,14 @@ watch(
             field="name"
             placeholder="プラン名"
             required
+            :error="form.errors"
+          />
+          <form-single-select
+            v-model="form.shopId"
+            field="shopId"
+            title="店舗"
+            required
+            :items="shops"
             :error="form.errors"
           />
           <form-number
@@ -250,76 +285,85 @@ watch(
           <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div class="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4">
               <h3 class="text-sm font-medium text-zinc-600">選択中のメニュー</h3>
-              <ul class="mt-3 space-y-2">
-                <li
-                  v-for="(menu, index) in selectedMenus"
-                  :key="menu.id"
-                  class="flex items-center justify-between gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm"
-                >
-                  <div class="flex items-center gap-2">
-                    <span
-                      class="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-zinc-200 text-xs text-zinc-600"
-                    >
-                      {{ index + 1 }}
-                    </span>
-                    <span class="font-medium text-zinc-800">{{ menu.name }}</span>
-                    <span class="text-zinc-500">{{ menu.type }}</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <span class="shrink-0 text-zinc-400">
-                      {{ menu.duration }}分 · ¥{{ menu.price?.toLocaleString() }}
-                    </span>
-                    <button
-                      type="button"
-                      class="shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-600 cursor-pointer"
-                      @click="removeMenu(menu.id)"
-                    >
-                      ×
-                    </button>
-                  </div>
-                  <div v-if="form.errors[`menuIds.${index}`]" class="mt-2">
-                    <span class="text-red-500 text-xs">{{ form.errors[`menuIds.${index}`] }}</span>
-                  </div>
-                </li>
-                <div
-                  v-if="selectedMenus.length === 0"
-                  class="rounded-md border border-dashed border-zinc-300 bg-white/50] px-3 py-4"
-                >
-                  <span class="text-center text-sm text-zinc-400">メニューを右側から追加してください</span>
-                </div>
-              </ul>
+              <template v-if="selectedMenus.length > 0">
+                <ul class="mt-4 space-y-2">
+                  <li
+                    v-for="(menu, index) in selectedMenus"
+                    :key="menu.id"
+                    class="flex items-center justify-between gap-2 rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm"
+                  >
+                    <div class="flex items-center gap-2">
+                      <span
+                        class="flex h-6 w-6 shrink-0 items-center justify-center rounded bg-zinc-200 text-xs text-zinc-600"
+                      >
+                        {{ index + 1 }}
+                      </span>
+                      <span class="font-medium text-zinc-800">{{ menu.name }}</span>
+                      <span class="text-zinc-500">{{ menu.type }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="shrink-0 text-zinc-400">
+                        {{ menu.duration }}分 · ¥{{ menu.price?.toLocaleString() }}
+                      </span>
+                      <button
+                        type="button"
+                        class="shrink-0 rounded p-1 text-zinc-400 hover:bg-zinc-200 hover:text-zinc-600 cursor-pointer"
+                        @click="removeMenu(menu.id)"
+                      >
+                        ×
+                      </button>
+                    </div>
+                    <div v-if="form.errors[`menuIds.${index}`]" class="mt-2">
+                      <span class="text-red-500 text-xs">{{ form.errors[`menuIds.${index}`] }}</span>
+                    </div>
+                  </li>
+                </ul></template
+              >
+              <div
+                v-if="selectedMenus.length === 0"
+                class="mt-4 rounded-md border border-dashed border-zinc-300 bg-white/50] px-3 py-4"
+              >
+                <span class="text-center text-sm text-zinc-400">メニューを右側から追加してください</span>
+              </div>
             </div>
             <div class="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4">
               <h3 class="text-sm font-medium text-zinc-600">メニューを追加</h3>
-              <div class="mt-3 space-y-3">
-                <details
-                  v-for="{ label, items } in menus"
-                  :key="label"
-                  class="group rounded-md border border-zinc-200 bg-white"
-                >
-                  <summary
-                    class="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium text-zinc-800 [&::-webkit-details-marker]:hidden"
+              <template v-if="showMenuList">
+                <div class="mt-3 space-y-3">
+                  <details
+                    v-for="{ label, items } in menusForSelectedShop"
+                    :key="label"
+                    class="group rounded-md border border-zinc-200 bg-white"
                   >
-                    <span>{{ label }}</span>
-                    <div class="flex items-center gap-2">
-                      <span class="text-xs text-zinc-500">（{{ items.length }}件）</span>
-                      <span class="transition group-open:rotate-180">▼</span>
-                    </div>
-                  </summary>
-                  <ul class="border-t border-zinc-100 p-2 space-y-1.5">
-                    <li
-                      v-for="menu in items"
-                      :key="menu.id"
-                      class="flex cursor-pointer items-center justify-between rounded px-2 py-1.5 text-sm hover:bg-zinc-100"
-                      :class="form.menuIds.includes(menu.id) && 'bg-rose-200/50 pointer-events-none'"
-                      @click="addMenu(menu)"
+                    <summary
+                      class="flex cursor-pointer list-none items-center justify-between px-3 py-2 text-sm font-medium text-zinc-800 [&::-webkit-details-marker]:hidden"
                     >
-                      <span class="font-medium text-zinc-800">{{ menu.name }}</span>
-                      <span class="text-zinc-500">{{ menu.duration }}分 · ¥{{ menu.price?.toLocaleString() }}</span>
-                    </li>
-                  </ul>
-                </details>
-              </div>
+                      <span>{{ label }}</span>
+                      <div class="flex items-center gap-2">
+                        <span class="text-xs text-zinc-500">（{{ items.length }}件）</span>
+                        <span class="transition group-open:rotate-180">▼</span>
+                      </div>
+                    </summary>
+                    <ul class="border-t border-zinc-100 p-2 space-y-1.5">
+                      <li
+                        v-for="menu in items"
+                        :key="menu.id"
+                        class="flex cursor-pointer items-center justify-between rounded px-2 py-1.5 text-sm hover:bg-zinc-100"
+                        :class="form.menuIds.includes(menu.id) && 'bg-rose-200/50 pointer-events-none'"
+                        @click="addMenu(menu)"
+                      >
+                        <span class="font-medium text-zinc-800">{{ menu.name }}</span>
+                        <span class="text-zinc-500">{{ menu.duration }}分 · ¥{{ menu.price?.toLocaleString() }}</span>
+                      </li>
+                    </ul>
+                  </details>
+                </div>
+              </template>
+              <template v-else>
+                <div class="mt-4 rounded-md border border-dashed border-zinc-300 bg-white/50] px-3 py-4">
+                  <span class="text-center text-sm text-zinc-400">店舗を選択してください</span>
+                </div>
+              </template>
             </div>
           </div>
         </div>
