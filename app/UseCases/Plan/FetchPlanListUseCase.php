@@ -13,7 +13,9 @@ class FetchPlanListUseCase
     public function __invoke(array $filters, ?int $shopId = null): array
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
-        $shopId ? $convert['shop_ids'] = [$shopId] : null;
+        if ($shopId) {
+            $convert['shop_ids'] = [$shopId];
+        }
 
         $plans = Plan::with(['shop', 'menus'])
             ->byName($convert['name'] ?? null)
