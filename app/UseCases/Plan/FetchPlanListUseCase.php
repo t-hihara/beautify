@@ -23,6 +23,8 @@ class FetchPlanListUseCase
             ->byShopIds($convert['shop_ids'] ?? null)
             ->byMenuTypes($convert['types'] ?? null)
             ->byValidDuration($convert['valid_from'] ?? null, $convert['valid_to'] ?? null)
+            ->orderBy('sort_order')
+            ->orderBy('id')
             ->paginate($convert['per_page'] ?? 10)
             ->through(fn($plan) => [
                 'id'            => $plan->id,
