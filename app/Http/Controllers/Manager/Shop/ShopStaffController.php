@@ -24,14 +24,13 @@ class ShopStaffController extends Controller
     public function index(SearchShopStaffRequest $request, FetchShopStaffListUseCase $useCase): Response
     {
         $shopId = auth('shop')->user()->shopStaff?->shop_id;
-        $data   = $useCase($request->validated(), $shopId);
-        return Inertia::render('ShopStaff/ShopStaffList', $data);
+        return Inertia::render('ShopStaff/ShopStaffList', $useCase($shopId));
     }
 
     public function create(PrepareShopStaffCreateUseCase $useCase): Response
     {
-        $data = $useCase($this->getShopId());
-        return Inertia::render('ShopStaff/ShopStaffForm', $data);
+        $shopId = auth('shop')->user()->shopStaff?->shop_id;
+        return Inertia::render('ShopStaff/ShopStaffForm', $useCase($shopId));
     }
 
     public function store(FormShopStaffRequest $request, CreateShopStaffUseCase $useCase): RedirectResponse
