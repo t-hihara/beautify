@@ -83,7 +83,7 @@ class ShopStaffController extends Controller
         ExportShopStaffUseCase $useCase,
     ): RedirectResponse {
         try {
-            $shopId = auth('shop')->user()->shopStaff?->shop_id;
+            $shopId = auth('shop')->user()?->shop_id;
             $useCase(auth()->id(), $request->validated(), 'xlsx', $shopId);
         } catch (Throwable $e) {
             report($e);
@@ -96,7 +96,7 @@ class ShopStaffController extends Controller
     public function exportCsv(SearchShopStaffRequest $request, ExportShopStaffUseCase $useCase): RedirectResponse
     {
         try {
-            $shopId = auth('shop')->user()->shopStaff?->shop_id;
+            $shopId = auth('shop')->user()?->shop_id;
             $useCase(auth()->id(), $request->validated(), 'csv', $shopId);
         } catch (Throwable $e) {
             report($e);

@@ -81,7 +81,7 @@ class MenuController extends Controller
     public function exportExcel(SearchMenuRequest $request, ExportMenuUseCase $useCase): RedirectResponse
     {
         try {
-            $shopId = auth('shop')->user()->shopStaff?->shop_id;
+            $shopId = auth('shop')->user()?->shop_id;
             $useCase(auth()->id(), $request->validated(), 'xlsx', $shopId);
         } catch (Throwable $e) {
             report($e);
@@ -94,7 +94,7 @@ class MenuController extends Controller
     public function exportCsv(SearchMenuRequest $request, ExportMenuUseCase $useCase): RedirectResponse
     {
         try {
-            $shopId = auth('shop')->user()->shopStaff?->shop_id;
+            $shopId = auth('shop')->user()?->shop_id;
             $useCase(auth()->id(), $request->validated(), 'csv', $shopId);
         } catch (Throwable $e) {
             report($e);

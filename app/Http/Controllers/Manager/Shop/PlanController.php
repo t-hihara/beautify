@@ -22,16 +22,14 @@ class PlanController extends Controller
 {
     public function index(SearchPlanRequest $request, FetchPlanListUseCase $useCase): Response
     {
-        $shopId = auth('shop')->user()->shopStaff?->shop_id;
-        $data   = $useCase($request->validated(), $shopId);
-        return Inertia::render('Plan/PlanList', $data);
+        $shopId = auth('shop')->user()?->shop_id;
+        return Inertia::render('Plan/PlanList', $useCase($request->validated(), $shopId));
     }
 
     public function create(PreparePlanCreateFormUseCase $useCase): Response
     {
-        $shopId = auth('shop')->user()->shopStaff?->shop_id;
-        $data = $useCase($shopId);
-        return Inertia::render('Plan/PlanForm', $data);
+        $shopId = auth('shop')->user()?->shop_id;
+        return Inertia::render('Plan/PlanForm', $useCase($shopId));
     }
 
     public function store(FormPlanRequest $request, CreatePlanUseCase $useCase): RedirectResponse
@@ -79,7 +77,7 @@ class PlanController extends Controller
     public function exportExcel(SearchPlanRequest $request, ExportPlanUseCase $useCase): RedirectResponse
     {
         try {
-            $shopId = auth('shop')->user()->shopStaff?->shop_id;
+            $shopId = auth('shop')->user()?->shop_id;
             $useCase(auth()->id(), $request->validated(), 'xlsx', $shopId);
         } catch (Throwable $e) {
             report($e);
@@ -92,7 +90,7 @@ class PlanController extends Controller
     public function exportCsv(SearchPlanRequest $request, ExportPlanUseCase $useCase): RedirectResponse
     {
         try {
-            $shopId = auth('shop')->user()->shopStaff?->shop_id;
+            $shopId = auth('shop')->user()?->shop_id;
             $useCase(auth()->id(), $request->validated(), 'csv', $shopId);
         } catch (Throwable $e) {
             report($e);
