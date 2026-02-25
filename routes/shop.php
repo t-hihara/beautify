@@ -71,6 +71,7 @@ Route::prefix('shop')->name('shop.')->group(function () {
                 Route::post('/', 'store')->name('store');
                 Route::get('/{plan}/edit', 'edit')->name('edit');
                 Route::patch('/{plan}', 'update')->name('update');
+                Route::delete('/{plan}', 'destroy')->name('delete');
             });
             Route::middleware(['permission:export.plans'])->group(function () {
                 Route::get('/export/excel', 'exportExcel')->name('excel');
