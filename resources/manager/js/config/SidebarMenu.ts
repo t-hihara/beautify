@@ -82,6 +82,12 @@ export const adminMenu: MenuItem[] = [
         route: "admin.plans.index",
         permission: "view.plans",
       },
+      {
+        id: 2,
+        label: "プラン登録",
+        route: "admin.plans.create",
+        permission: "manage.plans",
+      },
     ],
   },
   {
@@ -161,6 +167,12 @@ export const shopMenu: MenuItem[] = [
         label: "プラン一覧",
         route: "shop.plans.index",
         permission: "view.plans",
+      },
+      {
+        id: 2,
+        label: "プラン登録",
+        route: "shop.plans.create",
+        permission: "manage.plans",
       },
     ],
   },
