@@ -25,6 +25,7 @@ class FetchShopStaffListUseCase
             ->byPositions($convert['positions'] ?? null)
             ->orderBy('id')
             ->paginate($convert['per_page'] ?? 10)
+            ->withQueryString()
             ->through(fn($staff) => [
                 'id'              => $staff->id,
                 'name'            => $staff->name,

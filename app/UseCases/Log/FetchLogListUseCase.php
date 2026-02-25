@@ -19,6 +19,7 @@ class FetchLogListUseCase
             ->byDuration($convert['from_date'] ?? null, $convert['to_date'] ?? null)
             ->orderByDesc('created_at')
             ->paginate($convert['per_page'] ?? 10)
+            ->withQueryString()
             ->through(fn($log) => [
                 'id'          => $log->id,
                 'description' => $log->description,

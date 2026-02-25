@@ -23,6 +23,7 @@ class FetchMenuListUseCase
             ->byTypes($convert['types'] ?? null)
             ->byActiveFlag($convert['active_flag'] ?? null)
             ->paginate($convert['per_page'] ?? 10)
+            ->withQueryString()
             ->through(fn($menu) => [
                 'id'          => $menu->id,
                 'name'        => $menu->name,

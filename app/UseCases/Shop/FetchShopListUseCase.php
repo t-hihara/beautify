@@ -22,6 +22,7 @@ class FetchShopListUseCase
             ->byActiveFlag($convert['active_flag'] ?? null)
             ->orderBy('id')
             ->paginate($convert['per_page'] ?? 10)
+            ->withQueryString()
             ->through(fn($shop) => [
                 'id'            => $shop->id,
                 'name'          => $shop->name,

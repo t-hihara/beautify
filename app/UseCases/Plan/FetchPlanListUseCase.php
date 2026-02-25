@@ -26,6 +26,7 @@ class FetchPlanListUseCase
             ->orderBy('sort_order')
             ->orderBy('id')
             ->paginate($convert['per_page'] ?? 10)
+            ->withQueryString()
             ->through(fn($plan) => [
                 'id'            => $plan->id,
                 'name'          => $plan->name,
