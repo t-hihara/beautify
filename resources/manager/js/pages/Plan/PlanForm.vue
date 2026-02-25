@@ -233,12 +233,16 @@ watch(
             field="description"
             placeholder="説明"
             class="col-span-2"
+            required
             :error="form.errors"
           />
         </div>
         <div class="mt-8 pt-8 border-t border-zinc-200">
           <div class="px-3 py-1 rounded-md bg-zinc-200">
             <p class="text-sm font-semibold text-zinc-800">プランに含まれるメニュー</p>
+          </div>
+          <div v-if="form.errors.menuIds" class="mt-2">
+            <span class="text-red-500 text-xs">{{ form.errors.menuIds }}</span>
           </div>
           <div class="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div class="rounded-lg border border-zinc-200 bg-zinc-50/50 p-4">
