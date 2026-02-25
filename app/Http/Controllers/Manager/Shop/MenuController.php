@@ -25,13 +25,13 @@ class MenuController extends Controller
     public function index(SearchMenuRequest $request, FetchMenuListUseCase $useCase): Response
     {
         $shopId = auth('shop')->user()->shopStaff?->shop_id;
-        $data   = $useCase($request->validated(), $shopId);
-        return Inertia::render('Menu/MenuList', $data);
+        return Inertia::render('Menu/MenuList', $useCase($request->validated(), $shopId));
     }
 
     public function create(PrepareMenuCreateFormUseCase $useCase): Response
     {
-        return Inertia::render('Menu/MenuForm', $useCase());
+        $shopId = auth('shop')->user()->shopStaff?->shop_id;
+        return Inertia::render('Menu/MenuForm', $useCase($shopId));
     }
 
     public function store(FormMenuRequest $request, CreateMenuUseCase $useCase): RedirectResponse
