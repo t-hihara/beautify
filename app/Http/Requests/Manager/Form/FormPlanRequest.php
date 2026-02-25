@@ -12,7 +12,7 @@ class FormPlanRequest extends FormRequest
 {
     public function rules(): array
     {
-        return [
+        $rules = [
             'name'          => ['required', 'string'],
             'description'   => ['required', 'string'],
             'duration'      => ['required', 'integer', 'min:1'],
@@ -23,22 +23,28 @@ class FormPlanRequest extends FormRequest
             'sortOrder'     => ['required', 'integer', 'min:1'],
             'validFrom'     => ['nullable', 'required_if:conditionType,' . PlanConditionTypeEnum::PERIOD->value, 'date'],
             'validTo'       => ['nullable', 'required_if:conditionType,' . PlanConditionTypeEnum::PERIOD->value, 'date', 'after:validFrom'],
-            'image'         => [
-                'nullable',
-                Rule::when(
-                    fn() => $this->file('image') instanceof UploadedFile,
-                    ['file', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
-                    ['string'],
-                ),
-            ],
-            'menuIds'   => ['required', 'array'],
-            'menuIds.*' => ['required', 'integer', 'exists:menus,id'],
+            'menuIds'       => ['required', 'array'],
+            'menuIds.*'     => ['required', 'integer', 'exists:menus,id'],
         ];
+
+        if ($this->route('plan')) {
+            $rules['image'] = ['nullable', Rule::when(
+                fn() => $this->file('image') instanceof UploadedFile,
+                ['file', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+                ['string'],
+            )];
+        } else {
+            $rules['shopId'] = ['required', 'integer', 'exists:shops,id'];
+            $rules['image']  = ['required', 'file', 'image', 'mimes:jpg,jpeg,png', 'max:2048'];
+        }
+
+        return $rules;
     }
 
     public function attributes(): array
     {
         return [
+            'shopId'        => '店舗',
             'name'          => 'プラン名',
             'description'   => 'プラン説明',
             'duration'      => '所要時間',
@@ -59,7 +65,7 @@ class FormPlanRequest extends FormRequest
     {
         return [
             'validFrom.required_if' => ':attributeは適用条件が期間限定の時に設定が必要です。',
-            'validTo.required_if' => ':attributeは適用条件が期間限定の時に設定が必要です。',
+            'validTo.required_if'   => ':attributeは適用条件が期間限定の時に設定が必要です。',
         ];
     }
 }
