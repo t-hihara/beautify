@@ -37,6 +37,8 @@ class PlanController extends Controller
     {
         try {
             $useCase($request->validated());
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '登録に失敗しました。');
