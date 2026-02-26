@@ -13,6 +13,7 @@ use App\UseCases\Plan\FetchPlanListUseCase;
 use App\UseCases\Plan\PreparePlanCreateFormUseCase;
 use App\UseCases\Plan\PreparePlanEditFormUseCase;
 use App\UseCases\Plan\UpdatePlanUseCase;
+use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -55,6 +56,8 @@ class PlanController extends Controller
     {
         try {
             $useCase($request->validated(), $plan);
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '更新に失敗しました。');
