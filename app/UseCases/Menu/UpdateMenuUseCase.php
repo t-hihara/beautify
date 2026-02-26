@@ -13,7 +13,7 @@ class UpdateMenuUseCase
     public function __invoke(array $payload, Menu $menu): Menu
     {
         $convert = RecursiveCovert::_convert($payload, 'snake');
-        $plan->load('shop');
+        $menu->load('shop');
 
         if (
             $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value

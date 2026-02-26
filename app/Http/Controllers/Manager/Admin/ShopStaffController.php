@@ -13,6 +13,7 @@ use App\UseCases\ShopStaff\FetchShopStaffListUseCase;
 use App\UseCases\ShopStaff\PrepareShopStaffCreateUseCase;
 use App\UseCases\ShopStaff\PrepareShopStaffEditFormUseCase;
 use App\UseCases\ShopStaff\UpdateShopStaffUseCase;
+use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -55,6 +56,8 @@ class ShopStaffController extends Controller
     {
         try {
             $useCase($request->validated(), $staff);
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '更新に失敗しました。');

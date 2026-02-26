@@ -13,6 +13,7 @@ use App\UseCases\ShopStaff\FetchShopStaffListUseCase;
 use App\UseCases\ShopStaff\PrepareShopStaffCreateUseCase;
 use App\UseCases\ShopStaff\PrepareShopStaffEditFormUseCase;
 use App\UseCases\ShopStaff\UpdateShopStaffUseCase;
+use DomainException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -51,13 +52,12 @@ class ShopStaffController extends Controller
         return Inertia::render("ShopStaff/ShopStaffForm", $data);
     }
 
-    public function update(
-        FormShopStaffRequest $request,
-        ShopStaff $staff,
-        UpdateShopStaffUseCase $useCase
-    ): RedirectResponse {
+    public function update(FormShopStaffRequest $request, ShopStaff $staff, UpdateShopStaffUseCase $useCase): RedirectResponse
+    {
         try {
             $useCase($request->validated(), $staff);
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '更新に失敗しました。');
@@ -78,10 +78,8 @@ class ShopStaffController extends Controller
         return back()->with('success', '削除に成功しました。');
     }
 
-    public function exportExcel(
-        SearchShopStaffRequest $request,
-        ExportShopStaffUseCase $useCase,
-    ): RedirectResponse {
+    public function exportExcel(SearchShopStaffRequest $request, ExportShopStaffUseCase $useCase): RedirectResponse
+    {
         try {
             $shopId = auth('shop')->user()?->shop_id;
             $useCase(auth()->id(), $request->validated(), 'xlsx', $shopId);
