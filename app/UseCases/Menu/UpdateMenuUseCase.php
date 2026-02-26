@@ -2,16 +2,27 @@
 
 namespace App\UseCases\Menu;
 
+use App\Enum\ActiveFlagTypeEnum;
 use App\Models\Menu;
 use App\Utilities\RecursiveCovert;
+use DomainException;
 use Illuminate\Support\Facades\DB;
 
 class UpdateMenuUseCase
 {
     public function __invoke(array $payload, Menu $menu): Menu
     {
-        return DB::transaction(function () use ($payload, $menu) {
-            $convert = RecursiveCovert::_convert($payload, 'snake');
+        $convert = RecursiveCovert::_convert($payload, 'snake');
+        $plan->load('shop');
+
+        if (
+            $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
+            && $plan->shop->active_flag->value === ActiveFlagTypeEnum::INACTIVE->value
+        ) {
+            throw new DomainException('店舗が運営停止中のため、プランを有効にできません。');
+        }
+
+        return DB::transaction(function () use ($convert, $menu) {
             $menu->fill($convert)->save();
 
             return $menu;

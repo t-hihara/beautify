@@ -22,7 +22,10 @@ class UpdatePlanUseCase
         $convert = RecursiveCovert::_convert($payload, 'snake');
         $plan->load('shop');
 
-        if ($convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value && $plan->shop->active_flag->value === ActiveFlagTypeEnum::INACTIVE->value) {
+        if (
+            $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
+            && $plan->shop->active_flag->value === ActiveFlagTypeEnum::INACTIVE->value
+        ) {
             throw new DomainException('店舗が運営停止中のため、プランを有効にできません。');
         }
 

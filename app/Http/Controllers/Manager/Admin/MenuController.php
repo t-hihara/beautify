@@ -55,6 +55,8 @@ class MenuController extends Controller
     {
         try {
             $useCase($request->validated(), $menu);
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '更新に失敗しました。');
