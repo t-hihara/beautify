@@ -28,7 +28,7 @@ class UpdateShopStaffUseCase
             $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
             && $staff->shop->active_flag->value === ActiveFlagTypeEnum::INACTIVE->value
         ) {
-            throw new DomainException('店舗が運営停止中のため、プランを有効にできません。');
+            throw new DomainException('店舗が運営停止中のため、スタッフを有効にできません。');
         }
 
         return DB::transaction(function () use ($convert, $staff) {

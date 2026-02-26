@@ -2,11 +2,13 @@
 
 namespace App\UseCases\ShopStaff;
 
+use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\ShopStaffPositionTypeEnum;
 use App\Models\ShopStaff;
 use App\Models\User;
 use App\Services\Media\UploadImageService;
 use App\Utilities\RecursiveCovert;
+use DomainException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -21,8 +23,17 @@ class CreateShopStaffUseCase
 
     public function __invoke(array $payload): ?ShopStaff
     {
-        return DB::transaction(function () use ($payload) {
-            $convert   = RecursiveCovert::_convert($payload, 'snake');
+        $convert = RecursiveCovert::_convert($payload, 'snake');
+        $staff->load('shop');
+
+        if (
+            $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
+            && $staff->shop->active_flag->value === ActiveFlagTypeEnum::INACTIVE->value
+        ) {
+            throw new DomainException('店舗が運営停止中のため、スタッフを有効にできません。');
+        }
+
+        return DB::transaction(function () use ($convert) {
             $userData  = Arr::except($convert, ['position', 'experience_years', 'image', 'description']);
             $staffData = Arr::except($convert, ['password', 'image']);
             $role      = in_array($convert['position'], [ShopStaffPositionTypeEnum::MANAGER->value, ShopStaffPositionTypeEnum::SALON_MANAGER->value], true)
