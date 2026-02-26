@@ -38,6 +38,8 @@ class MenuController extends Controller
     {
         try {
             $data = $useCase($request->validated());
+        } catch (DomainException $e) {
+            return back()->with('error', $e->getMessage());
         } catch (Throwable $e) {
             report($e);
             return back()->with('error', '登録に失敗しました。');

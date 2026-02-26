@@ -19,7 +19,7 @@ class UpdateMenuUseCase
             $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
             && $menu->shop->active_flag->value === ActiveFlagTypeEnum::INACTIVE->value
         ) {
-            throw new DomainException('店舗が運営停止中のため、プランを有効にできません。');
+            throw new DomainException('店舗が運営停止中のため、メニューを有効にできません。');
         }
 
         return DB::transaction(function () use ($convert, $menu) {
