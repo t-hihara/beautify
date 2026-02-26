@@ -150,6 +150,7 @@ watch(
             field="fromDate"
             title="作成日(開始)"
             class="flex-1"
+            auto-apply
             :min-date="null"
             :error="searchForm.errors"
           />
@@ -159,6 +160,7 @@ watch(
             field="toDate"
             title="作成日(終了)"
             class="flex-1"
+            auto-apply
             :min-date="null"
             :error="searchForm.errors"
           />

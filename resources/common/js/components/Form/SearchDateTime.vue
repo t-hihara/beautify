@@ -9,10 +9,12 @@ const {
   required = false,
   minDate = new Date(),
   timePicker = false,
+  autoApply = false,
   format = "yyyy年MM月dd日",
   multiCalendars = 0,
   mode = "date",
   inputmode = "none",
+  disabled = false,
 } = defineProps<{
   modelValue: string | null;
   field: string;
@@ -21,13 +23,15 @@ const {
   error?: Record<string, string>;
   minDate?: Date | null;
   timePicker?: boolean;
+  autoApply?: boolean;
   format?: string;
   multiCalendars?: number;
   mode?: Mode;
   inputmode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal";
+  disabled?: boolean;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
   "update:modelValue": [value: string | null];
 }>();
 
@@ -37,34 +41,49 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
   if (mode === "time") return dt.toFormat("HH:mm");
   return dt.toFormat("yyyy-MM-dd HH:mm");
 };
+
+const handleModelUpdate = (value: Date | string | null): void => {
+  if (value == null) {
+    emit("update:modelValue", null);
+    return;
+  }
+  if (mode === "time" && typeof value === "string") {
+    emit("update:modelValue", value);
+    return;
+  }
+  emit("update:modelValue", formatDateTime(value as Date, mode));
+};
 </script>
 
 <template>
   <div class="form-date-time-input">
-    <label v-if="title" class="text-sm font-medium text-zinc-800 flex gap-1">
+    <label v-if="title" class="text-sm font-medium text-zinc-800 flex items-center gap-1">
       {{ title }}<span v-if="required" class="text-red-500">※</span>
     </label>
     <vue-date-picker
       no-today
-      auto-apply
+      :class="{ 'mt-1': title }"
+      :auto-apply="autoApply"
       :model-value="modelValue"
       :model-type="timePicker ? format : undefined"
       :text-input="timePicker ? true : false"
-      :min-date="minDate ?? undefined"
+      :min-date="mode === 'time' ? undefined : (minDate ?? undefined)"
       :time-picker="timePicker"
       :time-config="{ enableTimePicker: timePicker }"
       :formats="{ input: format }"
       :multi-calendars="multiCalendars"
       :week-start="0"
+      :disabled="disabled"
       :input-attrs="{
         clearable: true,
         inputmode: inputmode,
       }"
       :action-row="{
-        showSelect: false,
+        showSelect: mode === 'time',
         showCancel: false,
         showNow: false,
         showPreview: false,
+        ...(mode === 'time' && { selectBtnLabel: '確定' }),
       }"
       :ui="{
         dayClass: (date) => {
@@ -74,7 +93,7 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
           return '';
         },
       }"
-      @update:model-value="(v) => $emit('update:modelValue', formatDateTime(v, mode))"
+      @update:model-value="handleModelUpdate"
     >
       <template #clear-icon>
         <button type="button" class="form-date-time-input__clear" @click="$emit('update:modelValue', null)">
@@ -120,5 +139,10 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
   align-items: center;
   justify-content: center;
   min-width: 1.25rem;
+}
+.form-date-time-input :deep(.dp__action_select) {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 </style>

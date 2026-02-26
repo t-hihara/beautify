@@ -120,6 +120,7 @@ watch(
             field="fromDate"
             title="作成日(開始)"
             class="flex-1"
+            auto-apply
             :min-date="null"
           />
           <span class="flex h-10 shrink-0 items-center justify-center self-end">〜</span>
@@ -128,6 +129,7 @@ watch(
             field="toDate"
             title="作成日(終了)"
             class="flex-1"
+            auto-apply
             :min-date="null"
           />
         </div>
