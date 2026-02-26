@@ -35,8 +35,13 @@ class Area extends Model
         return $this->belongsTo(Prefecture::class);
     }
 
+    public function shops(): HasMany
+    {
+        return $this->hasMany(Shop::class);
+    }
+
     public function stations(): HasMany
     {
-        return $this->belongsTo(Station::class);
+        return $this->hasMany(Station::class);
     }
 }

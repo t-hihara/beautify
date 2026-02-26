@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('address')->comment('住所');
             $table->string('building')->nullable()->comment('番地・建物名');
             $table->text('description')->nullable()->comment('店舗説明');
+            $table->foreignId('area_id')->constrained()->nullable()->comment('エリアID');
+            $table->foreignId('station_id')->constrained()->nullable()->comment('最寄駅ID');
             $table->enum('active_flag', ActiveFlagTypeEnum::values())->comment('営業状態');
             $table->timestamps();
 

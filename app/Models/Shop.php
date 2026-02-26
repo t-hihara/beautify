@@ -24,6 +24,8 @@ class Shop extends Model
         'address',
         'building',
         'description',
+        'area_id',
+        'station_id',
         'active_flag',
     ];
 
@@ -78,6 +80,11 @@ class Shop extends Model
                                         リレーション
     ================================================================================ */
 
+    public function area(): BelongsTo
+    {
+        return $this->belongsTo(Area::class);
+    }
+
     public function businessHours(): HasMany
     {
         return $this->hasMany(ShopBusinessHour::class);
@@ -106,5 +113,10 @@ class Shop extends Model
     public function staffs(): HasMany
     {
         return $this->hasMany(ShopStaff::class);
+    }
+
+    public function station(): BelongsTo
+    {
+        return $this->belongsTo(Station::class);
     }
 }
