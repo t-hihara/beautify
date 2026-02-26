@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\MenuTypeEnum;
 use App\Models\Shop;
 use Carbon\Carbon;
@@ -67,7 +66,7 @@ class MenuSeeder extends BaseSeeder
                             'description' => $menu['description'],
                             'price'       => $menu['price'],
                             'duration'    => $menu['duration'],
-                            'active_flag' => ActiveFlagTypeEnum::ACTIVE->value,
+                            'active_flag' => $shop->active_flag->value,
                             'sort_order'  => $sortOrder++,
                             'created_at'  => $this->now,
                             'updated_at'  => $this->now,

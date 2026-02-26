@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Enum\ActiveFlagTypeEnum;
 use App\Models\Shop;
 use Carbon\Carbon;
 use Database\Seeders\Definitions\PlanTemplate;
@@ -43,7 +42,7 @@ class PlanSeeder extends BaseSeeder
                         'regular_price'  => $plan['regular_price'],
                         'selling_price'  => $plan['selling_price'],
                         'condition_type' => $plan['condition_type'],
-                        'active_flag'    => ActiveFlagTypeEnum::ACTIVE->value,
+                        'active_flag'    => $shop->active_flag->value,
                         'sort_order'     => $sortOrder++,
                         'valid_from'     => $plan['valid_from'] ?? null,
                         'valid_to'       => $plan['valid_to'] ?? null,
