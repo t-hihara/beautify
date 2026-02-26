@@ -20,7 +20,7 @@ class PrepareMenuEditFormUseCase
                 'price'       => $menu->price,
                 'duration'    => $menu->duration,
                 'description' => $menu->description,
-                'active_flag' => $menu->active_flag,
+                'activeFlag' => $menu->active_flag->value,
                 'sortOrder'   => $menu->sort_order,
             ],
             'activeFlags' => ActiveFlagTypeEnum::options(),
