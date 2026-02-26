@@ -3,8 +3,10 @@
 namespace App\UseCases\Shop;
 
 use App\Models\Shop;
+use App\Models\ShopBusinessHour;
 use App\Models\UploadedImage;
 use App\Utilities\RecursiveCovert;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,24 +15,22 @@ class UpdateShopUseCase
     public function __invoke(array $payload, Shop $shop): Shop
     {
         return DB::transaction(function () use ($payload, $shop) {
-            $convert       = RecursiveCovert::_convert($payload, 'snake');
-            $shopData      = $convert['shop'];
-            $businessHours = $shopData['business_hours'];
-            $keepImageIds  = $shopData['keep_image_ids'] ?? [];
-            $newImages     = $shopData['new_images'] ?? [];
-            $imageDisk     = config('filesystems.default');
+            $convert           = RecursiveCovert::_convert($payload, 'snake');
+            $shopData          = Arr::except($convert['shop'], ['business_hours', 'keep_image_ids', 'new_images']);
+            $businessHoursData = $convert['shop']['business_hours'];
+            $keepImageIds      = $convert['shop']['keep_image_ids'] ?? [];
+            $newImagesData     = $convert['shop']['new_images'] ?? [];
+            $imageDisk         = config('filesystems.default');
 
             $shop->load(['businessHours', 'images']);
+            $shop->fill($shopData)->save();
 
-            unset($convert['updated_at']);
-            $shop->fill($convert)->save();
-
-            $shop->businessHours->each(function ($model) use ($businessHours): void {
-                $data = collect($businessHours)->firstWhere('day_of_week', $model->day_of_week);
-                if ($data) {
-                    $model->open_time  = $data['open_time'];
-                    $model->close_time = $data['close_time'];
-                    $model->save();
+            $shop->businessHours->each(function (ShopBusinessHour $businessHour) use ($businessHoursData): void {
+                $submittedHour = collect($businessHoursData)->firstWhere('day_of_week', $businessHour->day_of_week);
+                if ($submittedHour) {
+                    $businessHour->open_time  = $submittedHour['open_time'];
+                    $businessHour->close_time = $submittedHour['close_time'];
+                    $businessHour->save();
                 }
             });
 
@@ -42,7 +42,7 @@ class UpdateShopUseCase
                     $uploadedImage->delete();
                 });
 
-            foreach ($newImages as $newImage) {
+            foreach ($newImagesData as $newImage) {
                 $path = $newImage->store('shops/' . $shop->id, $imageDisk);
                 $shop->images()->create([
                     'disk'      => $imageDisk,
