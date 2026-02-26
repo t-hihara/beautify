@@ -245,8 +245,9 @@ watch(
               title="期間限定（開始）"
               field="validFrom"
               inputmode="text"
-              format="yyyy/mm/dd"
+              format="yyyy/MM/dd"
               class="flex-1"
+              auto-apply
               :disabled="form.conditionType !== 'period'"
               :error="form.errors"
             />
@@ -257,8 +258,9 @@ watch(
               title="期間限定（終了）"
               field="validTo"
               inputmode="text"
-              format="yyyy/mm/dd"
+              format="yyyy/MM/dd"
               class="flex-1"
+              auto-apply
               :disabled="form.conditionType !== 'period'"
               :error="form.errors"
             />

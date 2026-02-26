@@ -75,7 +75,6 @@ const formatDateTime = (date: Date, mode: "date" | "time" | "datetime"): string 
         },
       }"
       @update:model-value="(v) => $emit('update:modelValue', formatDateTime(v, mode))"
-      @date-click=""
     >
       <template #clear-icon>
         <button type="button" class="form-date-time-input__clear" @click="$emit('update:modelValue', null)">

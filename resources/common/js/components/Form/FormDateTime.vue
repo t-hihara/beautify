@@ -94,7 +94,6 @@ const handleModelUpdate = (value: Date | string | null): void => {
         },
       }"
       @update:model-value="handleModelUpdate"
-      @date-click=""
     >
       <template #clear-icon>
         <button type="button" class="form-date-time-input__clear" @click="$emit('update:modelValue', null)">

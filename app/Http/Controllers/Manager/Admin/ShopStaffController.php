@@ -24,14 +24,12 @@ class ShopStaffController extends Controller
 {
     public function index(SearchShopStaffRequest $request, FetchShopStaffListUseCase $useCase): Response
     {
-        $data = $useCase($request->validated());
-        return Inertia::render('ShopStaff/ShopStaffList', $data);
+        return Inertia::render('ShopStaff/ShopStaffList', $useCase($request->validated()));
     }
 
     public function create(PrepareShopStaffCreateUseCase $useCase): Response
     {
-        $data = $useCase($this->getShopId());
-        return Inertia::render('ShopStaff/ShopStaffForm', $data);
+        return Inertia::render('ShopStaff/ShopStaffForm', $useCase());
     }
 
     public function store(FormShopStaffRequest $request, CreateShopStaffUseCase $useCase): RedirectResponse
@@ -50,8 +48,7 @@ class ShopStaffController extends Controller
 
     public function edit(ShopStaff $staff, PrepareShopStaffEditFormUseCase $useCase): Response
     {
-        $data = $useCase($staff);
-        return Inertia::render("ShopStaff/ShopStaffForm", $data);
+        return Inertia::render("ShopStaff/ShopStaffForm", $useCase($staff));
     }
 
     public function update(FormShopStaffRequest $request, ShopStaff $staff, UpdateShopStaffUseCase $useCase): RedirectResponse

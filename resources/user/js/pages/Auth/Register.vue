@@ -285,8 +285,9 @@ watch(
                 v-model="form.customer.dob"
                 field="customer.dob"
                 class="w-full"
-                :error="form.errors"
+                auto-apply
                 :min-date="null"
+                :error="form.errors"
               />
             </dd>
           </div>
@@ -461,8 +462,9 @@ watch(
             v-model="form.customer.dob"
             field="customer.dob"
             class="w-full px-4"
-            :error="form.errors"
+            auto-apply
             :min-date="null"
+            :error="form.errors"
           />
           <div class="p-2 bg-zinc-100">
             <p class="text-sm">性別<span class="ml-2 text-red-500">※</span></p>
