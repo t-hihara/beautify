@@ -65,7 +65,7 @@ const { filters, menus } = defineProps<{
 const guard = useGuard();
 const showDeleteModal = ref<boolean>(false);
 const targetMenu = ref<MenuType | null>(null);
-const searchForm = useForm<SearchFormType>({
+const searchForm = useForm<SearchFormType>("MenuListSearch", {
   name: filters.name || "",
   types: filters.types || [],
   shopIds: filters.shopIds || [],

@@ -63,7 +63,7 @@ const { filters, logs } = defineProps<{
   pagination: PaginationType;
 }>();
 
-const searchForm = useForm<SearchFormType>({
+const searchForm = useForm<SearchFormType>("LogListSearch", {
   name: filters.name || "",
   event: filters.event || "",
   description: filters.description || "",

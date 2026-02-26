@@ -49,7 +49,7 @@ const { filters } = defineProps<{
   pagination: PaginationType;
 }>();
 
-const searchForm = useForm<SearchFormType>({
+const searchForm = useForm<SearchFormType>("ExportFileListSearch", {
   subject: filters.subject || "",
   fromDate: filters.fromDate || null,
   toDate: filters.toDate || null,

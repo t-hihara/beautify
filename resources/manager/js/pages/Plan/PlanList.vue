@@ -81,7 +81,7 @@ const { filters, plans } = defineProps<{
   pagination: PaginationType;
 }>();
 
-const searchForm = useForm<SearchFormType>({
+const searchForm = useForm<SearchFormType>("PlanListSearch", {
   name: filters.name || "",
   activeFlag: filters.activeFlag || null,
   shopIds: filters.shopIds || [],

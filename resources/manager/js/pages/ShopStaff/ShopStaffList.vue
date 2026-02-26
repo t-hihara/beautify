@@ -78,7 +78,7 @@ const { filters, shopStaffs } = defineProps<{
   positions: EnumType[];
 }>();
 
-const searchForm = useForm<SearchFormType>({
+const searchForm = useForm<SearchFormType>("ShopStaffListSearch", {
   name: filters.name || "",
   shopIds: filters.shopIds || [],
   activeFlag: filters.activeFlag || null,
