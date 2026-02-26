@@ -43,7 +43,7 @@ export type StaffType = {
 export type PlanType = {
   id: number;
   name: string;
-  totalDuration: number;
+  duration: number;
   regularPrice: number;
   sellingPrice: number;
   conditionType: string | null;
@@ -98,7 +98,7 @@ const currentTabComponent = computed(() => {
   <div>
     <Head title="店舗詳細" />
     <div class="space-y-8">
-      <div class="flex items-center justify-between">
+      <div v-if="guard === 'admin'" class="flex items-center justify-between">
         <text-link
           :href="route('admin.shops.index')"
           class="inline-flex items-center gap-1.5 text-zinc-600 hover:text-zinc-800"

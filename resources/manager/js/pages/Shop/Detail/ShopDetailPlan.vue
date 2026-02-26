@@ -18,18 +18,9 @@ defineProps<{
       v-if="plans.length > 0"
       class="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white overflow-hidden"
     >
-      <article
-        v-for="plan in plans"
-        :key="plan.id"
-        class="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6"
-      >
+      <article v-for="plan in plans" :key="plan.id" class="flex flex-col sm:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
         <div class="sm:w-32 shrink-0 aspect-square rounded-lg overflow-hidden bg-zinc-100 border border-zinc-200">
-          <img
-            v-if="plan.image?.filePath"
-            :src="plan.image.filePath"
-            :alt="plan.name"
-            class="size-full object-cover"
-          />
+          <img v-if="plan.image?.filePath" :src="plan.image.filePath" :alt="plan.name" class="size-full object-cover" />
           <div v-else class="size-full flex items-center justify-center text-zinc-400 text-sm">画像なし</div>
         </div>
         <div class="flex-1 min-w-0 flex flex-col gap-2">
@@ -52,7 +43,7 @@ defineProps<{
           <div class="text-sm">
             <span class="inline-flex items-center gap-1 text-zinc-600">
               <ClockIcon class="size-4 shrink-0" />
-              {{ plan.totalDuration }}分
+              {{ plan.duration }}分
             </span>
             <div class="flex flex-wrap items-baseline gap-2 mt-1">
               <span v-if="plan.regularPrice > plan.sellingPrice" class="text-zinc-500 line-through">

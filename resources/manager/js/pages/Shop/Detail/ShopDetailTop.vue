@@ -130,7 +130,7 @@ const setIndex = (index: number): void => {
             <div class="text-sm">
               <span class="inline-flex items-center gap-1 text-zinc-600">
                 <ClockIcon class="size-4 shrink-0" />
-                {{ plan.totalDuration }}分
+                {{ plan.duration }}分
               </span>
               <div class="flex flex-wrap items-baseline gap-2">
                 <span v-if="plan.regularPrice > plan.sellingPrice" class="text-zinc-500 line-through">

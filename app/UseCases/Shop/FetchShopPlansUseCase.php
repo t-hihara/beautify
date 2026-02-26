@@ -22,7 +22,7 @@ class FetchShopPlansUseCase
             ->map(fn($plan) => [
                 'id'              => $plan->id,
                 'name'            => $plan->name,
-                'totalDuration'   => $plan->total_duration,
+                'duration'        => $plan->duration,
                 'regularPrice'    => $plan->regular_price,
                 'sellingPrice'    => $plan->selling_price,
                 'conditionType'   => $plan->condition_type?->description(),
