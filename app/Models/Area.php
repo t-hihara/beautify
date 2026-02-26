@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Area extends Model
 {
@@ -32,5 +33,10 @@ class Area extends Model
     public function prefecture(): BelongsTo
     {
         return $this->belongsTo(Prefecture::class);
+    }
+
+    public function stations(): HasMany
+    {
+        return $this->belongsTo(Station::class);
     }
 }
