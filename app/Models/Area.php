@@ -3,12 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Prefecture extends Model
+class Area extends Model
 {
     protected $fillable = [
-        'name'
+        'prefecture_id',
+        'name',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'sort_order' => 'integer',
     ];
 
     /* ================================================================================
@@ -23,13 +29,8 @@ class Prefecture extends Model
                                         リレーション
     ================================================================================ */
 
-    public function areas(): HasMany
+    public function prefecture(): BelongsTo
     {
-        return $this->hasMany(Area::class);
-    }
-
-    public function shops(): HasMany
-    {
-        return $this->hasMany(Shop::class);
+        return $this->belongsTo(Prefecture::class);
     }
 }

@@ -5,7 +5,7 @@ namespace Database\Seeders\Definitions;
 use App\Enum\MenuTypeEnum;
 use App\Enum\PlanConditionTypeEnum;
 
-final class PlanTemplate
+final class PlanDefinition
 {
     public static function getDefinitions(): array
     {

@@ -6,7 +6,7 @@ use App\Enum\MenuTypeEnum;
 use App\Models\Menu;
 use App\Models\Plan;
 use Carbon\Carbon;
-use Database\Seeders\Definitions\PlanTemplate;
+use Database\Seeders\Definitions\PlanDefinition;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -24,7 +24,7 @@ class MenuPlanSeeder extends BaseSeeder
     {
         $this->initialize();
 
-        $planTemplates = PlanTemplate::getDefinitions();
+        $planTemplates = PlanDefinition::getDefinitions();
         $items         = [];
 
         Plan::chunkById(self::CHUNK_SIZE, function ($plans) use (&$items, $planTemplates) {

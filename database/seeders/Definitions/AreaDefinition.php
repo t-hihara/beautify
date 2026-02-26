@@ -1,0 +1,85 @@
+<?php
+
+namespace Database\Seeders\Definitions;
+
+final class AreaDefinition
+{
+    public static function getDefinitions(): array
+    {
+        return [
+            11 => [
+                ['name' => '銀座・日比谷・有楽町', 'sort_order' => 1],
+                ['name' => '東京・丸の内・日本橋', 'sort_order' => 2],
+                ['name' => '渋谷', 'sort_order' => 3],
+                ['name' => '原宿・表参道・青山', 'sort_order' => 4],
+                ['name' => '赤坂・虎ノ門', 'sort_order' => 5],
+                ['name' => '六本木・麻布十番・乃木坂', 'sort_order' => 6],
+                ['name' => '恵比寿・広尾・白金台', 'sort_order' => 7],
+                ['name' => '代官山・中目黒', 'sort_order' => 8],
+                ['name' => '新宿・代々木', 'sort_order' => 9],
+                ['name' => '四ツ谷・市ヶ谷', 'sort_order' => 10],
+                ['name' => '飯田橋・神楽坂', 'sort_order' => 11],
+                ['name' => '御茶ノ水・神保町・水道橋', 'sort_order' => 12],
+                ['name' => '神田・秋葉原', 'sort_order' => 13],
+                ['name' => '池袋・目白', 'sort_order' => 14],
+                ['name' => '高田馬場・早稲田', 'sort_order' => 15],
+                ['name' => '汐留・新橋・浜松町', 'sort_order' => 16],
+                ['name' => 'お台場・豊洲・湾岸エリア', 'sort_order' => 17],
+                ['name' => '品川・田町・天王洲', 'sort_order' => 18],
+                ['name' => '目黒', 'sort_order' => 19],
+                ['name' => '五反田・大崎', 'sort_order' => 20],
+                ['name' => '自由が丘', 'sort_order' => 21],
+                ['name' => '二子玉川・三軒茶屋', 'sort_order' => 22],
+                ['name' => '中野・高円寺・荻窪', 'sort_order' => 23],
+                ['name' => '吉祥寺・三鷹', 'sort_order' => 24],
+                ['name' => '国分寺・多摩', 'sort_order' => 25],
+                ['name' => '国立・立川', 'sort_order' => 26],
+                ['name' => '八王子', 'sort_order' => 27],
+                ['name' => '押上・両国・錦糸町', 'sort_order' => 28],
+                ['name' => '上野・浅草', 'sort_order' => 29],
+                ['name' => '北千住・綾瀬', 'sort_order' => 30],
+                ['name' => '築地・門前仲町・木場', 'sort_order' => 31],
+                ['name' => '葛西', 'sort_order' => 32],
+                ['name' => '下北沢', 'sort_order' => 33],
+                ['name' => '明大前・上北沢', 'sort_order' => 34],
+                ['name' => '成城・経堂', 'sort_order' => 35],
+                ['name' => '調布・府中', 'sort_order' => 36],
+                ['name' => '町田', 'sort_order' => 37],
+                ['name' => '西東京', 'sort_order' => 38],
+                ['name' => '板橋', 'sort_order' => 39],
+                ['name' => '赤羽・王子', 'sort_order' => 40],
+                ['name' => '練馬・石神井・大泉学園', 'sort_order' => 41],
+            ],
+            12 => [
+                ['name' => '横浜・桜木町・みなとみらい', 'sort_order' => 1],
+                ['name' => 'たまプラーザ・溝の口・センター北', 'sort_order' => 2],
+                ['name' => '湘南・鎌倉', 'sort_order' => 3],
+                ['name' => '川崎', 'sort_order' => 4],
+                ['name' => '藤沢', 'sort_order' => 5],
+                ['name' => '平塚', 'sort_order' => 6],
+                ['name' => '海老名', 'sort_order' => 7],
+                ['name' => '厚木', 'sort_order' => 8],
+            ],
+            13 => [
+                ['name' => '千葉', 'sort_order' => 1],
+                ['name' => '船橋', 'sort_order' => 2],
+                ['name' => '市川', 'sort_order' => 3],
+                ['name' => '柏', 'sort_order' => 4],
+                ['name' => '松戸', 'sort_order' => 5],
+                ['name' => '浦安', 'sort_order' => 6],
+                ['name' => '習志野', 'sort_order' => 7],
+                ['name' => '流山', 'sort_order' => 8],
+                ['name' => '我孫子', 'sort_order' => 9],
+            ],
+            14 => [
+                ['name' => 'さいたま', 'sort_order' => 1],
+                ['name' => '川口', 'sort_order' => 2],
+                ['name' => '川越', 'sort_order' => 3],
+                ['name' => '所沢', 'sort_order' => 4],
+                ['name' => '越谷', 'sort_order' => 5],
+                ['name' => '草加', 'sort_order' => 6],
+                ['name' => '坂戸', 'sort_order' => 7],
+            ],
+        ];
+    }
+}

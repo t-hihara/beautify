@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Shop;
 use Carbon\Carbon;
-use Database\Seeders\Definitions\PlanTemplate;
+use Database\Seeders\Definitions\PlanDefinition;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -23,7 +23,7 @@ class PlanSeeder extends BaseSeeder
         $this->initialize();
 
         $items    = [];
-        $plans    = PlanTemplate::getDefinitions();
+        $plans    = PlanDefinition::getDefinitions();
         $planKeys = array_keys($plans);
 
         Shop::chunkById(self::CHUNK_SIZE, function ($shops) use (&$items, $plans, $planKeys) {
