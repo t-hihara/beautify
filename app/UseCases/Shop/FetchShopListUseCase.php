@@ -52,8 +52,6 @@ class FetchShopListUseCase
             ]),
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'prefectures' => Prefecture::get(['id', 'name']),
-            'areas'       => Area::get(['id', 'name']),
-            'stations'    => Station::get(['id', 'name']),
             'shops'       => $shops->items(),
             'links'       => $shops->linkCollection(),
             'pagination'  => [
