@@ -43,6 +43,8 @@ type ShopType = {
   address: string;
   building: string | null;
   description: string | null;
+  areaName: string | null;
+  stationName: string | null;
   activeFlag: string;
   businessHours: BusinessHour[];
 };
@@ -189,6 +191,12 @@ watch(
               </div>
             </th>
             <th scope="col" class="px-4 py-3">店舗住所</th>
+            <th scope="col" class="px-4 py-3">
+              <div class="flex flex-col">
+                <span>エリア</span>
+                <span>最寄駅</span>
+              </div>
+            </th>
             <th scope="col" class="px-4 py-3">営業時間</th>
             <th scope="col" class="px-4 py-3 text-center">運営状態</th>
             <th class="px-4 py-3"></th>
@@ -219,6 +227,12 @@ watch(
                   <span class="text-xs indent-3.5">{{ shop.building ?? "----" }}</span>
                 </div>
               </td>
+              <td class="px-4 py-3">
+                <div class="flex flex-col space-y-1">
+                  <span>{{ shop.areaName ?? "----" }}</span>
+                  <span>{{ shop.stationName ?? "----" }}</span>
+                </div>
+              </td>
               <td class="px-4 py-3 space-y-0.5">
                 <div v-for="businessHour in shop.businessHours" :key="businessHour.id" class="flex items-center gap-2">
                   <span class="text-xs">{{ businessHour.dayOfWeek }}</span>
@@ -245,7 +259,7 @@ watch(
           </template>
           <template v-else>
             <tr>
-              <td colspan="6" class="px-4 py-3 text-center">データがありません。</td>
+              <td colspan="7" class="px-4 py-3 text-center">データがありません。</td>
             </tr>
           </template>
         </tbody>

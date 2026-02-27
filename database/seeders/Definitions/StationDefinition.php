@@ -8,6 +8,73 @@ final class StationDefinition
     {
         return [
             11 => [
+                'さいたま' => [
+                    ['name' => '大宮駅', 'sort_order' => 1],
+                    ['name' => '浦和駅', 'sort_order' => 2],
+                    ['name' => '北浦和駅', 'sort_order' => 3],
+                    ['name' => '南浦和駅', 'sort_order' => 4],
+                ],
+                '川口' => [
+                    ['name' => '川口駅', 'sort_order' => 1],
+                    ['name' => '西川口駅', 'sort_order' => 2],
+                ],
+                '川越' => [
+                    ['name' => '川越駅', 'sort_order' => 1],
+                    ['name' => '本川越駅', 'sort_order' => 2],
+                ],
+                '所沢' => [
+                    ['name' => '所沢駅', 'sort_order' => 1],
+                ],
+                '越谷' => [
+                    ['name' => '越谷駅', 'sort_order' => 1],
+                    ['name' => '新越谷駅', 'sort_order' => 2],
+                ],
+                '草加' => [
+                    ['name' => '草加駅', 'sort_order' => 1],
+                ],
+                '坂戸' => [
+                    ['name' => '坂戸駅', 'sort_order' => 1],
+                ],
+            ],
+            12 => [
+                '千葉' => [
+                    ['name' => '千葉駅', 'sort_order' => 1],
+                    ['name' => '千葉中央駅', 'sort_order' => 2],
+                ],
+                '船橋' => [
+                    ['name' => '船橋駅', 'sort_order' => 1],
+                    ['name' => '西船橋駅', 'sort_order' => 2],
+                    ['name' => '津田沼駅', 'sort_order' => 3],
+                ],
+                '市川' => [
+                    ['name' => '本八幡駅', 'sort_order' => 1],
+                    ['name' => '市川駅', 'sort_order' => 2],
+                ],
+                '柏' => [
+                    ['name' => '柏駅', 'sort_order' => 1],
+                    ['name' => '南柏駅', 'sort_order' => 2],
+                    ['name' => '柏の葉キャンパス駅', 'sort_order' => 3],
+                ],
+                '松戸' => [
+                    ['name' => '松戸駅', 'sort_order' => 1],
+                    ['name' => '新松戸駅', 'sort_order' => 2],
+                ],
+                '浦安' => [
+                    ['name' => '浦安駅', 'sort_order' => 1],
+                ],
+                '習志野' => [
+                    ['name' => '津田沼駅', 'sort_order' => 1],
+                    ['name' => '習志野駅', 'sort_order' => 2],
+                ],
+                '流山' => [
+                    ['name' => '流山おおたかの森駅', 'sort_order' => 1],
+                    ['name' => '南流山駅', 'sort_order' => 2],
+                ],
+                '我孫子' => [
+                    ['name' => '我孫子駅', 'sort_order' => 1],
+                ],
+            ],
+            13 => [
                 '銀座・日比谷・有楽町' => [
                     ['name' => '銀座駅', 'sort_order' => 1],
                     ['name' => '銀座一丁目駅', 'sort_order' => 2],
@@ -236,7 +303,7 @@ final class StationDefinition
                     ['name' => '大泉学園駅', 'sort_order' => 3],
                 ],
             ],
-            12 => [
+            14 => [
                 '横浜・桜木町・みなとみらい' => [
                     ['name' => '横浜駅', 'sort_order' => 1],
                     ['name' => '桜木町駅', 'sort_order' => 2],
@@ -273,73 +340,6 @@ final class StationDefinition
                 '厚木' => [
                     ['name' => '本厚木駅', 'sort_order' => 1],
                     ['name' => '厚木駅', 'sort_order' => 2],
-                ],
-            ],
-            13 => [
-                '千葉' => [
-                    ['name' => '千葉駅', 'sort_order' => 1],
-                    ['name' => '千葉中央駅', 'sort_order' => 2],
-                ],
-                '船橋' => [
-                    ['name' => '船橋駅', 'sort_order' => 1],
-                    ['name' => '西船橋駅', 'sort_order' => 2],
-                    ['name' => '津田沼駅', 'sort_order' => 3],
-                ],
-                '市川' => [
-                    ['name' => '本八幡駅', 'sort_order' => 1],
-                    ['name' => '市川駅', 'sort_order' => 2],
-                ],
-                '柏' => [
-                    ['name' => '柏駅', 'sort_order' => 1],
-                    ['name' => '南柏駅', 'sort_order' => 2],
-                    ['name' => '柏の葉キャンパス駅', 'sort_order' => 3],
-                ],
-                '松戸' => [
-                    ['name' => '松戸駅', 'sort_order' => 1],
-                    ['name' => '新松戸駅', 'sort_order' => 2],
-                ],
-                '浦安' => [
-                    ['name' => '浦安駅', 'sort_order' => 1],
-                ],
-                '習志野' => [
-                    ['name' => '津田沼駅', 'sort_order' => 1],
-                    ['name' => '習志野駅', 'sort_order' => 2],
-                ],
-                '流山' => [
-                    ['name' => '流山おおたかの森駅', 'sort_order' => 1],
-                    ['name' => '南流山駅', 'sort_order' => 2],
-                ],
-                '我孫子' => [
-                    ['name' => '我孫子駅', 'sort_order' => 1],
-                ],
-            ],
-            14 => [
-                'さいたま' => [
-                    ['name' => '大宮駅', 'sort_order' => 1],
-                    ['name' => '浦和駅', 'sort_order' => 2],
-                    ['name' => '北浦和駅', 'sort_order' => 3],
-                    ['name' => '南浦和駅', 'sort_order' => 4],
-                ],
-                '川口' => [
-                    ['name' => '川口駅', 'sort_order' => 1],
-                    ['name' => '西川口駅', 'sort_order' => 2],
-                ],
-                '川越' => [
-                    ['name' => '川越駅', 'sort_order' => 1],
-                    ['name' => '本川越駅', 'sort_order' => 2],
-                ],
-                '所沢' => [
-                    ['name' => '所沢駅', 'sort_order' => 1],
-                ],
-                '越谷' => [
-                    ['name' => '越谷駅', 'sort_order' => 1],
-                    ['name' => '新越谷駅', 'sort_order' => 2],
-                ],
-                '草加' => [
-                    ['name' => '草加駅', 'sort_order' => 1],
-                ],
-                '坂戸' => [
-                    ['name' => '坂戸駅', 'sort_order' => 1],
                 ],
             ],
         ];

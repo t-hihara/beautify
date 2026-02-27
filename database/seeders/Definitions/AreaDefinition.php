@@ -8,6 +8,26 @@ final class AreaDefinition
     {
         return [
             11 => [
+                ['name' => 'さいたま', 'sort_order' => 1],
+                ['name' => '川口', 'sort_order' => 2],
+                ['name' => '川越', 'sort_order' => 3],
+                ['name' => '所沢', 'sort_order' => 4],
+                ['name' => '越谷', 'sort_order' => 5],
+                ['name' => '草加', 'sort_order' => 6],
+                ['name' => '坂戸', 'sort_order' => 7],
+            ],
+            12 => [
+                ['name' => '千葉', 'sort_order' => 1],
+                ['name' => '船橋', 'sort_order' => 2],
+                ['name' => '市川', 'sort_order' => 3],
+                ['name' => '柏', 'sort_order' => 4],
+                ['name' => '松戸', 'sort_order' => 5],
+                ['name' => '浦安', 'sort_order' => 6],
+                ['name' => '習志野', 'sort_order' => 7],
+                ['name' => '流山', 'sort_order' => 8],
+                ['name' => '我孫子', 'sort_order' => 9],
+            ],
+            13 => [
                 ['name' => '銀座・日比谷・有楽町', 'sort_order' => 1],
                 ['name' => '東京・丸の内・日本橋', 'sort_order' => 2],
                 ['name' => '渋谷', 'sort_order' => 3],
@@ -50,7 +70,7 @@ final class AreaDefinition
                 ['name' => '赤羽・王子', 'sort_order' => 40],
                 ['name' => '練馬・石神井・大泉学園', 'sort_order' => 41],
             ],
-            12 => [
+            14 => [
                 ['name' => '横浜・桜木町・みなとみらい', 'sort_order' => 1],
                 ['name' => 'たまプラーザ・溝の口・センター北', 'sort_order' => 2],
                 ['name' => '湘南・鎌倉', 'sort_order' => 3],
@@ -59,26 +79,6 @@ final class AreaDefinition
                 ['name' => '平塚', 'sort_order' => 6],
                 ['name' => '海老名', 'sort_order' => 7],
                 ['name' => '厚木', 'sort_order' => 8],
-            ],
-            13 => [
-                ['name' => '千葉', 'sort_order' => 1],
-                ['name' => '船橋', 'sort_order' => 2],
-                ['name' => '市川', 'sort_order' => 3],
-                ['name' => '柏', 'sort_order' => 4],
-                ['name' => '松戸', 'sort_order' => 5],
-                ['name' => '浦安', 'sort_order' => 6],
-                ['name' => '習志野', 'sort_order' => 7],
-                ['name' => '流山', 'sort_order' => 8],
-                ['name' => '我孫子', 'sort_order' => 9],
-            ],
-            14 => [
-                ['name' => 'さいたま', 'sort_order' => 1],
-                ['name' => '川口', 'sort_order' => 2],
-                ['name' => '川越', 'sort_order' => 3],
-                ['name' => '所沢', 'sort_order' => 4],
-                ['name' => '越谷', 'sort_order' => 5],
-                ['name' => '草加', 'sort_order' => 6],
-                ['name' => '坂戸', 'sort_order' => 7],
             ],
         ];
     }

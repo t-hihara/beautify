@@ -25,7 +25,7 @@ class StationSeeder extends BaseSeeder
         $items    = [];
         $stations = StationDefinition::getDefinitions();
 
-        Area::whereIn('id', array_keys($stations))
+        Area::whereIn('prefecture_id', array_keys($stations))
             ->orderBy('prefecture_id')
             ->orderBy('sort_order')
             ->chunkById(self::CHUNK_SIZE, function ($areas) use (&$items, $stations) {

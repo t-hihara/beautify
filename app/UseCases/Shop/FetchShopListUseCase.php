@@ -3,8 +3,10 @@
 namespace App\UseCases\Shop;
 
 use App\Enum\ActiveFlagTypeEnum;
+use App\Models\Area;
 use App\Models\Prefecture;
 use App\Models\Shop;
+use App\Models\Station;
 use App\Services\Shop\ShopBusinessHourFormatter;
 use App\Utilities\RecursiveCovert;
 
@@ -14,7 +16,7 @@ class FetchShopListUseCase
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
-        $shops = Shop::with(['prefecture', 'businessHours'])
+        $shops = Shop::with(['area', 'businessHours', 'prefecture', 'station'])
             ->byName($convert['name'] ?? null)
             ->byEmail($convert['email'] ?? null)
             ->byPhone($convert['phone'] ?? null)
@@ -40,6 +42,8 @@ class FetchShopListUseCase
                     'openTime'  => $businessHour->open_time,
                     'closeTime' => $businessHour->close_time,
                 ]),
+                'areaName'    => $shop->area?->name,
+                'stationName' => $shop->station?->name,
             ]);
 
         return [
@@ -48,6 +52,8 @@ class FetchShopListUseCase
             ]),
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'prefectures' => Prefecture::get(['id', 'name']),
+            'areas'       => Area::get(['id', 'name']),
+            'stations'    => Station::get(['id', 'name']),
             'shops'       => $shops->items(),
             'links'       => $shops->linkCollection(),
             'pagination'  => [
