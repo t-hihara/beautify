@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\Log;
+namespace App\UseCases\Manager\Log;
 
 use App\Models\ActivityLog;
 use App\Utilities\RecursiveCovert;
