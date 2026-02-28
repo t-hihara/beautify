@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\ExportFile;
+namespace App\UseCases\Manager\ExportFile;
 
 use App\Models\ExportFile;
 use Illuminate\Support\Facades\DB;
