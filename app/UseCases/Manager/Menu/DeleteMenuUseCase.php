@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\Menu;
+namespace App\UseCases\Manager\Menu;
 
 use App\Models\Menu;
 use DomainException;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\Menu;
+namespace App\UseCases\Manager\Menu;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Models\Menu;
@@ -25,8 +25,7 @@ class CreateMenuUseCase
         }
 
         if (
-            $shop
-            && $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
+            $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
             && $shop->active_flag->value === ActiveFlagTypeEnum::INACTIVE->value
         ) {
             throw new DomainException('店舗が運営停止中のため、メニューを有効にできません。');
