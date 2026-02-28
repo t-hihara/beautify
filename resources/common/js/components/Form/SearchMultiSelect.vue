@@ -23,7 +23,7 @@ defineEmits<{
   "update:modelValue": [value: (string | number)[]];
 }>();
 
-const selectedItems = computed(() => items.filter((item) => modelValue.includes(item.id)));
+const selectedItems = computed(() => items.filter((item) => modelValue.some((id) => Number(id) === Number(item.id))));
 </script>
 
 <template>

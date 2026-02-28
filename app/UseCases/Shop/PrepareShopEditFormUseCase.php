@@ -3,15 +3,17 @@
 namespace App\UseCases\Shop;
 
 use App\Enum\ActiveFlagTypeEnum;
+use App\Models\Area;
 use App\Models\Prefecture;
 use App\Models\Shop;
+use App\Models\Station;
 use Illuminate\Support\Facades\Storage;
 
 class PrepareShopEditFormUseCase
 {
     public function __invoke(Shop $shop): array
     {
-        $shop->load(['businessHours', 'images']);
+        $shop->load(['area', 'businessHours', 'images', 'station']);
         return [
             'shop' => [
                 'id'            => $shop->id,
@@ -23,6 +25,8 @@ class PrepareShopEditFormUseCase
                 'address'       => $shop->address,
                 'building'      => $shop->building,
                 'description'   => $shop->description,
+                'areaId'        => $shop->area_id,
+                'stationId'     => $shop->station_id,
                 'activeFlag'    => $shop->active_flag->value,
                 'updatedAt'     => $shop->updated_at,
                 'businessHours' => $shop->businessHours->map(fn($businessHour) => [
@@ -42,6 +46,16 @@ class PrepareShopEditFormUseCase
             ],
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'prefectures' => Prefecture::get(['id', 'name']),
+            'areas'       => Area::get(['id', 'name', 'prefecture_id'])->map(fn($area) => [
+                'id'           => $area->id,
+                'name'         => $area->name,
+                'prefectureId' => $area->prefecture_id,
+            ]),
+            'stations'    => Station::get(['id', 'name', 'area_id'])->map(fn($station) => [
+                'id'     => $station->id,
+                'name'   => $station->name,
+                'areaId' => $station->area_id,
+            ]),
         ];
     }
 }

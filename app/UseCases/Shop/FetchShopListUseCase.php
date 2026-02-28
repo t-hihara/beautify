@@ -15,6 +15,7 @@ class FetchShopListUseCase
     public function __invoke(array $filters): array
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
+        \Log::info($convert);
 
         $shops = Shop::with(['area', 'businessHours', 'prefecture', 'station'])
             ->byName($convert['name'] ?? null)

@@ -9,6 +9,7 @@ const {
   items,
   required = false,
   allowEmpty = false,
+  disabled = false,
 } = defineProps<{
   modelValue: string | number | null;
   field: string;
@@ -16,6 +17,7 @@ const {
   required?: boolean;
   items: EnumType[];
   allowEmpty?: boolean;
+  disabled?: boolean;
   error?: Record<string, string>;
 }>();
 
@@ -39,15 +41,19 @@ const onSelect = (item: EnumType): void => {
 
 <template>
   <div>
-    <listbox :model-value="selectedItem" @update:model-value="onSelect">
+    <listbox :model-value="selectedItem" @update:model-value="onSelect" :disabled="disabled">
       <listbox-label v-if="title" class="flex items-center gap-1 text-sm font-medium text-zinc-800">
         {{ title }}<span v-if="required" class="text-red-500">※</span>
       </listbox-label>
       <div class="w-full relative">
         <listbox-button
           v-slot="{ open }"
-          :class="[error?.[field] ? 'border-red-600' : 'border-zinc-300', title ? 'mt-1' : '']"
-          class="w-full h-10 px-3 py-2 bg-white rounded-lg shadow-sm border cursor-pointer flex items-center justify-between focus:outline-none focus:ring-rose-300 focus:border-rose-300"
+          :class="[
+            error?.[field] ? 'border-red-600' : 'border-zinc-300',
+            title ? 'mt-1' : '',
+            disabled ? 'cursor-not-allowed bg-zinc-100 opacity-70' : 'cursor-pointer',
+          ]"
+          class="w-full h-10 px-3 py-2 bg-white rounded-lg shadow-sm border flex items-center justify-between focus:outline-none focus:ring-rose-300 focus:border-rose-300"
         >
           <span>{{ selectedItem?.name ?? "選択してください" }}</span>
           <chevron-down-icon class="size-4 transition-transform duration-200" :class="{ 'rotate-180': open }" />

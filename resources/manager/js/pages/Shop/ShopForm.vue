@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { Head, useForm } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import type { EnumType } from "@/common/js/lib";
@@ -25,6 +25,8 @@ type ShopType = {
   building: string | null;
   description: string | null;
   activeFlag: string;
+  areaId: number | null;
+  stationId: number | null;
   updatedAt?: string;
   businessHours: BusinessHour[];
   images: ImageType[];
@@ -36,6 +38,18 @@ type BusinessHour = {
   label: string;
   openTime: string | null;
   closeTime: string | null;
+};
+
+type AreaType = {
+  id: number;
+  name: string;
+  prefectureId: number;
+};
+
+type StationType = {
+  id: number;
+  name: string;
+  areaId: number;
 };
 
 export type ImageType = {
@@ -61,6 +75,8 @@ type FormType = {
     address: string;
     building: string | null;
     description: string | null;
+    areaId: number | null;
+    stationId: number | null;
     activeFlag: string;
     updatedAt?: string;
     businessHours: BusinessHour[];
@@ -69,10 +85,12 @@ type FormType = {
   };
 };
 
-const { shop } = defineProps<{
+const { shop, areas, stations } = defineProps<{
   shop?: ShopType;
   activeFlags: EnumType[];
   prefectures: EnumType[];
+  areas: AreaType[];
+  stations: StationType[];
 }>();
 
 const DEFAULT_BUSINESS_HOURS: BusinessHour[] = [
@@ -96,6 +114,8 @@ const form = useForm<FormType>({
     address: shop?.address || "",
     building: shop?.building || null,
     description: shop?.description || null,
+    areaId: shop?.areaId || null,
+    stationId: shop?.stationId || null,
     activeFlag: shop?.activeFlag || "active",
     updatedAt: shop?.updatedAt || undefined,
     businessHours: shop?.businessHours ?? DEFAULT_BUSINESS_HOURS,
@@ -124,6 +144,25 @@ const activeFlag = computed<boolean>({
   },
 });
 
+const filteredAreasByPrefectureId = computed(() => {
+  return form.shop.prefectureId
+    ? areas.filter((area) => Number(area.prefectureId) === Number(form.shop.prefectureId))
+    : [];
+});
+const filteredStationsByAreaId = computed(() => {
+  return form.shop.areaId ? stations.filter((station) => Number(station.areaId) === Number(form.shop.areaId)) : [];
+});
+const isAreaInFiltered = computed(() => {
+  return form.shop.areaId === null
+    ? true
+    : filteredAreasByPrefectureId.value.some((area) => Number(area.id) === Number(form.shop.areaId));
+});
+const isStationInFiltered = computed(() => {
+  return form.shop.stationId === null
+    ? true
+    : filteredStationsByAreaId.value.some((station) => Number(station.id) === Number(form.shop.stationId));
+});
+
 const businessHoursErrors = computed<string[][]>(() =>
   form.shop.businessHours.map((_, index) => {
     const prefix = `shop.businessHours.${index}`;
@@ -145,6 +184,21 @@ const submit = (): void => {
     form.post(route("admin.shops.store"));
   }
 };
+
+watch(
+  () => form.shop.prefectureId,
+  () => {
+    form.shop.areaId = null;
+    form.shop.stationId = null;
+  },
+);
+
+watch(
+  () => form.shop.areaId,
+  () => {
+    form.shop.stationId = null;
+  },
+);
 </script>
 
 <template>
@@ -219,6 +273,22 @@ const submit = (): void => {
             title="運営状態"
             field="shop.activeFlag"
             required
+            :error="form.errors"
+          />
+          <form-single-select
+            v-model="form.shop.areaId"
+            title="エリア(関東圏のみ選択可能です)"
+            field="areaId"
+            :items="filteredAreasByPrefectureId"
+            :disabled="form.shop.prefectureId === null || !isAreaInFiltered"
+            :error="form.errors"
+          />
+          <form-single-select
+            v-model="form.shop.stationId"
+            title="最寄駅(関東圏のみ選択可能です)"
+            field="stationId"
+            :items="filteredStationsByAreaId"
+            :disabled="form.shop.areaId === null || !isStationInFiltered"
             :error="form.errors"
           />
           <form-textarea
