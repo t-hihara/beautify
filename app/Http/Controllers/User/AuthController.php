@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\UseCases\Auth\UserGoogleLoginUseCase;
+use App\UseCases\User\Auth\UserGoogleLoginUseCase;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse as HttpRedirectResponse;

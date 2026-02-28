@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\Auth;
+namespace App\UseCases\User\Auth;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;

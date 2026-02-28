@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Enum\GenderTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\FormUserRequest;
-use App\UseCases\Auth\RegisterUserUseCase;
+use App\UseCases\User\Auth\RegisterUserUseCase;
 use App\Utilities\RecursiveCovert;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
