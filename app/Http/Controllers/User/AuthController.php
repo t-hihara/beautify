@@ -58,7 +58,7 @@ class AuthController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
-            $result     = $useCase->execute($googleUser);
+            $result     = $useCase($googleUser);
 
             if (!$result['success']) {
                 return redirect()->route('user.loginForm')

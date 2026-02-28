@@ -4,6 +4,7 @@ namespace App\UseCases\ShopStaff;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\ShopStaffPositionTypeEnum;
+use App\Models\Shop;
 use App\Models\ShopStaff;
 use App\Models\User;
 use App\Services\Media\UploadImageService;
@@ -24,11 +25,16 @@ class CreateShopStaffUseCase
     public function __invoke(array $payload): ?ShopStaff
     {
         $convert = RecursiveCovert::_convert($payload, 'snake');
-        $staff->load('shop');
+        $shop    = Shop::find($convert['shop_id']);
+
+        if (!$shop) {
+            throw new DomainException('指定された店舗が見つかりません。');
+        }
 
         if (
-            $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
-            && $staff->shop->active_flag->value === ActiveFlagTypeEnum::INACTIVE->value
+            $shop
+            && $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
+            && $shop->active_flag->value === ActiveFlagTypeEnum::INACTIVE->value
         ) {
             throw new DomainException('店舗が運営停止中のため、スタッフを有効にできません。');
         }

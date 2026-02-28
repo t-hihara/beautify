@@ -10,7 +10,7 @@ use Spatie\Permission\Models\Role;
 
 class UserGoogleLoginUseCase
 {
-    public function execute(SocialiteUser $googleUser): array
+    public function __invoke(SocialiteUser $googleUser): array
     {
         return DB::transaction(function () use ($googleUser) {
             $user = $this->findOrCreateUser($googleUser);
