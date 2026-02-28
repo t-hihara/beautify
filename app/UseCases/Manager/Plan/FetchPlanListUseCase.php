@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\Plan;
+namespace App\UseCases\Manager\Plan;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\MenuTypeEnum;
