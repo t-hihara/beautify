@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\Shop;
+namespace App\UseCases\Manager\Shop;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Models\Shop;

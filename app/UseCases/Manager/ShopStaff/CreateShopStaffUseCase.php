@@ -32,8 +32,7 @@ class CreateShopStaffUseCase
         }
 
         if (
-            $shop
-            && $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
+            $convert['active_flag'] === ActiveFlagTypeEnum::ACTIVE->value
             && $shop->active_flag->value === ActiveFlagTypeEnum::INACTIVE->value
         ) {
             throw new DomainException('店舗が運営停止中のため、スタッフを有効にできません。');

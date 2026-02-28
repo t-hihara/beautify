@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\Shop;
+namespace App\UseCases\Manager\Shop;
 
 use App\Models\Shop;
 use Illuminate\Support\Facades\Storage;

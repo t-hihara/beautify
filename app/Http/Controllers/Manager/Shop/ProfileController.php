@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Manager\Shop;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
-use App\UseCases\Shop\FetchShopDetailTopUseCase;
-use App\UseCases\Shop\FetchShopPlansUseCase;
-use App\UseCases\Shop\FetchShopStaffsUseCase;
+use App\UseCases\Manager\Shop\FetchShopDetailTopUseCase;
+use App\UseCases\Manager\Shop\FetchShopPlansUseCase;
+use App\UseCases\Manager\Shop\FetchShopStaffsUseCase;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
