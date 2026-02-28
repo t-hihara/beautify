@@ -280,7 +280,7 @@ watch(
             title="エリア(関東圏のみ選択可能です)"
             field="areaId"
             :items="filteredAreasByPrefectureId"
-            :disabled="form.shop.prefectureId === null || !isAreaInFiltered"
+            :disabled="form.shop.prefectureId === null || filteredAreasByPrefectureId.length === 0 || !isAreaInFiltered"
             :error="form.errors"
           />
           <form-single-select
@@ -288,7 +288,7 @@ watch(
             title="最寄駅(関東圏のみ選択可能です)"
             field="stationId"
             :items="filteredStationsByAreaId"
-            :disabled="form.shop.areaId === null || !isStationInFiltered"
+            :disabled="form.shop.areaId === null || filteredStationsByAreaId.length === 0 || !isStationInFiltered"
             :error="form.errors"
           />
           <form-textarea
