@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UseCases\ShopStaff;
+namespace App\UseCases\Manager\ShopStaff;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\ShopStaffPositionTypeEnum;
