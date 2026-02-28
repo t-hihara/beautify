@@ -52,7 +52,7 @@ class CreateShopStaffUseCase
 
             $image = $convert['image'] ?? null;
             if ($image instanceof UploadedFile) {
-                $this->imageService->attach($imageData, $this->plan, 'shop-staffs');
+                $this->imageService->attach($image, $staff, 'shop-staffs');
             }
 
             return $staff;

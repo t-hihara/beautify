@@ -19,6 +19,10 @@ use Throwable;
 
 class ExportFileController extends Controller
 {
+    public function __construct(
+        private readonly ExportFileService $exportFileService,
+    ) {}
+
     public function index(SearchExportFileRequest $request, FetchExportFileListUseCase $useCase): Response
     {
         $userId = auth($request->attributes->get('auth_guard'))->id();
@@ -40,7 +44,7 @@ class ExportFileController extends Controller
     public function unloadedCount(): JsonResponse
     {
         $userId = auth(request()->attributes->get('auth_guard'))->id();
-        $count  = (new ExportFileService())->getUnloadedFileCount($userId);
+        $count  = $this->exportFileService->getUnloadedFileCount($userId);
 
         return response()->json(['unloadedExportFileCount' => $count]);
     }
