@@ -14,6 +14,7 @@ const {
   multiCalendars = 0,
   mode = "date",
   inputmode = "none",
+  inline = false,
   disabled = false,
 } = defineProps<{
   modelValue: string | null;
@@ -28,6 +29,7 @@ const {
   multiCalendars?: number;
   mode?: Mode;
   inputmode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal";
+  inline?: boolean;
   disabled?: boolean;
 }>();
 
@@ -63,6 +65,7 @@ const handleModelUpdate = (value: Date | string | null): void => {
     <vue-date-picker
       no-today
       :class="{ 'mt-1': title }"
+      :inline="inline"
       :auto-apply="autoApply"
       :model-value="modelValue"
       :model-type="timePicker ? format : undefined"
