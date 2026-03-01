@@ -23,7 +23,7 @@ class SearchPlanRequest extends FormRequest
             'types'      => ['nullable', 'array'],
             'types.*'    => ['nullable', Rule::enum(MenuTypeEnum::class)],
             'validFrom'  => ['nullable', 'date'],
-            'validTo'    => ['nullable', 'date'],
+            'validTo'    => ['nullable', 'date', 'after_or_equal:validFrom'],
             'perPage'    => ['nullable', 'integer'],
         ];
     }
@@ -46,7 +46,7 @@ class SearchPlanRequest extends FormRequest
     protected function failedValidation(Validator $validator): void
     {
         $data = app(FetchPlanListUseCase::class)($this->safeFilters());
-        $response = Inertia::render('Plan/PlanIndex', [
+        $response = Inertia::render('Plan/PlanList', [
             ...$data,
             'errors' => collect($validator->errors()->getMessages())
                 ->map(fn(array $messages) => $messages[0] ?? '')

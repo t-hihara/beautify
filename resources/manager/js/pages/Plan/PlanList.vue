@@ -180,7 +180,6 @@ watch(
             class="flex-1"
             auto-apply
             :min-date="null"
-            :error="searchForm.errors"
           />
           <span class="flex h-10 shrink-0 items-center justify-center self-end">〜</span>
           <search-date-time
@@ -190,9 +189,16 @@ watch(
             class="flex-1"
             auto-apply
             :min-date="null"
-            :error="searchForm.errors"
           />
         </div>
+      </div>
+      <div
+        v-if="Object.keys(searchForm.errors).length > 0"
+        class="inline-block mt-6 p-4 bg-red-100/50 rounded-lg border border-red-200"
+      >
+        <ul class="list-none list-inside space-y-1">
+          <li v-for="(error, key) in searchForm.errors" :key="key" class="text-sm text-red-600">{{ error }}</li>
+        </ul>
       </div>
     </div>
     <div class="mt-6 flex items-end justify-between">
@@ -200,8 +206,8 @@ watch(
         v-model="searchForm.perPage"
         title="表示件数"
         field="perPage"
-        :items="PER_PAGE_OPTIONS"
         class="max-w-28 w-full"
+        :items="PER_PAGE_OPTIONS"
       />
       <div class="flex items-center gap-2">
         <button-primary @click="exportFile('excel')" class="flex items-center gap-2"
