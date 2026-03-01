@@ -17,7 +17,7 @@ class SearchExportFileRequest extends FormRequest
         return [
             'subject'  => ['nullable', 'string'],
             'fromDate' => ['nullable', 'date'],
-            'toDate'   => ['nullable', 'date'],
+            'toDate'   => ['nullable', 'date', 'after_or_equal:fromDate'],
             'perPage'  => ['nullable', 'integer'],
         ];
     }
