@@ -67,7 +67,7 @@ const searchShop = (): void => {
       prefecture: data.prefectureIds.join(","),
       areas: data.areaIds.join(","),
     }))
-    .get("/shops", {
+    .get(route("public.shops.index"), {
       preserveState: true,
       preserveScroll: true,
     });
