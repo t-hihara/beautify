@@ -47,6 +47,7 @@ const { filters } = defineProps<{
   files: FileType[];
   links: PaginationLinkType[];
   pagination: PaginationType;
+  errors?: Record<string, string>;
 }>();
 
 const searchForm = useForm<SearchFormType>("ExportFileListSearch", {
@@ -137,13 +138,7 @@ watch(
     </div>
     <div class="mt-8 p-6 bg-white rounded-lg shadow-sm">
       <div class="grid grid-cols-4 gap-4">
-        <search-text
-          v-model="searchForm.subject"
-          field="subject"
-          title="対象名"
-          placeholder="対象名で検索"
-          :error="searchForm.errors"
-        />
+        <search-text v-model="searchForm.subject" field="subject" title="対象名" placeholder="対象名で検索" />
         <div class="col-span-2 flex items-end gap-2">
           <search-date-time
             v-model="searchForm.fromDate"
@@ -152,7 +147,6 @@ watch(
             class="flex-1"
             auto-apply
             :min-date="null"
-            :error="searchForm.errors"
           />
           <span class="flex h-10 shrink-0 items-center justify-center self-end">〜</span>
           <search-date-time
@@ -162,8 +156,15 @@ watch(
             class="flex-1"
             auto-apply
             :min-date="null"
-            :error="searchForm.errors"
           />
+        </div>
+        <div
+          v-if="errors && Object.keys(errors).length > 0"
+          class="inline-block mt-6 p-4 bg-red-100/50 rounded-lg border border-red-200"
+        >
+          <ul class="list-none list-inside space-y-1">
+            <li v-for="(error, key) in errors" :key="key" class="text-sm text-red-600">{{ error }}</li>
+          </ul>
         </div>
       </div>
     </div>
