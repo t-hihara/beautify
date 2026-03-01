@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { PaginationLinkType, PaginationType } from "@/common/js/lib";
 import { Head, Link } from "@inertiajs/vue3";
+import { ClockIcon, MapPinIcon } from "@heroicons/vue/24/outline";
+import type { PaginationLinkType, PaginationType } from "@/common/js/lib";
 
 type PlanType = {
   id: number;
@@ -11,6 +12,7 @@ type PlanType = {
   conditionType: string | null;
   validFrom: string | null;
   validTo: string | null;
+  discountPercent: number | null;
 };
 
 type MainImageType = {
@@ -23,6 +25,10 @@ type ShopType = {
   id: number;
   name: string;
   description: string | null;
+  prefecture: string;
+  zipcode: string;
+  address: string;
+  building: string | null;
   mainImage: MainImageType | null;
   plans: PlanType[];
 };
@@ -35,45 +41,65 @@ defineProps<{
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-zinc-50">
     <Head title="店舗検索一覧" />
     <div class="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-      <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">店舗一覧</h2>
+      <h2 class="text-2xl md:text-3xl font-bold text-zinc-800">店舗一覧</h2>
 
-      <section class="space-y-6" aria-label="検索結果の店舗一覧">
-        <article
-          v-for="shop in shops"
-          :key="shop.id"
-          class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm flex flex-col sm:flex-row"
-        >
-          <div class="sm:w-48 shrink-0 aspect-4/3 sm:aspect-square bg-zinc-200">
-            <img
-              v-if="shop.mainImage"
-              :src="shop.mainImage.filePath"
-              :alt="`${shop.name}の店舗画像`"
-              class="w-full h-full object-cover"
-              width="192"
-              height="144"
-              loading="lazy"
-            />
-            <div v-else class="w-full h-full flex items-center justify-center text-gray-400 text-sm">画像なし</div>
+      <section class="mt-6 space-y-6" aria-label="検索結果の店舗一覧">
+        <article v-for="shop in shops" :key="shop.id" class="bg-white border border-zinc-200 overflow-hidden shadow-sm">
+          <div class="flex items-start">
+            <div class="sm:w-48 shrink-0 aspect-4/3 sm:aspect-square bg-zinc-200">
+              <img
+                v-if="shop.mainImage"
+                :src="shop.mainImage.filePath"
+                :alt="`${shop.name}の店舗画像`"
+                class="w-full h-full object-cover"
+              />
+              <div v-else class="w-full h-full flex items-center justify-center text-zinc-400 text-sm">画像なし</div>
+            </div>
+            <div class="flex-1 p-4 sm:p-5 min-w-0">
+              <h2 class="text-lg font-semibold text-zinc-800">{{ shop.name }}</h2>
+              <div class="flex items-center gap-1">
+                <map-pin-icon class="size-4" />
+                <p class="text-sm text-zinc-600">{{ shop.prefecture }}{{ shop.address }}{{ shop.building }}</p>
+              </div>
+              <div v-if="shop.description" class="mt-2">
+                <p class="text-sm text-zinc-600 line-clamp-2">{{ shop.description }}</p>
+              </div>
+              <div v-else>
+                <p class="text-sm text-zinc-600">店舗説明なし</p>
+              </div>
+            </div>
           </div>
-          <div class="flex-1 p-4 sm:p-5 min-w-0">
-            <h2 class="text-lg font-semibold text-gray-800 mb-1">{{ shop.name }}</h2>
-            <p v-if="shop.description" class="text-sm text-gray-600 line-clamp-2 mb-3">{{ shop.description }}</p>
-            <ul v-if="shop.plans.length" class="space-y-2">
-              <li
-                v-for="plan in shop.plans.slice(0, 3)"
-                :key="plan.id"
-                class="text-sm text-gray-700 flex flex-wrap items-baseline gap-x-2"
-              >
-                <span>{{ plan.name }}</span>
-                <span v-if="plan.duration">{{ plan.duration }}分</span>
-                <span class="font-medium">¥{{ plan.sellingPrice.toLocaleString() }}</span>
-              </li>
-            </ul>
-            <p v-if="shop.plans.length > 3" class="text-sm text-gray-500 mt-1">すべてのプランを見る</p>
-          </div>
+          <ul v-if="shop.plans.length" class="border-t border-zinc-200 divide-y divide-zinc-100">
+            <li v-for="plan in shop.plans" :key="plan.id" class="px-4 sm:px-5 py-3 text-sm">
+              <div>
+                <span
+                  v-if="plan.conditionType"
+                  class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-rose-100 text-rose-800"
+                >
+                  {{ plan.conditionType }}
+                </span>
+              </div>
+              <div class="mt-2">
+                <span class="text-zinc-800 text-xl">{{ plan.name }}</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span v-if="plan.duration" class="text-zinc-600 flex items-center gap-1"
+                  ><clock-icon class="size-4 shrink-0" />{{ plan.duration }}分</span
+                >
+                <div class="flex items-center gap-2">
+                  <template v-if="plan.regularPrice && plan.discountPercent">
+                    <span class="text-zinc-500">通常¥{{ plan.regularPrice.toLocaleString() }} ⇒</span>
+                    <span class="text-rose-600">{{ plan.discountPercent }}％OFF</span>
+                  </template>
+                  <span class="font-bold text-zinc-800 text-lg">¥{{ plan.sellingPrice.toLocaleString() }}</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <p v-if="shop.plans.length" class="px-4 sm:px-5 py-2 text-sm text-zinc-500">すべてのプランを見る</p>
         </article>
       </section>
 
@@ -85,17 +111,17 @@ defineProps<{
         <Link
           v-if="pagination.prev"
           :href="pagination.prev"
-          class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 text-sm"
+          class="px-4 py-2 rounded-lg border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50 text-sm"
         >
           前へ
         </Link>
-        <span class="px-4 py-2 text-sm text-gray-600">
+        <span class="px-4 py-2 text-sm text-zinc-600">
           {{ pagination.currentPage }} / {{ pagination.lastPage }}（全{{ pagination.total }}件）
         </span>
         <Link
           v-if="pagination.next"
           :href="pagination.next"
-          class="px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 text-sm"
+          class="px-4 py-2 rounded-lg border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50 text-sm"
         >
           次へ
         </Link>

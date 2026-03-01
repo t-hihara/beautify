@@ -13,7 +13,7 @@ class FetchShopsUseCase
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
-        $shops = Shop::with(['station', 'plans', 'mainImage'])
+        $shops = Shop::with(['station', 'plans', 'prefecture', 'mainImage'])
             ->when($convert['date'], function ($query, $date) {
                 // TODO: ここに予約可能な日付のロジックを書く
             })
@@ -21,13 +21,17 @@ class FetchShopsUseCase
                 $query->whereIn('prefecture_id', $convert['prefectures'])
                     ->orWhereIn('area_id', $convert['areas']);
             })
+            ->where('active_flag', ActiveFlagTypeEnum::ACTIVE)
             ->paginate(20)
             ->through(fn($shop) => [
-                'id'          => $shop->id,
-                'name'        => $shop->name,
+                'id'            => $shop->id,
+                'name'          => $shop->name,
                 'prefecture_id' => $shop->prefecture_id,
-                'description' => $shop->description,
-                'mainImage'   => $shop->mainImage ? [
+                'prefecture'    => $shop->prefecture->name,
+                'address'       => $shop->address,
+                'building'      => $shop->building,
+                'description'   => $shop->description,
+                'mainImage'     => $shop->mainImage ? [
                     'id'       => $shop->mainImage->id,
                     'fileName' => $shop->mainImage->file_name,
                     'filePath' => str_starts_with($shop->mainImage->file_path, 'http')
@@ -38,19 +42,24 @@ class FetchShopsUseCase
                     ->filter(fn($plan) => $plan->active_flag === ActiveFlagTypeEnum::ACTIVE)
                     ->sortBy('sort_order')
                     ->sortBy('id')
+                    ->take(4)
                     ->map(fn($plan) => [
-                        'id'            => $plan->id,
-                        'name'          => $plan->name,
-                        'duration'      => $plan->duration,
-                        'regularPrice'  => $plan->regular_price,
-                        'sellingPrice'  => $plan->selling_price,
-                        'conditionType' => $plan->condition_type?->description(),
-                        'validFrom'     => $plan->valid_from,
-                        'validTo'       => $plan->valid_to,
+                        'id'              => $plan->id,
+                        'name'            => $plan->name,
+                        'duration'        => $plan->duration,
+                        'regularPrice'    => $plan->regular_price,
+                        'sellingPrice'    => $plan->selling_price,
+                        'conditionType'   => $plan->condition_type?->description(),
+                        'validFrom'       => $plan->valid_from,
+                        'validTo'         => $plan->valid_to,
+                        'discountPercent' => $plan->regular_price > 0 && $plan->regular_price > $plan->selling_price
+                            ? (int) round((1 - $plan->selling_price / $plan->regular_price) * 100)
+                            : null,
                     ]),
             ]);
 
         return [
+            'filters'    => $filters,
             'shops'      => $shops->items(),
             'links'      => $shops->linkCollection(),
             'pagination' => [

@@ -42,7 +42,7 @@ defineProps<{
           <h4 class="font-bold text-zinc-800 text-base leading-snug">{{ plan.name }}</h4>
           <div class="text-sm">
             <span class="inline-flex items-center gap-1 text-zinc-600">
-              <ClockIcon class="size-4 shrink-0" />
+              <clock-icon class="size-4 shrink-0" />
               {{ plan.duration }}分
             </span>
             <div class="flex flex-wrap items-baseline gap-2 mt-1">
