@@ -2,9 +2,13 @@
 
 namespace App\Http\Requests\Manager\Search;
 
+use App\Exceptions\InertiaValidationException;
+use App\UseCases\Manager\Log\FetchLogListUseCase;
 use Carbon\Carbon;
+use Illuminate\Contracts\Validation\Validator as ValidationValidator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
+use Inertia\Inertia;
 
 class SearchLogRequest extends FormRequest
 {
@@ -24,7 +28,7 @@ class SearchLogRequest extends FormRequest
             'event'       => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
             'fromDate'    => ['required', 'date'],
-            'toDate'      => ['nullable', 'date'],
+            'toDate'      => ['nullable', 'date', 'after_or_equal:fromDate'],
             'perPage'     => ['nullable', 'integer'],
         ];
     }
@@ -54,5 +58,33 @@ class SearchLogRequest extends FormRequest
                 }
             }
         ];
+    }
+
+    protected function failedValidation(ValidationValidator $validator): void
+    {
+        $data = app(FetchLogListUseCase::class)($this->safeFilters());
+        $response = Inertia::render('Log/LogIndex', [
+            ...$data,
+            'errors' => collect($validator->errors()->getMessages())
+                ->map(fn(array $messages) => $messages[0] ?? '')
+                ->toArray(),
+        ]);
+
+        throw new InertiaValidationException($response);
+    }
+
+    private function safeFilters(): array
+    {
+        return array_merge(
+            [
+                'fromDate'    => Carbon::now()->subMonth()->format('Y-m-d'),
+                'toDate'      => null,
+                'name'        => null,
+                'event'       => null,
+                'description' => null,
+                'perPage'     => null,
+            ],
+            $this->only(['fromDate', 'toDate', 'name', 'event', 'description', 'perPage'])
+        );
     }
 }

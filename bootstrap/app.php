@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\InertiaValidationException;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -29,5 +30,8 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->dontReport(InertiaValidationException::class);
+        $exceptions->render(function (InertiaValidationException $e) {
+            return $e->response;
+        });
     })->create();
