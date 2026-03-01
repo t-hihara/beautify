@@ -14,6 +14,9 @@ class FetchShopsUseCase
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
         $shops = Shop::with(['station', 'plans', 'mainImage'])
+            ->when($convert['date'], function ($query, $date) {
+                // TODO: ここに予約可能な日付のロジックを書く
+            })
             ->when($convert['prefectures'] ?? null || $convert['areas'] ?? null, function ($query) use ($convert) {
                 $query->whereIn('prefecture_id', $convert['prefectures'])
                     ->orWhereIn('area_id', $convert['areas']);
