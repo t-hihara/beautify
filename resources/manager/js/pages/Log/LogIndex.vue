@@ -61,6 +61,7 @@ const { filters, logs } = defineProps<{
   logs: LogType[];
   links: PaginationLinkType[];
   pagination: PaginationType;
+  errors?: Record<string, string>;
 }>();
 
 const searchForm = useForm<SearchFormType>("LogListSearch", {
@@ -136,14 +137,11 @@ watch(
       </div>
       <div
         class="mt-4 pt-4 border-t border-zinc-200 flex items-center gap-2"
-        :class="Object.keys(searchForm.errors).length > 0 ? 'justify-between' : 'justify-end'"
+        :class="errors && Object.keys(errors).length > 0 ? 'justify-between' : 'justify-end'"
       >
-        <div
-          v-if="Object.keys(searchForm.errors).length > 0"
-          class="p-4 bg-red-100/50 rounded-lg border border-red-200"
-        >
+        <div v-if="errors && Object.keys(errors).length > 0" class="p-4 bg-red-100/50 rounded-lg border border-red-200">
           <ul class="list-none list-inside space-y-1">
-            <li v-for="(error, key) in searchForm.errors" :key="key" class="text-sm text-red-600">{{ error }}</li>
+            <li v-for="(error, key) in errors" :key="key" class="text-sm text-red-600">{{ error }}</li>
           </ul>
         </div>
         <form @submit.prevent="search">
