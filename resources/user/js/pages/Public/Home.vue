@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { Head, Link, router, useForm } from "@inertiajs/vue3";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { route } from "ziggy-js";
 import { DateTime } from "luxon";
 import { ButtonPrimary, ButtonSecondary } from "@/common/js/components/Ui/ButtonIndex";
 import { CalendarDaysIcon, ChevronRightIcon, MapPinIcon } from "@heroicons/vue/24/outline";
-
 import { SearchDateTime } from "@/common/js/components/Form/SearchIndex";
-import ModalDialog from "@common/components/Layout/DialogModal.vue";
+import ModalDialog from "@user/components/Layout/DialogModal.vue";
 
 type SearchShopFormType = {
   date: string | null;
@@ -24,7 +23,7 @@ type PrefectureType = {
   }[];
 };
 
-defineProps<{
+const { prefecturesWithAreas, prefecturesWithoutAreas } = defineProps<{
   prefecturesWithAreas: PrefectureType[];
   prefecturesWithoutAreas: PrefectureType[];
 }>();
@@ -37,6 +36,33 @@ const searchShopForm = useForm<SearchShopFormType>({
 
 const showSelectAreaModal = ref<boolean>(false);
 const showSelectDateModal = ref<boolean>(false);
+
+const selectedAreaDisplayText = computed(() => {
+  const areaNames = prefecturesWithAreas.flatMap(
+    (prefecture) =>
+      prefecture.areas.filter((area) => searchShopForm.areaIds.includes(area.id)).map((area) => area.name) ?? [],
+  );
+  const prefNames =
+    prefecturesWithoutAreas
+      .filter((prefecture) => searchShopForm.prefectureIds.includes(prefecture.id))
+      .map((prefecture) => prefecture.name) ?? [];
+
+  const labels = [...areaNames, ...prefNames];
+  return labels.length === 0 ? "" : labels.join("、");
+});
+
+const confirmToSelect = (): void => {
+  showSelectAreaModal.value = false;
+};
+
+const clearSelectAreas = (): void => {
+  searchShopForm.prefectureIds = [];
+  searchShopForm.areaIds = [];
+};
+
+const searchShop = (): void => {
+  //
+};
 </script>
 
 <template>
@@ -81,7 +107,6 @@ const showSelectDateModal = ref<boolean>(false);
               <chevron-right-icon class="size-4" />
             </button>
           </div>
-
           <div class="mt-6 space-y-4">
             <div
               @click="showSelectDateModal = true"
@@ -100,9 +125,20 @@ const showSelectDateModal = ref<boolean>(false);
               class="bg-white rounded-lg p-4 flex items-center gap-3 cursor-pointer"
             >
               <map-pin-icon class="size-5" />
-              <span v-if="searchShopForm.areaIds.length > 0" class="flex-1 text-zinc-800 line-clamp-1">test</span>
+              <span
+                v-if="searchShopForm.areaIds.length > 0 || searchShopForm.prefectureIds.length > 0"
+                class="flex-1 text-zinc-800 line-clamp-1"
+              >
+                {{ selectedAreaDisplayText }}
+              </span>
               <span v-else class="flex-1 text-zinc-500">エリアから探す</span>
             </div>
+            <button
+              class="w-full px-6 py-4 bg-zinc-600 hover:bg-zinc-800 text-white font-medium rounded-full transition-colors cursor-pointer flex justify-center items-center gap-2"
+              @click="searchShop"
+            >
+              <span>この条件で検索する</span>
+            </button>
           </div>
         </div>
       </div>
@@ -137,14 +173,14 @@ const showSelectDateModal = ref<boolean>(false);
       dialog-class="w-full max-w-4xl max-h-[60vh] flex flex-col"
       @close="showSelectAreaModal = false"
     >
-      <div class="mt-4 pr-3 flex-1 overflow-y-auto space-y-3">
+      <div class="mt-4 pr-4 pl-4 pb-4 sm:pr-8 sm:pb-4 sm:pl-8 flex-1 overflow-y-auto space-y-3">
         <template v-for="prefecture in prefecturesWithAreas" :key="prefecture.id">
           <template v-if="prefecture.areas.length > 0">
             <div class="border-t border-zinc-200 pt-3 first:border-t-0">
               <div class="bg-zinc-200 p-3 rounded-md">
                 <span class="text-zinc-800">{{ prefecture.name }}</span>
               </div>
-              <div class="mt-4 grid grid-cols-3 gap-3">
+              <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div v-for="area in prefecture.areas" :key="area.id">
                   <label class="flex items-center gap-2">
                     <input v-model="searchShopForm.areaIds" type="checkbox" :value="area.id" />
@@ -159,7 +195,7 @@ const showSelectDateModal = ref<boolean>(false);
           <div class="bg-zinc-200 p-3 rounded-md">
             <span>その他都道府県</span>
           </div>
-          <div class="mt-4 grid grid-cols-3 gap-3">
+          <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
             <template v-for="prefecture in prefecturesWithoutAreas" :key="prefecture.id">
               <label class="flex items-center gap-2">
                 <input v-model="searchShopForm.prefectureIds" type="checkbox" :value="prefecture.id" />
@@ -169,8 +205,8 @@ const showSelectDateModal = ref<boolean>(false);
           </div>
         </div>
         <div class="flex items-center justify-center gap-4 p-4 border-t border-zinc-200">
-          <button-secondary>選択解除</button-secondary>
-          <button-primary>エリアを確定する</button-primary>
+          <button-secondary @click="clearSelectAreas">選択解除</button-secondary>
+          <button-primary @click="confirmToSelect">エリアを確定する</button-primary>
         </div>
       </div>
     </modal-dialog>

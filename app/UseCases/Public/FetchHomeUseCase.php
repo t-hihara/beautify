@@ -25,8 +25,8 @@ class FetchHomeUseCase
         [$prefecturesWithAreas, $prefecturesWithoutAreas] = $prefectures->partition(fn($prefecture) => $prefecture['areas']->isNotEmpty());
 
         return [
-            'prefecturesWithAreas'    => $prefecturesWithAreas,
-            'prefecturesWithoutAreas' => $prefecturesWithoutAreas,
+            'prefecturesWithAreas'    => $prefecturesWithAreas->values()->all(),
+            'prefecturesWithoutAreas' => $prefecturesWithoutAreas->values()->all(),
         ];
     }
 }
