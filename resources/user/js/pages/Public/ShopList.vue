@@ -48,8 +48,8 @@ defineProps<{
 
       <section class="mt-6 space-y-6" aria-label="検索結果の店舗一覧">
         <article v-for="shop in shops" :key="shop.id" class="bg-white border border-zinc-200 overflow-hidden shadow-sm">
-          <div class="flex items-start">
-            <div class="sm:w-48 shrink-0 aspect-4/3 sm:aspect-square bg-zinc-200">
+          <div class="sm:flex sm:items-start">
+            <div class="sm:w-48 shrink-0 aspect-video sm:aspect-square bg-zinc-200">
               <img
                 v-if="shop.mainImage"
                 :src="shop.mainImage.filePath"
@@ -60,11 +60,13 @@ defineProps<{
             </div>
             <div class="flex-1 p-4 sm:p-5 min-w-0">
               <h2 class="text-lg font-semibold text-zinc-800">{{ shop.name }}</h2>
-              <div class="flex items-center gap-1">
+              <div class="flex items-center gap-1 mt-2">
                 <map-pin-icon class="size-4" />
-                <p class="text-sm text-zinc-600">{{ shop.prefecture }}{{ shop.address }}{{ shop.building }}</p>
+                <p class="text-xs sm:text-sm text-zinc-600">
+                  {{ shop.prefecture }}{{ shop.address }}{{ shop.building }}
+                </p>
               </div>
-              <div v-if="shop.description" class="mt-2">
+              <div v-if="shop.description" class="mt-4 sm:mt-2">
                 <p class="text-sm text-zinc-600 line-clamp-2">{{ shop.description }}</p>
               </div>
               <div v-else>
@@ -72,34 +74,37 @@ defineProps<{
               </div>
             </div>
           </div>
-          <ul v-if="shop.plans.length" class="border-t border-zinc-200 divide-y divide-zinc-100">
-            <li v-for="plan in shop.plans" :key="plan.id" class="px-4 sm:px-5 py-3 text-sm">
-              <div>
+          <div v-if="shop.plans.length" class="border-t border-zinc-200 p-4 sm:p-5 space-y-3">
+            <div v-for="plan in shop.plans" :key="plan.id" class="bg-zinc-100 rounded-lg p-3 sm:p-4 text-sm">
+              <div class="flex flex-wrap gap-1.5">
                 <span
                   v-if="plan.conditionType"
-                  class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-rose-100 text-rose-800"
+                  class="inline-flex items-center rounded border border-rose-500 bg-rose-50 px-2 py-0.5 text-xs font-medium text-rose-700"
                 >
                   {{ plan.conditionType }}
                 </span>
               </div>
-              <div class="mt-2">
-                <span class="text-zinc-800 text-xl">{{ plan.name }}</span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span v-if="plan.duration" class="text-zinc-600 flex items-center gap-1"
-                  ><clock-icon class="size-4 shrink-0" />{{ plan.duration }}分</span
-                >
+              <p class="mt-2 text-md sm:text-xl text-zinc-800 font-medium">{{ plan.name }}</p>
+              <div class="mt-2 flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+                <span v-if="plan.duration" class="text-zinc-600 flex items-center gap-1">
+                  <clock-icon class="size-4 shrink-0" />{{ plan.duration }}分
+                </span>
                 <div class="flex items-center gap-2">
                   <template v-if="plan.regularPrice && plan.discountPercent">
-                    <span class="text-zinc-500">通常¥{{ plan.regularPrice.toLocaleString() }} ⇒</span>
+                    <span class="text-zinc-500">通常¥{{ plan.regularPrice.toLocaleString() }}⇒</span>
                     <span class="text-rose-600">{{ plan.discountPercent }}％OFF</span>
                   </template>
-                  <span class="font-bold text-zinc-800 text-lg">¥{{ plan.sellingPrice.toLocaleString() }}</span>
+                  <span class="font-bold text-rose-600">¥{{ plan.sellingPrice.toLocaleString() }}</span>
                 </div>
               </div>
-            </li>
-          </ul>
-          <p v-if="shop.plans.length" class="px-4 sm:px-5 py-2 text-sm text-zinc-500">すべてのプランを見る</p>
+            </div>
+            <div class="border-t border-zinc-200 pt-2 sm:pt-4">
+              <p class="text-sm text-zinc-500 flex items-center justify-center gap-1">
+                条件に合うプランをすべて見る
+                <span aria-hidden="true">→</span>
+              </p>
+            </div>
+          </div>
         </article>
       </section>
 
