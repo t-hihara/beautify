@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Shop extends Model
 {
@@ -88,6 +89,11 @@ class Shop extends Model
     public function businessHours(): HasMany
     {
         return $this->hasMany(ShopBusinessHour::class);
+    }
+
+    public function mainImage(): MorphOne
+    {
+        return $this->morphOne(UploadedImage::class, 'imageable');
     }
 
     public function images(): MorphMany
