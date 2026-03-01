@@ -82,7 +82,7 @@ class SearchLogRequest extends FormRequest
                 'name'        => null,
                 'event'       => null,
                 'description' => null,
-                'perPage'     => null,
+                'perPage'     => 20,
             ],
             $this->only(['fromDate', 'toDate', 'name', 'event', 'description', 'perPage'])
         );
