@@ -10,6 +10,14 @@ use Inertia\Inertia;
 
 class SearchShopRequest extends FormRequest
 {
+    public function prepareForValidation()
+    {
+        $this->merge([
+            'prefectures' => $this->parseCommaSeparatedIntegers('prefectures'),
+            'areas'       => $this->parseCommaSeparatedIntegers('areas'),
+        ]);
+    }
+
     public function rules(): array
     {
         return [
@@ -52,5 +60,17 @@ class SearchShopRequest extends FormRequest
             'prefectures' => null,
             'areas'       => null,
         ], $this->only(['date', 'prefectures', 'areas']));
+    }
+
+    private function parseCommaSeparatedIntegers(string $field): array
+    {
+        if (!$this->has($field) || $this->input($field) === '') {
+            return [];
+        }
+
+        return collect(explode(',', $this->input($field)))
+            ->filter()
+            ->map('intval')
+            ->toArray();
     }
 }

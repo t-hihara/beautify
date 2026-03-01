@@ -64,7 +64,7 @@ const searchShop = (): void => {
   searchShopForm
     .transform((data) => ({
       date: data.date,
-      prefecture: data.prefectureIds.join(","),
+      prefectures: data.prefectureIds.join(","),
       areas: data.areaIds.join(","),
     }))
     .get(route("public.shops.index"), {

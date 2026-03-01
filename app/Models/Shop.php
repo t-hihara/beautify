@@ -68,6 +68,11 @@ class Shop extends Model
         return $query->when($prefectures, fn(Builder $q) => $q->whereIn('prefecture_id', $prefectures));
     }
 
+    public function scopeByAreas(Builder $query, ?array $areas): Builder
+    {
+        return $query->when($areas, fn(Builder $q) => $q->whereIn('area_id', $areas));
+    }
+
     public function scopeByActiveFlag(Builder $query, ?string $activeFlag): Builder
     {
         return $query->when($activeFlag, fn(Builder $q) => $q->where('active_flag', $activeFlag));

@@ -4,17 +4,25 @@ namespace App\UseCases\Public;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Models\Shop;
+use App\Utilities\RecursiveCovert;
 use Illuminate\Support\Facades\Storage;
 
 class FetchShopsUseCase
 {
     public function __invoke(array $filters): array
     {
-        $shops = Shop::with(['station', 'plans' . 'mainImage'])
+        $convert = RecursiveCovert::_convert($filters, 'snake');
+
+        $shops = Shop::with(['station', 'plans', 'mainImage'])
+            ->when($convert['prefectures'] ?? null || $convert['areas'] ?? null, function ($query) use ($convert) {
+                $query->whereIn('prefecture_id', $convert['prefectures'])
+                    ->orWhereIn('area_id', $convert['areas']);
+            })
             ->paginate(20)
             ->through(fn($shop) => [
                 'id'          => $shop->id,
                 'name'        => $shop->name,
+                'prefecture_id' => $shop->prefecture_id,
                 'description' => $shop->description,
                 'mainImage'   => $shop->mainImage ? [
                     'id'       => $shop->mainImage->id,
