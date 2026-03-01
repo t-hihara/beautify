@@ -60,6 +60,7 @@ const { filters, menus } = defineProps<{
   menuTypes: EnumType[];
   activeFlags: EnumType[];
   shops: EnumType[];
+  errors?: Record<string, string>;
 }>();
 
 const guard = useGuard();
@@ -150,14 +151,22 @@ watch(
           :items="activeFlags"
         />
       </div>
+      <div
+        v-if="errors && Object.keys(errors).length > 0"
+        class="inline-block mt-6 p-4 bg-red-100/50 rounded-lg border border-red-200"
+      >
+        <ul class="list-none list-inside space-y-1">
+          <li v-for="(error, key) in errors" :key="key" class="text-sm text-red-600">{{ error }}</li>
+        </ul>
+      </div>
     </div>
     <div class="mt-6 flex items-end justify-between">
       <search-single-select
         v-model="searchForm.perPage"
         title="表示件数"
         field="perPage"
-        :items="PER_PAGE_OPTIONS"
         class="max-w-28 w-full"
+        :items="PER_PAGE_OPTIONS"
       />
       <div class="flex items-center gap-2">
         <button-primary @click="exportFile('excel')" class="flex items-center gap-2"
