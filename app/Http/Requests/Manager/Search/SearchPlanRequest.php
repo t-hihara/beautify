@@ -4,8 +4,12 @@ namespace App\Http\Requests\Manager\Search;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\MenuTypeEnum;
+use App\Exceptions\InertiaValidationException;
+use App\UseCases\Manager\Plan\FetchPlanListUseCase;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 
 class SearchPlanRequest extends FormRequest
 {
@@ -37,5 +41,31 @@ class SearchPlanRequest extends FormRequest
             'validTo'    => '期間限定（終了）',
             'perPage'    => '表示件数',
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        $data = app(FetchPlanListUseCase::class)($this->safeFilters());
+        $response = Inertia::render('Plan/PlanIndex', [
+            ...$data,
+            'errors' => collect($validator->errors()->getMessages())
+                ->map(fn(array $messages) => $messages[0] ?? '')
+                ->all(),
+        ]);
+
+        throw new InertiaValidationException($response);
+    }
+
+    private function safeFilters(): array
+    {
+        return array_merge([
+            'name'       => null,
+            'activeFlag' => null,
+            'shopIds'    => null,
+            'types'      => null,
+            'validFrom'  => null,
+            'validTo'    => null,
+            'perPage'    => null,
+        ], $this->only(['name', 'activeFlag', 'shopIds', 'types', 'validFrom', 'validTo', 'perPage']));
     }
 }
