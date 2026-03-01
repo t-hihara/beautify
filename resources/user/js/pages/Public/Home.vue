@@ -28,7 +28,7 @@ const { prefecturesWithAreas, prefecturesWithoutAreas } = defineProps<{
   prefecturesWithoutAreas: PrefectureType[];
 }>();
 
-const searchShopForm = useForm<SearchShopFormType>({
+const searchShopForm = useForm<SearchShopFormType>("PublicShopSearch", {
   date: null,
   prefectureIds: [],
   areaIds: [],
@@ -61,7 +61,16 @@ const clearSelectAreas = (): void => {
 };
 
 const searchShop = (): void => {
-  //
+  searchShopForm
+    .transform((data) => ({
+      date: data.date,
+      prefecture: data.prefectureIds.join(","),
+      areas: data.areaIds.join(","),
+    }))
+    .get("/shops", {
+      preserveState: true,
+      preserveScroll: true,
+    });
 };
 </script>
 
