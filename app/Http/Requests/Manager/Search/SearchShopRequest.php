@@ -3,8 +3,12 @@
 namespace App\Http\Requests\Manager\Search;
 
 use App\Enum\ActiveFlagTypeEnum;
+use App\Exceptions\InertiaValidationException;
+use App\UseCases\Manager\Shop\FetchShopListUseCase;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
 
 class SearchShopRequest extends FormRequest
 {
@@ -32,5 +36,33 @@ class SearchShopRequest extends FormRequest
             'activeFlag'      => '運営状態',
             'perPage'         => '表示件数',
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        $data = app(FetchShopListUseCase::class)($this->safeFilters());
+        $response = Inertia::render('Shop/ShopList', [
+            ...$data,
+            'errors' => collect($validator->errors()->getMessages())
+                ->map(fn(array $messages) => $messages[0] ?? '')
+                ->all(),
+        ]);
+
+        throw new InertiaValidationException($response);
+    }
+
+    private function safeFilters(): array
+    {
+        return array_merge(
+            [
+                'name'          => null,
+                'email'         => null,
+                'phone'         => null,
+                'prefectureIds' => null,
+                'activeFlag'    => null,
+                'perPage'       => null,
+            ],
+            $this->only(['name', 'email', 'phone', 'prefectureIds', 'activeFlag', 'perPage'])
+        );
     }
 }
