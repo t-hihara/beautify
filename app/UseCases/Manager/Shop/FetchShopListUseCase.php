@@ -9,6 +9,7 @@ use App\Models\Shop;
 use App\Models\Station;
 use App\Services\Shop\ShopBusinessHourFormatter;
 use App\Utilities\RecursiveCovert;
+use Illuminate\Database\Eloquent\Builder;
 
 class FetchShopListUseCase
 {
@@ -16,12 +17,7 @@ class FetchShopListUseCase
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
-        $shops = Shop::with(['area', 'businessHours', 'prefecture', 'station'])
-            ->byName($convert['name'] ?? null)
-            ->byEmail($convert['email'] ?? null)
-            ->byPhone($convert['phone'] ?? null)
-            ->byPrefectures($convert['prefecture_ids'] ?? null)
-            ->byActiveFlag($convert['active_flag'] ?? null)
+        $shops = $this->filters($convert)
             ->orderBy('id')
             ->paginate($convert['per_page'] ?? 10)
             ->withQueryString()
@@ -62,5 +58,15 @@ class FetchShopListUseCase
                 'total'       => $shops->total(),
             ],
         ];
+    }
+
+    private function filters(array $convert)
+    {
+        return Shop::with(['area', 'businessHours', 'prefecture', 'station'])
+            ->when($convert['name'] ?? null, fn(Builder $query, $name) => $query->where('name', 'like', "%$name%"))
+            ->when($convert['email'] ?? null, fn(Builder $query, $email) => $query->where('email', 'like', "$email"))
+            ->when($convert['phone'] ?? null, fn(Builder $query, $phone) => $query->where('phone', $phone))
+            ->when($convert['prefecture_ids'] ?? null, fn(Builder $query, $prefectures) => $query->whereIn('prefecture_id', $prefectures))
+            ->when($convert['active_flag'] ?? null, fn(Builder $query, $flag) => $query->where('active_flag', $flag));
     }
 }
