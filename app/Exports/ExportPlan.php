@@ -26,12 +26,7 @@ class ExportPlan implements FromQuery, WithCustomCsvSettings, WithHeadings, With
 
     public function query(): Builder
     {
-        return Plan::with(['shop', 'menus'])
-            ->byName($this->filters['name'] ?? null)
-            ->byActiveFlag($this->filters['active_flag'] ?? null)
-            ->byShopIds($this->filters['shop_ids'] ?? null)
-            ->byMenuTypes($this->filters['types'] ?? null)
-            ->byValidDuration($this->filters['valid_from'] ?? null, $this->filters['valid_to'] ?? null)
+        return $this->queryWithFilters($this->filters)
             ->orderBy('shop_id')
             ->orderBy('sort_order');
     }
@@ -109,5 +104,26 @@ class ExportPlan implements FromQuery, WithCustomCsvSettings, WithHeadings, With
             'status'        => ExportFileStatusTypeEnum::FAILED,
             'error_message' => $e->getMessage(),
         ]);
+    }
+
+    private function queryWithFilters(array $convert): Builder
+    {
+        return Plan::with(['shop', 'menus'])
+            ->when($convert['name'] ?? null, fn(Builder $query, $name) => $query->where('name', 'like', "%{$name}%"))
+            ->when($convert['active_flag'] ?? null, fn(Builder $query, $flag) => $query->where('active_flag', $flag))
+            ->when($convert['shop_ids'] ?? null, fn(Builder $query, $shopIds) => $query->whereIn('shop_id', $shopIds))
+            ->when($convert['types'] ?? null, fn(Builder $query, $types) => $query->whereHas('menus', fn(Builder $q) => $q->whereIn('type', $types)))
+            ->when(
+                ($convert['valid_from'] ?? null) && ($convert['valid_to'] ?? null),
+                fn(Builder $query, $_) => $query->where('valid_from', '>=', $convert['valid_from'])->where('valid_to', '<=', $convert['valid_to'])
+            )
+            ->when(
+                ($convert['valid_from'] ?? null) && !($convert['valid_to'] ?? null),
+                fn(Builder $query, $_) => $query->where('valid_from', '>=', $convert['valid_from'])
+            )
+            ->when(
+                !($convert['valid_from'] ?? null) && ($convert['valid_to'] ?? null),
+                fn(Builder $query, $_) => $query->where('valid_to', '<=', $convert['valid_to'])
+            );
     }
 }

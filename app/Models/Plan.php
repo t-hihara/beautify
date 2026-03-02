@@ -52,43 +52,6 @@ class Plan extends Model
     }
 
     /* ================================================================================
-                                        スコープ
-    ================================================================================ */
-
-    public function scopeByName(Builder $query, ?string $name): Builder
-    {
-        return $query->when($name, fn(Builder $q) => $q->where('name', 'like', "%$name%"));
-    }
-
-    public function scopeByActiveFlag(Builder $query, ?string $flag): Builder
-    {
-        return $query->when($flag, fn(Builder $q) => $q->where('active_flag', $flag));
-    }
-
-    public function scopeByShopIds(Builder $query, ?array $shopIds): Builder
-    {
-        return $query->when($shopIds, fn(Builder $q) => $q->whereIn('shop_id', $shopIds));
-    }
-
-    public function scopeByMenuTypes(Builder $query, ?array $types): Builder
-    {
-        return $query->when($types, fn(Builder $q) => $q
-            ->whereHas('menus', fn(Builder $menuQuery) => $menuQuery->whereIn('type', $types)));
-    }
-
-    public function scopeByValidDuration(Builder $query, ?string $from, ?string $to): Builder
-    {
-        return $query
-            ->when($from && $to, fn(Builder $q) => $q
-                ->where('valid_from', '>=', $from)
-                ->where('valid_to', '<=', $to))
-            ->when($from && !$to, fn(Builder $q) => $q
-                ->where('valid_from', '>=', $from))
-            ->when(!$from && $to, fn(Builder $q) => $q
-                ->where('valid_to', '<=', $to));
-    }
-
-    /* ================================================================================
                                         リレーション
     ================================================================================ */
 

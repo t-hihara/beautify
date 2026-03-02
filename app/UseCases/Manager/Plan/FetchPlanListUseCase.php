@@ -7,6 +7,7 @@ use App\Enum\MenuTypeEnum;
 use App\Models\Plan;
 use App\Models\Shop;
 use App\Utilities\RecursiveCovert;
+use Illuminate\Database\Eloquent\Builder;
 
 class FetchPlanListUseCase
 {
@@ -17,12 +18,7 @@ class FetchPlanListUseCase
             $convert['shop_ids'] = [$shopId];
         }
 
-        $plans = Plan::with(['shop', 'menus'])
-            ->byName($convert['name'] ?? null)
-            ->byActiveFlag($convert['active_flag'] ?? null)
-            ->byShopIds($convert['shop_ids'] ?? null)
-            ->byMenuTypes($convert['types'] ?? null)
-            ->byValidDuration($convert['valid_from'] ?? null, $convert['valid_to'] ?? null)
+        $plans = $this->queryWithFilters($convert)
             ->orderBy('sort_order')
             ->orderBy('id')
             ->paginate($convert['per_page'] ?? 10)
@@ -60,5 +56,26 @@ class FetchPlanListUseCase
                 'total'       => $plans->total(),
             ],
         ];
+    }
+
+    private function queryWithFilters(array $convert): Builder
+    {
+        return Plan::with(['shop', 'menus'])
+            ->when($convert['name'] ?? null, fn(Builder $query, $name) => $query->where('name', 'like', "%{$name}%"))
+            ->when($convert['active_flag'] ?? null, fn(Builder $query, $flag) => $query->where('active_flag', $flag))
+            ->when($convert['shop_ids'] ?? null, fn(Builder $query, $shopIds) => $query->whereIn('shop_id', $shopIds))
+            ->when($convert['types'] ?? null, fn(Builder $query, $types) => $query->whereHas('menus', fn(Builder $q) => $q->whereIn('type', $types)))
+            ->when(
+                ($convert['valid_from'] ?? null) && ($convert['valid_to'] ?? null),
+                fn(Builder $query, $_) => $query->where('valid_from', '>=', $convert['valid_from'])->where('valid_to', '<=', $convert['valid_to'])
+            )
+            ->when(
+                ($convert['valid_from'] ?? null) && !($convert['valid_to'] ?? null),
+                fn(Builder $query, $_) => $query->where('valid_from', '>=', $convert['valid_from'])
+            )
+            ->when(
+                !($convert['valid_from'] ?? null) && ($convert['valid_to'] ?? null),
+                fn(Builder $query, $_) => $query->where('valid_to', '<=', $convert['valid_to'])
+            );
     }
 }
