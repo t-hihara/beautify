@@ -7,6 +7,7 @@ use App\Enum\ShopStaffPositionTypeEnum;
 use App\Models\Shop;
 use App\Models\ShopStaff;
 use App\Utilities\RecursiveCovert;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 
 class FetchShopStaffListUseCase
@@ -18,11 +19,7 @@ class FetchShopStaffListUseCase
             $convert['shop_ids'] = [$shopId];
         }
 
-        $staffs = ShopStaff::with(['image', 'shop'])
-            ->byName($convert['name'] ?? null)
-            ->byShopIds($convert['shop_ids'] ?? null)
-            ->byActiveFlag($convert['active_flag'] ?? null)
-            ->byPositions($convert['positions'] ?? null)
+        $staffs = $this->queryWithFilters($convert)
             ->orderBy('id')
             ->paginate($convert['per_page'] ?? 10)
             ->withQueryString()
@@ -61,5 +58,14 @@ class FetchShopStaffListUseCase
                 'total'       => $staffs->total(),
             ],
         ];
+    }
+
+    private function queryWithFilters(array $convert): Builder
+    {
+        return ShopStaff::with(['image', 'shop'])
+            ->when($convert['name'] ?? null, fn(Builder $query, $name) => $query->where('name', 'like', "%$name%"))
+            ->when($convert['shop_ids'] ?? null, fn(Builder $query, $shopIds) => $query->whereIn('shop_id', $shopIds))
+            ->when($convert['active_flag'] ?? null, fn(Builder $query, $flag) => $query->where('active_flag', $flag))
+            ->when($convert['positions'] ?? null, fn(Builder $query, $positions) => $query->whereIn('position', $positions));
     }
 }

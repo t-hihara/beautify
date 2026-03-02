@@ -35,11 +35,7 @@ class ExportShopStaff implements FromQuery, ShouldQueue, WithCustomCsvSettings, 
 
     public function query(): Builder
     {
-        return ShopStaff::with(['shop'])
-            ->byName($this->filters['name'] ?? null)
-            ->byShopIds($this->filters['shop_ids'] ?? null)
-            ->byActiveFlag($this->filters['active_flag'] ?? null)
-            ->byPositions($this->filters['positions'] ?? null)
+        return $this->queryWithFilters()
             ->orderBy('id');
     }
 
@@ -99,5 +95,14 @@ class ExportShopStaff implements FromQuery, ShouldQueue, WithCustomCsvSettings, 
             'status'        => ExportFileStatusTypeEnum::FAILED,
             'error_message' => $e->getMessage(),
         ]);
+    }
+
+    private function queryWithFilters(): Builder
+    {
+        return ShopStaff::with(['image', 'shop'])
+            ->when($this->filters['name'] ?? null, fn(Builder $query, $name) => $query->where('name', 'like', "%$name%"))
+            ->when($this->filters['shop_ids'] ?? null, fn(Builder $query, $shopIds) => $query->whereIn('shop_id', $shopIds))
+            ->when($this->filters['active_flag'] ?? null, fn(Builder $query, $flag) => $query->where('active_flag', $flag))
+            ->when($this->filters['positions'] ?? null, fn(Builder $query, $positions) => $query->whereIn('position', $positions));
     }
 }
