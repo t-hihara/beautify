@@ -43,7 +43,7 @@ class ShopSeeder extends BaseSeeder
             'お客様一人ひとりに合わせたカスタマイズサービスをご提供します。',
         ];
 
-        for ($i = 1; $i <= 200; $i++) {
+        for ($i = 1; $i <= 20000; $i++) {
             $prefectureId = rand(1, 47);
             $areaId       = null;
             $stationId    = null;

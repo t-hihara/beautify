@@ -27,6 +27,7 @@ return new class extends Migration
             $table->date('valid_from')->nullable()->comment('期間限定: 有効期間（開始）');
             $table->date('valid_to')->nullable()->comment('期間限定: 有効期間（終了）');
             $table->timestamps();
+            $table->index(['sort_order', 'id']);
             $table->index(['shop_id', 'active_flag', 'sort_order']);
             $table->index(['shop_id', 'condition_type']);
         });

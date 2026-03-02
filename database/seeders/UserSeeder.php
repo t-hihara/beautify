@@ -65,7 +65,7 @@ class UserSeeder extends BaseSeeder
     {
         Shop::chunkById(self::CHUNK_SIZE, function ($shops) use (&$items) {
             foreach ($shops as $shop) {
-                for ($i = 1; $i <= rand(2, 5); $i++) {
+                for ($i = 1; $i <= rand(2, 3); $i++) {
                     $items[] = [
                         'last_name'       => "staff_owner{$shop->id}_{$i}",
                         'first_name'      => "test",
@@ -78,7 +78,7 @@ class UserSeeder extends BaseSeeder
                     ];
                 }
 
-                for ($i = 1; $i <= rand(5, 8); $i++) {
+                for ($i = 1; $i <= rand(5, 6); $i++) {
                     $items[] = [
                         'last_name'       => "staff{$shop->id}_{$i}",
                         'first_name'      => "test",

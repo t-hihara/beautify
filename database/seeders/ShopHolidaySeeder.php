@@ -34,11 +34,10 @@ class ShopHolidaySeeder extends BaseSeeder
                 foreach ($shops as $shop) {
                     $hoursByDay = $shop->businessHours->keyBy('day_of_week');
                     foreach ($holidays as $holiday) {
-                        $date      = Carbon::parse($holiday);
-                        $dayOfWeek = DayOfWeekTypeEnum::cases()[$date->dayOfWeek]->value;
-                        $hour      = $hoursByDay->get($dayOfWeek);
-
-                        if ($hour !== null && $hour->open_time !== null) {
+                        $date         = Carbon::parse($holiday);
+                        $dayOfWeek    = DayOfWeekTypeEnum::cases()[$date->dayOfWeek]->value;
+                        $businessHour = $shop->businessHours->firstWhere('day_of_week', $dayOfWeek);
+                        if ($businessHour && $businessHour->open_time !== null) {
                             $items[] = [
                                 'shop_id'    => $shop->id,
                                 'close_date' => $holiday,
