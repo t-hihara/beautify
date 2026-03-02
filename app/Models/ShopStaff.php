@@ -50,30 +50,6 @@ class ShopStaff extends Model
     }
 
     /* ================================================================================
-                                        スコープ
-    ================================================================================ */
-
-    public function scopeByName(Builder $query, ?string $name): Builder
-    {
-        return $query->when($name, fn(Builder $q) => $q->where('name', 'like', "%$name%"));
-    }
-
-    public function scopeByActiveFlag(Builder $query, ?string $flag): Builder
-    {
-        return $query->when($flag, fn(Builder $q) => $q->where('active_flag', $flag));
-    }
-
-    public function scopeByShopIds(Builder $query, ?array $shopIds): Builder
-    {
-        return $query->when($shopIds, fn(Builder $q) => $q->whereIn('shop_id', $shopIds));
-    }
-
-    public function scopeByPositions(Builder $query, ?array $positions): Builder
-    {
-        return $query->when($positions, fn(Builder $q) => $q->whereIn('position', $positions));
-    }
-
-    /* ================================================================================
                                         リレーション
     ================================================================================ */
 
