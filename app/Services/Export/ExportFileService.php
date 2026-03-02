@@ -12,9 +12,9 @@ class ExportFileService
 {
     public function getUnloadedFileCount(int $userId): int
     {
-        return ExportFile::byUserId($userId)
-            ->byStatus(ExportFileStatusTypeEnum::COMPLETED)
-            ->byDownloaded(false)
+        return ExportFile::where('user_id', $userId)
+            ->where('status', ExportFileStatusTypeEnum::COMPLETED)
+            ->where('downloaded_at', null)
             ->count();
     }
 

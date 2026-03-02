@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
                 StationSeeder::class,
                 ShopSeeder::class,
                 ShopBusinessHourSeeder::class,
+                ShopHolidaySeeder::class,
                 UserSeeder::class,
                 RoleAndPermissionSeeder::class,
                 ShopStaffSeeder::class,

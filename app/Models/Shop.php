@@ -56,14 +56,19 @@ class Shop extends Model
         return $this->hasMany(ShopBusinessHour::class);
     }
 
-    public function mainImage(): MorphOne
+    public function holidays(): HasMany
     {
-        return $this->morphOne(UploadedImage::class, 'imageable');
+        return $this->hasMany(Holiday::class);
     }
 
     public function images(): MorphMany
     {
         return $this->morphMany(UploadedImage::class, 'imageable');
+    }
+
+    public function mainImage(): MorphOne
+    {
+        return $this->morphOne(UploadedImage::class, 'imageable');
     }
 
     public function plans(): HasMany
