@@ -21,7 +21,7 @@ class ExportFileService
     public function createExportFile(int $userId, string $subject, array $filters, string $type): ExportFile
     {
         $datetime = Carbon::now()->format('Y-m-d H:i:s');
-        $filename = sprintf('%s_%s_$s.$s', $subject, Str::random(20), $datetime, $type);
+        $filename = sprintf('%s_%s_%s.%s', $subject, Str::random(20), $datetime, $type);
         $filepath = 'exports/' . $filename;
 
         return ExportFile::create([

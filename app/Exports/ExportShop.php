@@ -27,12 +27,7 @@ class ExportShop implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithH
 
     public function query(): Builder
     {
-        return Shop::with(['prefecture'])
-            ->byName($this->filters['name'] ?? null)
-            ->byEmail($this->filters['email'] ?? null)
-            ->byPhone($this->filters['phone'] ?? null)
-            ->byPrefectures($this->filters['prefecture_ids'] ?? null)
-            ->byActiveFlag($this->filters['active_flag'] ?? null)
+        return $this->queryWithFilters()
             ->orderBy('id');
     }
 
@@ -105,5 +100,15 @@ class ExportShop implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithH
             'status'        => ExportFileStatusTypeEnum::FAILED,
             'error_message' => $e->getMessage(),
         ]);
+    }
+
+    private function queryWithFilters(): Builder
+    {
+        return Shop::with(['area', 'businessHours', 'prefecture', 'station'])
+            ->when($this->filters['name'] ?? null, fn(Builder $query, $name) => $query->where('name', 'like', "%$name%"))
+            ->when($this->filters['email'] ?? null, fn(Builder $query, $email) => $query->where('email', 'like', "$email"))
+            ->when($this->filters['phone'] ?? null, fn(Builder $query, $phone) => $query->where('phone', $phone))
+            ->when($this->filters['prefecture_ids'] ?? null, fn(Builder $query, $prefectures) => $query->whereIn('prefecture_id', $prefectures))
+            ->when($this->filters['active_flag'] ?? null, fn(Builder $query, $flag) => $query->where('active_flag', $flag));
     }
 }

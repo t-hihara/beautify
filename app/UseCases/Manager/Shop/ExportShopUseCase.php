@@ -30,7 +30,7 @@ class ExportShopUseCase
             $filepath = 'exports/' . $filename;
 
             $exportFile = $this->exportFileService->createExportFile($userId, 'shop', $convert, $type);
-            $exportType = $this->exportFileService->resolveExcelType($type);
+            $excelType  = $this->exportFileService->resolveExcelType($type);
 
             Excel::queue(new ExportShop($convert, $exportFile->id), $filepath, 's3', $excelType);
 

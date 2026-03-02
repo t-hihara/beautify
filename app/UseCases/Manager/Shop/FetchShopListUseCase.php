@@ -17,7 +17,7 @@ class FetchShopListUseCase
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
-        $shops = $this->filters($convert)
+        $shops = $this->queryWithFilters($convert)
             ->orderBy('id')
             ->paginate($convert['per_page'] ?? 10)
             ->withQueryString()
@@ -60,7 +60,7 @@ class FetchShopListUseCase
         ];
     }
 
-    private function filters(array $convert)
+    private function queryWithFilters(array $convert): Builder
     {
         return Shop::with(['area', 'businessHours', 'prefecture', 'station'])
             ->when($convert['name'] ?? null, fn(Builder $query, $name) => $query->where('name', 'like', "%$name%"))
