@@ -5,6 +5,7 @@ namespace App\UseCases\Manager\Menu;
 use App\Enum\ActiveFlagTypeEnum;
 use App\Enum\MenuTypeEnum;
 use App\Models\Shop;
+use Illuminate\Database\Eloquent\Builder;
 
 class PrepareMenuCreateFormUseCase
 {
@@ -13,7 +14,8 @@ class PrepareMenuCreateFormUseCase
         return [
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'menuTypes'   => MenuTypeEnum::options(),
-            'shops'       => Shop::byId($shopId)->get(['id', 'name']),
+            'shops'       => Shop::when($shopId, fn(Builder $query, $shopId) => $query->where('id', $shopId))
+                ->get(['id', 'name']),
         ];
     }
 }

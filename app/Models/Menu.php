@@ -41,35 +41,6 @@ class Menu extends Model
                                         アクセサ
     ================================================================================ */
 
-    public function scopeByName(Builder $query, ?string $name): Builder
-    {
-        return $query->when($name, fn(Builder $q) => $q->where('name', 'like', "%$name%"));
-    }
-
-    public function scopeByTypes(Builder $query, ?array $types): Builder
-    {
-        return $query->when($types, fn(Builder $q) => $q->whereIn("type", $types));
-    }
-
-    public function scopeByShopId(Builder $query, ?int $shopId): Builder
-    {
-        return $query->when($shopId, fn(Builder $q) => $q->where('shop_id', $shopId));
-    }
-
-    public function scopeByShopIds(Builder $query, ?array $shopIds): Builder
-    {
-        return $query->when($shopIds, fn(Builder $q) => $q->whereIn('shop_id', $shopIds));
-    }
-
-    public function scopeByActiveFlag(Builder $query, ?string $flag): Builder
-    {
-        return $query->when($flag, fn(Builder $q) => $q->where('active_flag', $flag));
-    }
-
-    /* ================================================================================
-                                        スコープ
-    ================================================================================ */
-
     /* ================================================================================
                                         リレーション
     ================================================================================ */

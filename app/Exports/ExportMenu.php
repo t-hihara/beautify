@@ -6,6 +6,7 @@ use App\Enum\ExportFileStatusTypeEnum;
 use App\Models\ExportFile;
 use App\Models\Menu;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
@@ -34,11 +35,7 @@ class ExportMenu implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithH
 
     public function query()
     {
-        return Menu::with(['shop'])
-            ->byName($this->filters['name'] ?? null)
-            ->byShopIds($this->filters['shop_ids'] ?? null)
-            ->byTypes($this->filters['types'] ?? null)
-            ->byActiveFlag($this->filters['active_flag'] ?? null)
+        return $this->queryWithFilters()
             ->orderBy('sort_order')
             ->orderBy('id');
     }
@@ -99,5 +96,14 @@ class ExportMenu implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithH
             'status'        => ExportFileStatusTypeEnum::FAILED,
             'error_message' => $e->getMessage(),
         ]);
+    }
+
+    private function queryWithFilters(): Builder
+    {
+        return Menu::with(['shop'])
+            ->when($this->filters['name'] ?? null, fn(Builder $query, $name) => $query->where('name', 'like', "$name"))
+            ->when($this->filters['shop_ids'] ?? null, fn(Builder $query, $shopIds) => $query->whereIn('shop_id', $shopIds))
+            ->when($this->filters['types'] ?? null, fn(Builder $query, $types) => $query->whereIn('types', $types))
+            ->when($this->filters['active_flat'] ?? null, fn(Builder $query, $flag) => $query->where('active_flag', $flag));
     }
 }
