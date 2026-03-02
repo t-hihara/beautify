@@ -4,6 +4,7 @@ namespace App\UseCases\Manager\Log;
 
 use App\Models\ActivityLog;
 use App\Utilities\RecursiveCovert;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
 class FetchLogListUseCase
@@ -12,11 +13,7 @@ class FetchLogListUseCase
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
-        $logs = ActivityLog::with(['causer', 'subject'])
-            ->byName($convert['name'] ?? null)
-            ->byEvent($convert['event'] ?? null)
-            ->byDescription($convert['description'] ?? null)
-            ->byDuration($convert['from_date'] ?? null, $convert['to_date'] ?? null)
+        $logs = $this->queryWithFilters($convert)
             ->orderByDesc('created_at')
             ->paginate($convert['per_page'] ?? 10)
             ->withQueryString()
@@ -43,6 +40,32 @@ class FetchLogListUseCase
                 'total'       => $logs->total(),
             ],
         ];
+    }
+
+    private function queryWithFilters(array $convert): Builder
+    {
+        return ActivityLog::with(['causer', 'subject'])
+            ->when($convert['name'] ?? null, function (Builder $q, $name) {
+                $like = "%{$name}%";
+                return $q->whereHas('causer', fn(Builder $q2) => $q2
+                    ->where('last_name', 'like', $like)
+                    ->orWhere('first_name', 'like', $like)
+                    ->orWhereRaw('CONCAT(last_name, first_name) LIKE ?', [$like]));
+            })
+            ->when($convert['event'] ?? null, fn(Builder $q, $event) => $q->where('event', 'like', "%{$event}%"))
+            ->when($convert['description'] ?? null, fn(Builder $q, $desc) => $q->where('description', 'like', "%{$desc}%"))
+            ->when(
+                ($convert['from_date'] ?? null) && ($convert['to_date'] ?? null),
+                fn(Builder $q, $_) => $q->whereBetween('created_at', [$convert['from_date'], $convert['to_date']])
+            )
+            ->when(
+                ($convert['from_date'] ?? null) && !($convert['to_date'] ?? null),
+                fn(Builder $q, $_) => $q->where('created_at', '>=', $convert['from_date'])
+            )
+            ->when(
+                !($convert['from_date'] ?? null) && ($convert['to_date'] ?? null),
+                fn(Builder $q, $_) => $q->where('created_at', '<=', $convert['to_date'])
+            );
     }
 
     private function formatProperties(Collection $properties): array
