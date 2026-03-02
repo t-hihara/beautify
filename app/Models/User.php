@@ -8,7 +8,6 @@ use App\Notifications\Auth\ResetPasswordNotification;
 use App\Notifications\Auth\VerifyEmailNotification;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -76,15 +75,6 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function getShopIdAttribute(): ?int
     {
         return $this->shopStaff?->shop_id;
-    }
-
-    /* ================================================================================
-                                        スコープ
-    ================================================================================ */
-
-    public function scopeByEmail(Builder $query, ?string $email): Builder
-    {
-        return $query->when($email, fn(Builder $q) => $q->where('email', $email));
     }
 
     /* ================================================================================

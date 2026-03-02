@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Enum\ActiveFlagTypeEnum;
 use App\Models\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -41,45 +40,6 @@ class Shop extends Model
 
     /* ================================================================================
                                         アクセサ
-    ================================================================================ */
-
-    public function scopeById(Builder $query, ?int $id): Builder
-    {
-        return $query->when($id, fn(Builder $q) => $q->where('id', $id));
-    }
-
-    public function scopeByName(Builder $query, ?string $name): Builder
-    {
-        return $query->when($name, fn(Builder $q) => $q->where('name', 'like', "%$name%"));
-    }
-
-    public function scopeByEmail(Builder $query, ?string $email): Builder
-    {
-        return $query->when($email, fn(Builder $q) => $q->where('email', 'like', "%$email%"));
-    }
-
-    public function scopeByPhone(Builder $query, ?string $phone): Builder
-    {
-        return $query->when($phone, fn(Builder $q) => $q->where('phone', $phone));
-    }
-
-    public function scopeByPrefectures(Builder $query, ?array $prefectures): Builder
-    {
-        return $query->when($prefectures, fn(Builder $q) => $q->whereIn('prefecture_id', $prefectures));
-    }
-
-    public function scopeByAreas(Builder $query, ?array $areas): Builder
-    {
-        return $query->when($areas, fn(Builder $q) => $q->whereIn('area_id', $areas));
-    }
-
-    public function scopeByActiveFlag(Builder $query, ?string $activeFlag): Builder
-    {
-        return $query->when($activeFlag, fn(Builder $q) => $q->where('active_flag', $activeFlag));
-    }
-
-    /* ================================================================================
-                                        スコープ
     ================================================================================ */
 
     /* ================================================================================

@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enum\ExportFileStatusTypeEnum;
 use App\Models\Traits\LogsActivity;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class ExportFile extends Model
@@ -52,38 +51,6 @@ class ExportFile extends Model
     }
 
     /* ================================================================================
-                                        スコープ
-    ================================================================================ */
-
-    /* ================================================================================
                                         リレーション
     ================================================================================ */
-
-    public function scopeByUserId(Builder $query, int $userId): Builder
-    {
-        return $query->where('user_id', $userId);
-    }
-
-    public function scopeBySubject(Builder $query, ?string $subject): Builder
-    {
-        return $query->when($subject, fn(Builder $q) => $q->where('subject', 'like', "%$subject%"));
-    }
-
-    public function scopeByStatus(Builder $query, ?ExportFileStatusTypeEnum $status): Builder
-    {
-        return $query->when($status, fn(Builder $q) => $q->where('status', $status));
-    }
-
-    public function scopeByDownloaded(Builder $query, bool $downloaded = false): Builder
-    {
-        return $downloaded ? $query->whereNotNull('downloaded_at') : $query->whereNull('downloaded_at');
-    }
-
-    public function scopeByDuration(Builder $query, ?string $from, ?string $to): Builder
-    {
-        return $query
-            ->when($from && $to, fn(Builder $q) => $q->whereBetween('created_at', [$from, $to]))
-            ->when($from && !$to, fn(Builder $q) => $q->where('created_at', '>=', $from))
-            ->when(!$from && $to, fn(Builder $q) => $q->where('created_at', '<=', $to));
-    }
 }

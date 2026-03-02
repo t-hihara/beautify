@@ -4,6 +4,7 @@ namespace App\UseCases\Manager\ExportFile;
 
 use App\Models\ExportFile;
 use App\Utilities\RecursiveCovert;
+use Illuminate\Database\Eloquent\Builder;
 
 class FetchExportFileListUseCase
 {
@@ -11,9 +12,7 @@ class FetchExportFileListUseCase
     {
         $convert = RecursiveCovert::_convert($filters, 'snake');
 
-        $files = ExportFile::byUserId($userId)
-            ->bySubject($convert['subject'] ?? null)
-            ->byDuration($convert['from_date'] ?? null, $convert['to_date'] ?? null)
+        $files = $this->queryWithFilters($convert, $userId)
             ->orderByDesc('created_at')
             ->paginate($convert['per_page'] ?? 10)
             ->withQueryString()
@@ -40,5 +39,24 @@ class FetchExportFileListUseCase
                 'total'       => $files->total(),
             ],
         ];
+    }
+
+    private function queryWithFilters(array $convert, int $userId): Builder
+    {
+        return ExportFile::query()
+            ->where('user_id', $userId)
+            ->when($convert['subject'] ?? null, fn(Builder $q, $subject) => $q->where('subject', 'like', "%$subject%"))
+            ->when(
+                ($convert['from_date'] ?? null) && ($convert['to_date'] ?? null),
+                fn(Builder $q, $_) => $q->whereBetween('created_at', [$convert['from_date'], $convert['to_date']])
+            )
+            ->when(
+                ($convert['from_date'] ?? null) && !($convert['to_date'] ?? null),
+                fn(Builder $q, $_) => $q->where('created_at', '>=', $convert['from_date'])
+            )
+            ->when(
+                !($convert['from_date'] ?? null) && ($convert['to_date'] ?? null),
+                fn(Builder $q, $_) => $q->where('created_at', '<=', $convert['to_date'])
+            );
     }
 }
