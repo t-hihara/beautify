@@ -17,26 +17,12 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeExport;
 use Throwable;
 
-class ExportShop implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithHeadings, WithMapping, WithEvents
+class ExportShop extends ExportBase implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithHeadings, WithMapping, WithEvents
 {
-    public function __construct(
-        private array $filters,
-        private int $exportFileId,
-        private string $disk = 's3',
-    ) {}
-
     public function query(): Builder
     {
         return $this->queryWithFilters()
             ->orderBy('id');
-    }
-
-    public function getCsvSettings(): array
-    {
-        return [
-            'use_bom'         => true,
-            'output_encoding' => 'UTF-8',
-        ];
     }
 
     public function headings(): array
@@ -67,39 +53,6 @@ class ExportShop implements FromQuery, ShouldQueue, WithCustomCsvSettings, WithH
             $shop->address,
             $shop->building,
         ];
-    }
-
-    public function registerEvents(): array
-    {
-        return [
-            BeforeExport::class => function () {
-                ExportFile::find($this->exportFileId)?->update([
-                    'status' => ExportFileStatusTypeEnum::PROCESSING,
-                ]);
-            },
-            AfterSheet::class => function () {
-                $file = ExportFile::find($this->exportFileId);
-                if (!$file) {
-                    return;
-                }
-                $filesize = Storage::disk($this->disk)->exists($file->file_path)
-                    ? Storage::disk($this->disk)->size($file->file_path)
-                    : 0;
-
-                $file->update([
-                    'status'    => ExportFileStatusTypeEnum::COMPLETED,
-                    'file_size' => $filesize,
-                ]);
-            },
-        ];
-    }
-
-    public function failed(Throwable $e): void
-    {
-        ExportFile::find($this->exportFileId)?->update([
-            'status'        => ExportFileStatusTypeEnum::FAILED,
-            'error_message' => $e->getMessage(),
-        ]);
     }
 
     private function queryWithFilters(): Builder
