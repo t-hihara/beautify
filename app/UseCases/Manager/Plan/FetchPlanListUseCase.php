@@ -45,7 +45,6 @@ class FetchPlanListUseCase
             ]),
             'activeFlags' => ActiveFlagTypeEnum::options(),
             'menuTypes'   => MenuTypeEnum::options(),
-            'shops'       => Shop::get(['id', 'name']),
             'plans'       => $plans->items(),
             'links'       => $plans->linkCollection(),
             'pagination'  => [

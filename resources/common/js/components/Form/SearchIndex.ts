@@ -3,3 +3,4 @@ export { default as SearchDateTime } from "@common/components/Form/SearchDateTim
 export { default as SearchEmail } from "@common/components/Form/SearchEmail.vue";
 export { default as SearchSingleSelect } from "@common/components/Form/SearchSingleSelect.vue";
 export { default as SearchMultiSelect } from "@common/components/Form/SearchMultiSelect.vue";
+export { default as SearchMultiCombo } from "@common/components/Form/SearchMultiCombo.vue";

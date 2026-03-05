@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { route } from "ziggy-js";
 import { debounce } from "lodash";
 import { useGuard } from "@manager/composables/useGuard";
@@ -9,6 +9,7 @@ import {
   SearchSingleSelect,
   SearchMultiSelect,
   SearchDateTime,
+  SearchMultiCombo,
 } from "@/common/js/components/Form/SearchIndex";
 import {
   ButtonPrimary,
@@ -21,6 +22,7 @@ import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@manager/components/Ui/Pagination.vue";
 import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
+import axios from "axios";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -75,7 +77,6 @@ const { filters, plans } = defineProps<{
   filters: Filters;
   activeFlags: EnumType[];
   menuTypes: EnumType[];
-  shops: EnumType[];
   plans: PlanType[];
   links: PaginationLinkType[];
   pagination: PaginationType;
@@ -93,8 +94,27 @@ const searchForm = useForm<SearchFormType>("PlanListSearch", {
 });
 
 const guard = useGuard();
+const shops = ref<EnumType[]>([]);
+const shopSearchQuery = ref<string>("");
+const offset = ref<number>(0);
 const showDeleteModal = ref<boolean>(false);
 const targetPlan = ref<PlanType | null>(null);
+
+const fetchShops = async (): Promise<void> => {
+  const response = await axios.get("/api/shopsForSearch", {
+    params: { limit: 10, offset: 0, name: shopSearchQuery.value },
+  });
+  shops.value = response.data.shops ?? [];
+  offset.value += shops.value.length;
+};
+
+const fetchMoreShops = async (): Promise<void> => {
+  const response = await axios.get("/api/shopsForSearch", {
+    params: { limit: 10, offset: offset.value, name: shopSearchQuery.value },
+  });
+  shops.value = [...shops.value, ...response.data.shops];
+  offset.value += response.data.shops.length;
+};
 
 const search = (): void => {
   searchForm.get(route(`${guard.value}.plans.index`), {
@@ -133,6 +153,17 @@ const resetTargetMenu = (): void => {
   targetPlan.value = null;
 };
 
+onMounted(async () => {
+  await fetchShops();
+});
+
+watch(
+  shopSearchQuery,
+  debounce(() => {
+    fetchShops();
+  }, 300),
+);
+
 watch(
   () => searchForm.data(),
   debounce(() => {
@@ -150,13 +181,16 @@ watch(
     <div class="mt-8 p-6 bg-white rounded-lg shadow-lg">
       <div class="grid grid-cols-4 gap-4">
         <search-text v-model="searchForm.name" field="name" title="プラン名" placeholder="プラン名" />
-        <search-multi-select
+        <search-multi-combo
           v-if="guard === 'admin'"
           v-model="searchForm.shopIds"
+          v-model:search="shopSearchQuery"
           field="shopIds"
           title="店舗"
           show-clear
+          class="col-span-2"
           :items="shops"
+          @load-more="fetchMoreShops"
         />
         <search-single-select
           v-model="searchForm.activeFlag"
