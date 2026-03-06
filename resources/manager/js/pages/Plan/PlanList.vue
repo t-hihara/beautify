@@ -97,6 +97,8 @@ const guard = useGuard();
 const shops = ref<EnumType[]>([]);
 const shopSearchQuery = ref<string>("");
 const offset = ref<number>(0);
+const shopsLoadingMore = ref(false);
+const shopsLoadMoreBlocked = ref(false);
 const showDeleteModal = ref<boolean>(false);
 const targetPlan = ref<PlanType | null>(null);
 
@@ -109,11 +111,22 @@ const fetchShops = async (): Promise<void> => {
 };
 
 const fetchMoreShops = async (): Promise<void> => {
-  const response = await axios.get("/api/shopsForSearch", {
-    params: { limit: 10, offset: offset.value, name: shopSearchQuery.value },
-  });
-  shops.value = [...shops.value, ...response.data.shops];
-  offset.value += response.data.shops.length;
+  if (shopsLoadingMore.value || shopsLoadMoreBlocked.value) return;
+  shopsLoadingMore.value = true;
+  try {
+    const response = await axios.get("/api/shopsForSearch", {
+      params: { limit: 10, offset: offset.value, name: shopSearchQuery.value },
+    });
+    shops.value = [...shops.value, ...response.data.shops];
+    offset.value += response.data.shops.length;
+  } catch (err: unknown) {
+    if (axios.isAxiosError(err) && err.response?.status === 401) {
+      shopsLoadMoreBlocked.value = true;
+    }
+    throw err;
+  } finally {
+    shopsLoadingMore.value = false;
+  }
 };
 
 const search = (): void => {
@@ -154,12 +167,15 @@ const resetTargetMenu = (): void => {
 };
 
 onMounted(async () => {
-  await fetchShops();
+  if (guard.value === "admin") {
+    await fetchShops();
+  }
 });
 
 watch(
   shopSearchQuery,
   debounce(() => {
+    shopsLoadMoreBlocked.value = false;
     fetchShops();
   }, 300),
 );
@@ -191,6 +207,7 @@ watch(
           class="col-span-2"
           :items="shops"
           @load-more="fetchMoreShops"
+          @close="shopsLoadMoreBlocked = false"
         />
         <search-single-select
           v-model="searchForm.activeFlag"

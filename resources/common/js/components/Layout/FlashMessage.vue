@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { usePage } from "@inertiajs/vue3";
-import { watch } from "vue";
+import { onMounted, onUnmounted, watch } from "vue";
 import { useToast } from "vue-toastification";
 
 const page = usePage();
@@ -32,6 +32,12 @@ watch(
     immediate: true,
   },
 );
+
+onMounted(() => {
+  const handler = () => toast.error("認証の有効期限が切れたため、再ログインが必要です。", { timeout: 3000 });
+  window.addEventListener("auth-expired", handler);
+  onUnmounted(() => window.removeEventListener("auth-expired", handler));
+});
 </script>
 
 <template></template>

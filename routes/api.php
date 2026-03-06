@@ -8,6 +8,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::controller(ShopController::class)->group(function () {
+Route::middleware(['auth:sanctum'])->controller(ShopController::class)->group(function () {
     Route::get('/shopsForSearch', 'list')->name('shops.list');
 });

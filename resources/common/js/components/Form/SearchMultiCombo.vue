@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
+import { throttle } from "lodash";
 import {
   Combobox,
   ComboboxButton,
@@ -30,9 +31,12 @@ const { items } = defineProps<{
 const emit = defineEmits<{
   "update:modelValue": [value: (string | number)[]];
   loadMore: [];
+  close: [];
 }>();
 
 const scrollTop = ref<number>(0);
+const openRef = ref<boolean>(false);
+
 const startIndex = computed(() => Math.max(0, Math.floor(scrollTop.value / ITEM_HEIGHT)));
 const endIndex = computed(() => Math.min(items.length, startIndex.value + VISIBLE_COUNT));
 const visibleItems = computed(() => items.slice(startIndex.value, endIndex.value));
@@ -52,15 +56,24 @@ const displayValue = (value: unknown): string => {
   );
 };
 
+const emitLoadMore = throttle((): void => {
+  emit("loadMore");
+}, 500);
+
 const onOptionsScroll = (e: Event): void => {
   const el = e.target as HTMLElement;
   scrollTop.value = el.scrollTop;
-  if (el.scrollTop + el.clientHeight >= el.scrollHeight - LOAD_MORE_THRESHOLD) emit("loadMore");
+  if (el.scrollTop + el.clientHeight >= el.scrollHeight - LOAD_MORE_THRESHOLD) emitLoadMore();
 };
 
 const onSearchInput = (e: Event): void => {
   const value = (e.target as HTMLInputElement).value;
   search.value = value;
+};
+
+const setOpen = (open: boolean): void => {
+  if (openRef.value && !open) emit("close");
+  openRef.value = open;
 };
 
 watch(
@@ -74,6 +87,7 @@ watch(
 <template>
   <div>
     <combobox v-model="model" multiple as="div" v-slot="{ open }">
+      <span v-show="false">{{ setOpen(open) }}</span>
       <combobox-label v-if="title" class="flex items-center font-medium text-sm text-zinc-800"
         >{{ title }}<span v-if="required" class="text-red-500">※</span></combobox-label
       >

@@ -16,8 +16,6 @@ class ShopController extends Controller
         $limit  = $request->input('limit');
         $offset = $request->input('offset');
 
-        \Log::info($request->toArray());
-
         $shops = Shop::where('active_flag', ActiveFlagTypeEnum::ACTIVE)
             ->when($name !== null && $name !== '', fn($q) => $q->where('name', 'like', '%' . $name . '%'))
             ->orderBy('id')

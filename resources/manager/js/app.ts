@@ -16,6 +16,7 @@ import "vue-toastification/dist/index.css";
 
 import IndexLayout from "./layouts/Index.vue";
 import GuestLayout from "./layouts/Guest.vue";
+import axios from "axios";
 
 createInertiaApp({
   resolve: async (name) => {
@@ -36,6 +37,15 @@ createInertiaApp({
       (window as any).Laravel = (window as any).Laravel || {};
       (window as any).Laravel.jsPermissions = typeof permissions === "string" ? JSON.parse(permissions) : permissions;
     }
+    axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response?.status === 401) {
+          window.dispatchEvent(new CustomEvent("auth-expired"));
+        }
+        return Promise.reject(error);
+      },
+    );
     createApp({ render: () => h(App, props) })
       .use(plugin)
       .use(LaravelPermissionToVueJS)
