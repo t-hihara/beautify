@@ -30,8 +30,8 @@
             "@/*": [
                 "./resources/*"
             ],
-            "@manager/*": [
-                "./resources/manager/js/*"
+            "@operator/*": [
+                "./resources/operator/js/*"
             ],
             "@user/*": [
                 "./resources/user/js/*"

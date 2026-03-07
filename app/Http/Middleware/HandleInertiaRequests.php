@@ -12,7 +12,7 @@ class HandleInertiaRequests extends Middleware
     public function rootView(Request $request): string
     {
         if ($request->is('admin/*') || $request->is('shop/*')) {
-            return 'app-manager';
+            return 'app-operator';
         }
 
         return 'app-user';

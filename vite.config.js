@@ -10,7 +10,7 @@ export default defineConfig({
     laravel({
       input: [
         'resources/common/css/app.css',
-        'resources/manager/js/app.ts',
+        'resources/operator/js/app.ts',
         'resources/user/js/app.ts',
       ],
       refresh: true,
@@ -22,7 +22,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './resources'),
-      '@manager': path.resolve(__dirname, './resources/manager/js'),
+      '@operator': path.resolve(__dirname, './resources/operator/js'),
       '@user': path.resolve(__dirname, './resources/user/js'),
       '@common': path.resolve(__dirname, './resources/common/js'),
       'ziggy-js': path.resolve(__dirname, './vendor/tightenco/ziggy/src/js/index.js'),
