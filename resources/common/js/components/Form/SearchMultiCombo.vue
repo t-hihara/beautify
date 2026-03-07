@@ -42,10 +42,12 @@ const filteredItems = computed(() =>
       ),
 );
 const startIndex = computed(() => Math.max(0, Math.floor(scrollTop.value / ITEM_HEIGHT)));
-const endIndex = computed(() => Math.min(items.length, startIndex.value + VISIBLE_COUNT));
+const endIndex = computed(() =>
+  Math.min(filteredItems.value.length, startIndex.value + VISIBLE_COUNT),
+);
 const visibleItems = computed(() => filteredItems.value.slice(startIndex.value, endIndex.value));
 const paddingTop = computed(() => startIndex.value * ITEM_HEIGHT);
-const paddingBottom = computed(() => (items.length - endIndex.value) * ITEM_HEIGHT);
+const paddingBottom = computed(() => (filteredItems.value.length - endIndex.value) * ITEM_HEIGHT);
 const selectedItems = computed(() => items.filter((item) => (model.value ?? []).some((id) => id === item.id)));
 
 const displayValue = (value: unknown): string => {
@@ -120,20 +122,30 @@ watch(
             class="absolute z-50 w-full mt-1 bg-white rounded-lg border border-zinc-200 shadow-lg max-h-60 overflow-scroll"
             @scroll="onOptionsScroll"
           >
-            <div v-if="items.length === 0" class="px-3 py-4 text-center text-sm text-zinc-500">入力中...</div>
-            <div v-else :style="{ paddingTop: paddingTop + 'px', paddingBottom: paddingBottom + 'px' }">
-              <combobox-option
-                v-for="item in visibleItems"
-                :key="item.id"
-                :value="item.id"
-                class="px-3 py-2 hover:bg-zinc-100 cursor-pointer"
-              >
-                <div class="flex justify-between items-center">
-                  <span>{{ item.name }}</span>
-                  <span v-if="selectedItems.some((s) => s.id === item.id)"><check-icon class="size-4" /></span>
-                </div>
-              </combobox-option>
-            </div>
+            <template v-if="filteredItems.length > 0">
+              <div :style="{ paddingTop: paddingTop + 'px', paddingBottom: paddingBottom + 'px' }">
+                <combobox-option
+                  v-for="item in visibleItems"
+                  :key="item.id"
+                  :value="item.id"
+                  class="px-3 py-2 hover:bg-zinc-100 cursor-pointer"
+                >
+                  <div class="flex justify-between items-center">
+                    <span>{{ item.name }}</span>
+                    <span v-if="selectedItems.some((s) => s.id === item.id)"><check-icon class="size-4" /></span>
+                  </div>
+                </combobox-option>
+              </div>
+            </template>
+            <template v-else-if="(search ?? '').trim() !== ''">
+              <div class="px-3 py-4 text-center text-sm text-zinc-500">入力中...</div>
+            </template>
+            <template v-else-if="items.length === 0">
+              <div class="px-3 py-4 text-center text-sm text-zinc-500">候補がありません</div>
+            </template>
+            <template v-else>
+              <div class="px-3 py-4 text-center text-sm text-zinc-500">該当するものがありません。</div>
+            </template>
           </combobox-options>
         </transition>
       </div>

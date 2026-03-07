@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, router, useForm } from "@inertiajs/vue3";
-import { onMounted, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { route } from "ziggy-js";
 import { debounce } from "lodash";
 import { useGuard } from "@operator/composables/useGuard";
@@ -22,7 +22,6 @@ import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue
 import type { EnumType, PaginationLinkType, PaginationType } from "@/common/js/lib";
 import Pagination from "@operator/components/Ui/Pagination.vue";
 import DialogModal from "@/common/js/components/Layout/DialogModal.vue";
-import axios from "axios";
 
 const PER_PAGE_OPTIONS = [
   { id: 10, name: "10件" },
@@ -73,10 +72,11 @@ type SearchFormType = {
   perPage: number;
 };
 
-const { filters, plans } = defineProps<{
+const { filters, plans, shops } = defineProps<{
   filters: Filters;
   activeFlags: EnumType[];
   menuTypes: EnumType[];
+  shops: EnumType[];
   plans: PlanType[];
   links: PaginationLinkType[];
   pagination: PaginationType;
@@ -94,11 +94,9 @@ const searchForm = useForm<SearchFormType>("PlanListSearch", {
 });
 
 const guard = useGuard();
-const shops = ref<EnumType[]>([]);
 const searchShopName = ref<string>("");
 const showDeleteModal = ref<boolean>(false);
 const targetPlan = ref<PlanType | null>(null);
-
 
 const search = (): void => {
   searchForm.get(route(`${guard.value}.plans.index`), {

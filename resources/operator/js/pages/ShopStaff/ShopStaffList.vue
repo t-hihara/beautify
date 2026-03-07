@@ -5,7 +5,12 @@ import { debounce } from "lodash";
 import { route } from "ziggy-js";
 import { useGuard } from "@operator/composables/useGuard";
 import { UserIcon } from "@heroicons/vue/24/solid";
-import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
+import {
+  SearchText,
+  SearchSingleSelect,
+  SearchMultiSelect,
+  SearchMultiCombo,
+} from "@/common/js/components/Form/SearchIndex";
 import { EnvelopeIcon, BuildingOfficeIcon, UserCircleIcon } from "@heroicons/vue/24/outline";
 import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import {
@@ -63,6 +68,7 @@ type SearchFormType = {
 };
 
 const guard = useGuard();
+const searchShopName = ref<string>("");
 const showDeleteModal = ref<boolean>(false);
 const showDrawer = ref<boolean>(false);
 const targetStaff = ref<ShopStaffType | null>(null);
@@ -154,9 +160,10 @@ watch(
     <div class="mt-8 p-6 bg-white rounded-lg shadow-lg">
       <div class="grid grid-cols-4 gap-4">
         <search-text v-model="searchForm.name" field="name" title="スタッフ名" placeholder="スタッフ名" />
-        <search-multi-select
+        <search-multi-combo
           v-if="guard === 'admin'"
           v-model="searchForm.shopIds"
+          v-model:search="searchShopName"
           field="shopIds"
           title="店舗"
           class="col-span-2"
