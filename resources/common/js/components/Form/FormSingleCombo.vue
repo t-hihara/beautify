@@ -27,6 +27,10 @@ const { items } = defineProps<{
   error?: Record<string, string>;
 }>();
 
+const emit = defineEmits<{
+  "update:modelValue": [value: string | number | null];
+}>();
+
 const scrollTop = ref<number>(0);
 
 const filteredItems = computed(() =>
@@ -83,6 +87,18 @@ watch(
             @input="onSearchInput"
             @change="onSearchInput"
           />
+          <div class="pointer-events-none flex justify-end items-center pr-3">
+            <div class="pointer-events-auto flex items-center gap-2">
+              <button
+                type="button"
+                class="px-2 py-1 whitespace-nowrap rounded-lg border border-zinc-300 hover:bg-zinc-200 transition ease-in-out duration-300 text-xs cursor-pointer"
+                @click.stop="emit('update:modelValue', null)"
+              >
+                クリア
+              </button>
+              <chevron-down-icon class="size-4 transition-transform duration-200" :class="{ 'rotate-180': open }" />
+            </div>
+          </div>
         </combobox-button>
         <transition enter-active-class="animate-fade-in" leave-active-class="animate-fade-out">
           <combobox-options
