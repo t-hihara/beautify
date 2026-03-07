@@ -68,15 +68,15 @@ class ExportPlan extends ExportBase implements FromQuery, WithCustomCsvSettings,
             ->when($this->filters['shop_ids'] ?? null, fn(Builder $query, $shopIds) => $query->whereIn('shop_id', $shopIds))
             ->when($this->filters['types'] ?? null, fn(Builder $query, $types) => $query->whereHas('menus', fn(Builder $q) => $q->whereIn('type', $types)))
             ->when(
-                ($this->filters['valid_from'] ?? null) && ($convert['valid_to'] ?? null),
+                ($this->filters['valid_from'] ?? null) && ($this->filters['valid_to'] ?? null),
                 fn(Builder $query, $_) => $query->where('valid_from', '>=', $this->filters['valid_from'])->where('valid_to', '<=', $this->filters['valid_to'])
             )
             ->when(
-                ($convert['valid_from'] ?? null) && !($this->filters['valid_to'] ?? null),
-                fn(Builder $query, $_) => $query->where('valid_from', '>=', $convert['valid_from'])
+                ($this->filters['valid_from'] ?? null) && !($this->filters['valid_to'] ?? null),
+                fn(Builder $query, $_) => $query->where('valid_from', '>=', $this->filters['valid_from'])
             )
             ->when(
-                !($this->filters['valid_from'] ?? null) && ($convert['valid_to'] ?? null),
+                !($this->filters['valid_from'] ?? null) && ($this->filters['valid_to'] ?? null),
                 fn(Builder $query, $_) => $query->where('valid_to', '<=', $this->filters['valid_to'])
             );
     }
