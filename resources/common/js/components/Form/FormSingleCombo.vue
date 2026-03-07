@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { throttle } from "lodash";
 import {
   Combobox,
   ComboboxButton,
@@ -9,7 +8,7 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/vue";
-import { ChevronDownIcon, CheckIcon } from "@heroicons/vue/24/outline";
+import { ChevronDownIcon } from "@heroicons/vue/24/outline";
 import type { EnumType } from "@common/lib";
 
 const model = defineModel<string | number | null>();
