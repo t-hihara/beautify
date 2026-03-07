@@ -7,6 +7,7 @@ use App\Enum\PlanConditionTypeEnum;
 use App\Models\Menu;
 use App\Models\Shop;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class PreparePlanCreateFormUseCase
 {
@@ -16,34 +17,34 @@ class PreparePlanCreateFormUseCase
             'activeFlags'    => ActiveFlagTypeEnum::options(),
             'conditionTypes' => PlanConditionTypeEnum::options(),
             'shops'          => $this->shopsForForm($shopId),
-            'menus'          => $this->menusForForm($shopId)
-                ->groupBy(fn($menu) => $menu->type->description())
-                ->map(fn($menus, $label) => [
-                    'label' => $label,
-                    'items' =>  $menus->map(fn($menu) => [
-                        'id'       => $menu->id,
-                        'shopId'   => $menu->shop_id,
-                        'name'     => $menu->name,
-                        'type'     => $menu->type->value,
-                        'price'    => $menu->price,
-                        'duration' => $menu->duration,
-                    ])->values()->toArray(),
-                ])->values()->toArray(),
+            'menus'          => $shopId ? $this->menusForForm($shopId) : [],
         ];
     }
 
-    private function shopsForForm(?int $shopId)
+    private function shopsForForm(?int $shopId): Collection
     {
         return Shop::query()
             ->when($shopId, fn(Builder $q, $id) => $q->where('id', $id))
             ->get(['id', 'name']);
     }
 
-    private function menusForForm(?int $shopId)
+    private function menusForForm(int $shopId): array
     {
         return Menu::query()
-            ->when($shopId, fn(Builder $q, $sid) => $q->where('shop_id', $sid))
+            ->where('shop_id', $shopId)
             ->orderBy('sort_order')
-            ->get();
+            ->get()
+            ->groupBy(fn($menu) => $menu->type->description())
+            ->map(fn($menus, $label) => [
+                'label' => $label,
+                'items' => $menus->map(fn($menu) => [
+                    'id'       => $menu->id,
+                    'shopId'   => $menu->shop_id,
+                    'name'     => $menu->name,
+                    'type'     => $menu->type->value,
+                    'price'    => $menu->price,
+                    'duration' => $menu->duration,
+                ])->values()->toArray(),
+            ])->values()->toArray();
     }
 }

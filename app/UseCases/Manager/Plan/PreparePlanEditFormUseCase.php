@@ -47,7 +47,7 @@ class PreparePlanEditFormUseCase
             'shops'          => [],
             'activeFlags'    => ActiveFlagTypeEnum::options(),
             'conditionTypes' => PlanConditionTypeEnum::options(),
-            'menus'          => Menu::byShopId($plan->shop_id)
+            'menus'          => Menu::where('shop_id', $plan->shop_id)
                 ->orderBy('sort_order')
                 ->get()
                 ->groupBy(fn($menu) => $menu->type->description())

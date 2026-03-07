@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, useForm } from "@inertiajs/vue3";
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
 import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
@@ -15,6 +15,7 @@ import {
   FormSingleCombo,
 } from "@/common/js/components/Form/FormIndex";
 import type { EnumType } from "@/common/js/lib";
+import axios from "axios";
 
 type PlanType = {
   id: number;
@@ -106,6 +107,8 @@ const form = useForm<FormType>({
 });
 
 const searchShopName = ref<string>("");
+const menusRef = ref<MenuType[]>(menus);
+const loadingMenus = ref<boolean>(false);
 
 const isEdit = computed<boolean>(() => route().current() === `${guard.value}.plans.edit`);
 const activeFlag = computed<boolean>({
@@ -114,17 +117,7 @@ const activeFlag = computed<boolean>({
     form.activeFlag = v ? "active" : "inactive";
   },
 });
-const menusForSelectedShop = computed<MenuType[]>(() => {
-  return menus
-    .map((group) => ({
-      label: group.label,
-      items: group.items.filter((item) => item.shopId === form.shopId),
-    }))
-    .filter((group) => group.items.length > 0);
-});
-const menuItems = computed<MenuType["items"][number][]>(() =>
-  menusForSelectedShop.value.flatMap((group) => group.items),
-);
+const menuItems = computed<MenuType["items"][number][]>(() => menusRef.value.flatMap((group) => group.items));
 const selectedMenus = computed<MenuType["items"][number][]>(() =>
   form.menuIds
     .map((menuId) => menuItems.value.find((menu) => menu.id === menuId))
@@ -136,6 +129,21 @@ const showMenuList = computed<boolean>(() => {
   if (guard.value !== "admin" || isEdit.value) return true;
   return form.shopId !== null;
 });
+
+const fetchMenus = async (shopId: number | null): Promise<void> => {
+  if (!shopId) return;
+
+  loadingMenus.value = true;
+  try {
+    const response = await axios.get(`/api/shops/${form.shopId}/menus`);
+    menusRef.value = response.data.menus;
+    form.menuIds = [];
+  } catch (error: any) {
+    menusRef.value = [];
+  } finally {
+    loadingMenus.value = false;
+  }
+};
 
 const addMenu = (menuItem: MenuType["items"][number]): void => {
   if (form.menuIds.includes(menuItem.id)) return;
@@ -154,10 +162,15 @@ const submit = (): void => {
   }
 };
 
+onMounted(() => {});
+
 watch(
-  () => form.id,
-  () => {
-    form.menuIds = [];
+  () => form.shopId,
+  async (newShopId) => {
+    if (guard.value === "shop" || isEdit.value) {
+      return;
+    }
+    await fetchMenus(newShopId);
   },
 );
 
@@ -343,7 +356,7 @@ watch(
               <template v-if="showMenuList">
                 <div class="mt-3 space-y-3">
                   <details
-                    v-for="{ label, items } in menusForSelectedShop"
+                    v-for="{ label, items } in menusRef"
                     :key="label"
                     class="group rounded-md border border-zinc-200 bg-white"
                   >
