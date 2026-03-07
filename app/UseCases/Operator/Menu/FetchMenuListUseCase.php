@@ -39,7 +39,7 @@ class FetchMenuListUseCase
             ]),
             'menuTypes'   => MenuTypeEnum::options(),
             'activeFlags' => ActiveFlagTypeEnum::options(),
-            'shops'       => Shop::get(['id', 'name']),
+            'shops'       => !$shopId ? Shop::get(['id', 'name']) : [],
             'menus'       => $menus->items(),
             'links'       => $menus->linkCollection(),
             'pagination'  => [
@@ -57,7 +57,7 @@ class FetchMenuListUseCase
         return Menu::with(['shop'])
             ->when($convert['name'] ?? null, fn(Builder $query, $name) => $query->where('name', 'like', "$name"))
             ->when($convert['shop_ids'] ?? null, fn(Builder $query, $shopIds) => $query->whereIn('shop_id', $shopIds))
-            ->when($convert['types'] ?? null, fn(Builder $query, $types) => $query->whereIn('types', $types))
-            ->when($convert['active_flat'] ?? null, fn(Builder $query, $flag) => $query->where('active_flag', $flag));
+            ->when($convert['types'] ?? null, fn(Builder $query, $types) => $query->whereIn('type', $types))
+            ->when($convert['active_flag'] ?? null, fn(Builder $query, $flag) => $query->where('active_flag', $flag));
     }
 }

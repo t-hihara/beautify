@@ -26,10 +26,6 @@ const { items } = defineProps<{
   error?: Record<string, string>;
 }>();
 
-const emit = defineEmits<{
-  "update:modelValue": [value: string | number | null];
-}>();
-
 const scrollTop = ref<number>(0);
 
 const filteredItems = computed(() =>
@@ -41,7 +37,7 @@ const filteredItems = computed(() =>
           .includes(search.value?.toLocaleLowerCase() ?? ""),
       ),
 );
-const selectedItem = computed(() => items.find((item) => Number(item.id) === Number(model.value)) ?? null);
+const selectedItem = computed(() => items.find((item) => item.id === model.value) ?? null);
 const startIndex = computed(() => Math.max(0, Math.floor(scrollTop.value / ITEM_HEIGHT)));
 const endIndex = computed(() => Math.min(filteredItems.value.length, startIndex.value + VISIBLE_COUNT));
 const visibleItems = computed(() => filteredItems.value.slice(startIndex.value, endIndex.value));
@@ -57,6 +53,10 @@ const onSearchInput = (e: Event): void => {
 const onOptionsScroll = (e: Event): void => {
   const el = e.target as HTMLElement;
   scrollTop.value = el.scrollTop;
+};
+
+const clear = (): void => {
+  model.value = null;
 };
 
 watch(
@@ -91,7 +91,7 @@ watch(
               <button
                 type="button"
                 class="px-2 py-1 whitespace-nowrap rounded-lg border border-zinc-300 hover:bg-zinc-200 transition ease-in-out duration-300 text-xs cursor-pointer"
-                @click.stop="emit('update:modelValue', null)"
+                @click.stop="clear"
               >
                 クリア
               </button>

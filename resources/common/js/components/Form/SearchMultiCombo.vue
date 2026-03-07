@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { throttle } from "lodash";
 import {
   Combobox,
   ComboboxButton,
@@ -12,7 +11,6 @@ import {
 import { ChevronDownIcon, CheckIcon } from "@heroicons/vue/24/outline";
 import type { EnumType } from "@common/lib";
 
-const LOAD_MORE_THRESHOLD = 90;
 const ITEM_HEIGHT = 40;
 const VISIBLE_COUNT = 8;
 
@@ -29,22 +27,26 @@ const { items } = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  "update:modelValue": [value: (string | number)[]];
-  loadMore: [];
   close: [];
 }>();
 
 const scrollTop = ref<number>(0);
-const openRef = ref<boolean>(false);
 
+const filteredItems = computed(() =>
+  search.value?.trim() === ""
+    ? items
+    : items.filter((item) =>
+        String(item.name)
+          .toLocaleLowerCase()
+          .includes(search.value?.toLocaleLowerCase() ?? ""),
+      ),
+);
 const startIndex = computed(() => Math.max(0, Math.floor(scrollTop.value / ITEM_HEIGHT)));
 const endIndex = computed(() => Math.min(items.length, startIndex.value + VISIBLE_COUNT));
-const visibleItems = computed(() => items.slice(startIndex.value, endIndex.value));
+const visibleItems = computed(() => filteredItems.value.slice(startIndex.value, endIndex.value));
 const paddingTop = computed(() => startIndex.value * ITEM_HEIGHT);
 const paddingBottom = computed(() => (items.length - endIndex.value) * ITEM_HEIGHT);
-const selectedItems = computed(() =>
-  items.filter((item) => (model.value ?? []).some((id) => Number(id) === Number(item.id))),
-);
+const selectedItems = computed(() => items.filter((item) => (model.value ?? []).some((id) => id === item.id)));
 
 const displayValue = (value: unknown): string => {
   if (!Array.isArray(value) || !value.length) return "";
@@ -56,14 +58,9 @@ const displayValue = (value: unknown): string => {
   );
 };
 
-const emitLoadMore = throttle((): void => {
-  emit("loadMore");
-}, 500);
-
 const onOptionsScroll = (e: Event): void => {
   const el = e.target as HTMLElement;
   scrollTop.value = el.scrollTop;
-  if (el.scrollTop + el.clientHeight >= el.scrollHeight - LOAD_MORE_THRESHOLD) emitLoadMore();
 };
 
 const onSearchInput = (e: Event): void => {
@@ -71,9 +68,8 @@ const onSearchInput = (e: Event): void => {
   search.value = value;
 };
 
-const setOpen = (open: boolean): void => {
-  if (openRef.value && !open) emit("close");
-  openRef.value = open;
+const clear = (): void => {
+  model.value = [];
 };
 
 watch(
@@ -87,7 +83,6 @@ watch(
 <template>
   <div>
     <combobox v-model="model" multiple as="div" v-slot="{ open }">
-      <span v-show="false">{{ setOpen(open) }}</span>
       <combobox-label v-if="title" class="flex items-center font-medium text-sm text-zinc-800"
         >{{ title }}<span v-if="required" class="text-red-500">※</span></combobox-label
       >
@@ -110,7 +105,7 @@ watch(
               <button
                 type="button"
                 class="px-2 py-1 whitespace-nowrap rounded-lg border border-zinc-300 hover:bg-zinc-200 transition ease-in-out duration-300 text-xs cursor-pointer"
-                @click.stop="emit('update:modelValue', [])"
+                @click.stop="clear"
               >
                 クリア
               </button>

@@ -4,13 +4,13 @@ import { Listbox, ListboxButton, ListboxOptions, ListboxOption, ListboxLabel } f
 import { ChevronDownIcon, CheckIcon } from "@heroicons/vue/24/outline";
 import type { EnumType } from "@common/lib";
 
+const model = defineModel<(string | number)[]>();
+
 const {
-  modelValue,
   items,
   required = false,
   showClear = false,
 } = defineProps<{
-  modelValue: (string | number)[];
   field: string;
   title?: string;
   required?: boolean;
@@ -19,32 +19,21 @@ const {
   error?: Record<string, string>;
 }>();
 
-defineEmits<{
-  "update:modelValue": [value: (string | number)[]];
-}>();
+const selectedItems = computed(() => items.filter((item) => (model.value ?? []).some((id) => id === item.id)));
 
-const selectedItems = computed(() => items.filter((item) => modelValue.some((id) => Number(id) === Number(item.id))));
+const clear = (): void => {
+  model.value = [];
+};
 </script>
 
 <template>
   <div>
-    <listbox
-      :model-value="selectedItems"
-      multiple
-      @update:model-value="
-        (selectedArray: EnumType[]) =>
-          $emit(
-            'update:modelValue',
-            selectedArray.map((item: EnumType) => item.id),
-          )
-      "
-    >
+    <listbox v-model="model" multiple v-slot="{ open }">
       <listbox-label v-if="title" class="block text-sm font-medium text-zinc-800">
         {{ title }}<span v-if="required" class="text-red-500">※</span>
       </listbox-label>
       <div class="w-full relative">
         <listbox-button
-          v-slot="{ open }"
           :class="[error?.[field] ? 'border-red-600' : 'border-zinc-300', title ? 'mt-1' : '']"
           class="w-full h-10 px-3 py-2 bg-white rounded-lg shadow-sm border cursor-pointer flex items-center justify-between focus:outline-none focus:ring-rose-300 focus:border-rose-300"
         >
@@ -56,7 +45,7 @@ const selectedItems = computed(() => items.filter((item) => modelValue.some((id)
               v-if="showClear"
               type="button"
               class="px-2 py-1 rounded-lg border border-zinc-300 hover:bg-zinc-200 transition ease-in-out duration-300 text-xs cursor-pointer"
-              @click="$emit('update:modelValue', [])"
+              @click="clear"
             >
               クリア
             </button>
@@ -70,7 +59,7 @@ const selectedItems = computed(() => items.filter((item) => modelValue.some((id)
             <listbox-option
               v-for="item in items"
               :key="item.id"
-              :value="item"
+              :value="item.id"
               class="px-3 py-2 hover:bg-zinc-100 cursor-pointer"
             >
               <div class="flex justify-between items-center">

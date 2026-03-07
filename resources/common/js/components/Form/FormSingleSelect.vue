@@ -4,14 +4,14 @@ import { ChevronDownIcon } from "@heroicons/vue/24/outline";
 import type { EnumType } from "@common/lib";
 import { computed } from "vue";
 
+const model = defineModel<string | number | null>();
+
 const {
-  modelValue,
   items,
   required = false,
   allowEmpty = false,
   disabled = false,
 } = defineProps<{
-  modelValue: string | number | null;
   field: string;
   title?: string;
   required?: boolean;
@@ -21,33 +21,24 @@ const {
   error?: Record<string, string>;
 }>();
 
-const emit = defineEmits<{
-  "update:modelValue": [value: string | number | null];
-}>();
-
 const emptyOption: EnumType = { id: "", name: "選択無し" };
 const options = computed(() => (allowEmpty ? [emptyOption, ...items] : items));
-const selectedItem = computed(() => {
-  const hasNoSelection = modelValue === null || modelValue === "";
-  if (allowEmpty && hasNoSelection) return emptyOption;
-  return options.value.find((item) => item.id === modelValue) ?? null;
-});
 
-const onSelect = (item: EnumType): void => {
-  const value = item.id === "" ? null : item.id;
-  emit("update:modelValue", value);
-};
+const selectedItem = computed(() => {
+  const hasNoSelection = model.value === null || model.value === "";
+  if (allowEmpty && hasNoSelection) return emptyOption;
+  return options.value.find((item) => item.id === model.value) ?? null;
+});
 </script>
 
 <template>
   <div>
-    <listbox :model-value="selectedItem" @update:model-value="onSelect" :disabled="disabled">
+    <listbox v-model="model" :disabled="disabled" v-slot="{ open }">
       <listbox-label v-if="title" class="flex items-center gap-1 text-sm font-medium text-zinc-800">
         {{ title }}<span v-if="required" class="text-red-500">※</span>
       </listbox-label>
       <div class="w-full relative">
         <listbox-button
-          v-slot="{ open }"
           :class="[
             error?.[field] ? 'border-red-600' : 'border-zinc-300',
             title ? 'mt-1' : '',
@@ -65,11 +56,12 @@ const onSelect = (item: EnumType): void => {
             <listbox-option
               v-for="item in options"
               :key="item.id"
-              :value="item"
+              :value="item.id === '' ? null : item.id"
               :class="selectedItem?.id === item.id ? 'bg-rose-100/70' : ''"
               class="px-3 py-2 hover:bg-zinc-100 cursor-pointer"
-              ><span>{{ item.name }}</span></listbox-option
             >
+              <span>{{ item.name }}</span>
+            </listbox-option>
           </listbox-options>
         </transition>
       </div>

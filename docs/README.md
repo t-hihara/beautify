@@ -3,17 +3,23 @@
 ## ドキュメント一覧
 
 ### ナレッジ (knowledge/)
+
 技術的な概念やプロジェクト内の実装の解説です。
 
 - [PHP Enum 入門ガイド](./knowledge/php-enum-guide.md) — Enum の `cases()` / `::class` の違い、`match` と `$this`、HasOptions の `description` の説明
 
 ### 仕様書 (specification/)
+
 1. [プロジェクト概要](./specification/01-overview.md)
 2. [要件定義](./specification/02-requirements.md)
 3. [ロールと権限](./specification/03-roles-and-permissions.md)
 4. [機能一覧](./specification/04-features.md)
 5. [技術スタック](./specification/05-technology-stack.md)
-6. [データベース設計](./specification/06-database-design.md)
+6. [データベース設計](/06-database-design.md)
+
+### 実装状況
+
+- [実装状況と次に実装すべき内容](./specification/implementation-status.md) — 現在の実装状況と、次回実装の優先度・前提の整理
 
 ## 主要機能
 

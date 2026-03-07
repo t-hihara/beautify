@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { Head, useForm } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { route } from "ziggy-js";
 import { useGuard } from "@operator/composables/useGuard";
 import {
   FormText,
   FormNumber,
   FormSingleSelect,
+  FormSingleCombo,
   FormTextarea,
   FormSwitchToggle,
 } from "@/common/js/components/Form/FormIndex";
@@ -45,6 +46,8 @@ const { menu } = defineProps<{
 }>();
 
 const guard = useGuard();
+const searchShopName = ref<string>("");
+
 const form = useForm<FormType>({
   id: menu?.id ?? undefined,
   shopId: menu?.shopId ?? null,
@@ -94,9 +97,10 @@ const submit = (): void => {
             required
             :error="form.errors"
           />
-          <form-single-select
+          <form-single-combo
             v-if="!isEdit"
             v-model="form.shopId"
+            v-model:search="searchShopName"
             field="shopId"
             title="所属店舗"
             :items="shops"

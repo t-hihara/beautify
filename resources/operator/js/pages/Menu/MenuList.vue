@@ -11,7 +11,12 @@ import {
   ButtonIconDanger,
   TextLink,
 } from "@/common/js/components/Ui/ButtonIndex";
-import { SearchText, SearchSingleSelect, SearchMultiSelect } from "@/common/js/components/Form/SearchIndex";
+import {
+  SearchText,
+  SearchSingleSelect,
+  SearchMultiSelect,
+  SearchMultiCombo,
+} from "@/common/js/components/Form/SearchIndex";
 import { FolderArrowDownIcon, PencilSquareIcon, TrashIcon } from "@heroicons/vue/24/solid";
 import type { PaginationType, PaginationLinkType, EnumType } from "@/common/js/lib";
 import Pagination from "@operator/components/Ui/Pagination.vue";
@@ -64,8 +69,10 @@ const { filters, menus } = defineProps<{
 }>();
 
 const guard = useGuard();
+const searchShopName = ref<string>("");
 const showDeleteModal = ref<boolean>(false);
 const targetMenu = ref<MenuType | null>(null);
+
 const searchForm = useForm<SearchFormType>("MenuListSearch", {
   name: filters.name || "",
   types: filters.types || [],
@@ -128,9 +135,10 @@ watch(
     <div class="mt-8 p-6 bg-white rounded-lg shadow-lg">
       <div class="grid grid-cols-4 gap-4">
         <search-text v-model="searchForm.name" title="メニュー名" field="name" placeholder="メニュー名で検索" />
-        <search-multi-select
+        <search-multi-combo
           v-if="guard === 'admin'"
           v-model="searchForm.shopIds"
+          v-model:search="searchShopName"
           field="shopIds"
           title="店舗"
           show-clear
