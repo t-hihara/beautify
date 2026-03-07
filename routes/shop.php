@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\Manager\ExportFileController;
-use App\Http\Controllers\Manager\Shop\AuthController;
-use App\Http\Controllers\Manager\Shop\MenuController;
-use App\Http\Controllers\Manager\Shop\PlanController;
-use App\Http\Controllers\Manager\Shop\ShopDashboardController;
-use App\Http\Controllers\Manager\Shop\ProfileController;
-use App\Http\Controllers\Manager\Shop\ShopStaffController;
+use App\Http\Controllers\Operator\ExportFileController;
+use App\Http\Controllers\Operator\Shop\AuthController;
+use App\Http\Controllers\Operator\Shop\MenuController;
+use App\Http\Controllers\Operator\Shop\PlanController;
+use App\Http\Controllers\Operator\Shop\ShopDashboardController;
+use App\Http\Controllers\Operator\Shop\ProfileController;
+use App\Http\Controllers\Operator\Shop\ShopStaffController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('shop')->name('shop.')->group(function () {

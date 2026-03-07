@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Http\Controllers\Operator;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Operator\Search\SearchExportFileRequest;
+use App\Models\ExportFile;
+use App\Services\Export\ExportFileService;
+use App\UseCases\Operator\ExportFile\DeleteExportFileUseCase;
+use App\UseCases\Operator\ExportFile\DownloadExportFileUseCase;
+use App\UseCases\Operator\ExportFile\FetchExportFileListUseCase;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Throwable;
+
+class ExportFileController extends Controller
+{
+    public function __construct(
+        private readonly ExportFileService $exportFileService,
+    ) {}
+
+    public function index(SearchExportFileRequest $request, FetchExportFileListUseCase $useCase): Response
+    {
+        $userId = auth($request->attributes->get('auth_guard'))->id();
+        $data   = $useCase($request->validated(), $userId);
+
+        return Inertia::render('Export/ExportFileList', $data);
+    }
+
+    public function download(ExportFile $exportFile, DownloadExportFileUseCase $useCase): StreamedResponse|RedirectResponse
+    {
+        try {
+            return $useCase($exportFile);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', 'ダウンロードに失敗しました。');
+        }
+    }
+
+    public function unloadedCount(): JsonResponse
+    {
+        $userId = auth(request()->attributes->get('auth_guard'))->id();
+        $count  = $this->exportFileService->getUnloadedFileCount($userId);
+
+        return response()->json(['unloadedExportFileCount' => $count]);
+    }
+
+    public function destroy(ExportFile $exportFile, DeleteExportFileUseCase $useCase): RedirectResponse
+    {
+        try {
+            $useCase($exportFile);
+        } catch (Throwable $e) {
+            report($e);
+            return back()->with('error', '削除に失敗しました。');
+        }
+
+        return back()->with('success', '削除に成功しました。');
+    }
+}

@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\Manager\Admin\ActivityLogController;
-use App\Http\Controllers\Manager\Admin\MenuController;
-use App\Http\Controllers\Manager\Admin\ShopController;
-use App\Http\Controllers\Manager\Admin\ShopStaffController;
-use App\Http\Controllers\Manager\Admin\AdminDashboardController;
-use App\Http\Controllers\Manager\Admin\AuthController;
-use App\Http\Controllers\Manager\Admin\PlanController;
-use App\Http\Controllers\Manager\ExportFileController;
+use App\Http\Controllers\Operator\Admin\ActivityLogController;
+use App\Http\Controllers\Operator\Admin\MenuController;
+use App\Http\Controllers\Operator\Admin\ShopController;
+use App\Http\Controllers\Operator\Admin\ShopStaffController;
+use App\Http\Controllers\Operator\Admin\AdminDashboardController;
+use App\Http\Controllers\Operator\Admin\AuthController;
+use App\Http\Controllers\Operator\Admin\PlanController;
+use App\Http\Controllers\Operator\ExportFileController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->name('admin.')->group(function () {
