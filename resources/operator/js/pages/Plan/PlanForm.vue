@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import axios from "axios";
 import { Head, useForm } from "@inertiajs/vue3";
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { route } from "ziggy-js";
 import { useGuard } from "@operator/composables/useGuard";
 import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
@@ -15,7 +16,6 @@ import {
   FormSingleCombo,
 } from "@/common/js/components/Form/FormIndex";
 import type { EnumType } from "@/common/js/lib";
-import axios from "axios";
 
 type PlanType = {
   id: number;
@@ -161,8 +161,6 @@ const submit = (): void => {
     form.post(route(`${guard.value}.plans.store`));
   }
 };
-
-onMounted(() => {});
 
 watch(
   () => form.shopId,
