@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, useForm } from "@inertiajs/vue3";
-import { computed, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { route } from "ziggy-js";
 import { useGuard } from "@manager/composables/useGuard";
 import { ButtonSubmit } from "@/common/js/components/Ui/ButtonIndex";
@@ -12,6 +12,7 @@ import {
   FormSingleImage,
   FormSwitchToggle,
   FormDateTime,
+  FormSingleCombo,
 } from "@/common/js/components/Form/FormIndex";
 import type { EnumType } from "@/common/js/lib";
 
@@ -104,6 +105,8 @@ const form = useForm<FormType>({
   menuIds: plan?.menus?.map((menu) => menu.id) ?? [],
 });
 
+const searchShopName = ref<string>("");
+
 const isEdit = computed<boolean>(() => route().current() === `${guard.value}.plans.edit`);
 const activeFlag = computed<boolean>({
   get: () => form.activeFlag === "active",
@@ -195,9 +198,10 @@ watch(
             required
             :error="form.errors"
           />
-          <form-single-select
+          <form-single-combo
             v-if="!isEdit"
             v-model="form.shopId"
+            v-model:search="searchShopName"
             field="shopId"
             title="店舗"
             required

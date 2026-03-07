@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Manager\Shop;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Manager\Form\FormPlanRequest;
 use App\Http\Requests\Manager\Search\SearchPlanRequest;
+use App\Models\Plan;
 use App\UseCases\Manager\Plan\CreatePlanUseCase;
 use App\UseCases\Manager\Plan\DeletePlanUseCase;
 use App\UseCases\Manager\Plan\ExportPlanUseCase;
@@ -44,7 +45,7 @@ class PlanController extends Controller
             return back()->with('error', '登録に失敗しました。');
         }
 
-        return redirect()->route('admin.plans.index')->with('success', '登録に成功しました。');
+        return redirect()->route('shop.plans.index')->with('success', '登録に成功しました。');
     }
 
     public function edit(Plan $plan, PreparePlanEditFormUseCase $useCase): Response
@@ -64,7 +65,7 @@ class PlanController extends Controller
             return back()->with('error', '更新に失敗しました。');
         }
 
-        return redirect()->route('admin.plans.index')->with('success', '更新に成功しました。');
+        return redirect()->route('shop.plans.index')->with('success', '更新に成功しました。');
     }
 
     public function destroy(Plan $plan, DeletePlanUseCase $useCase): RedirectResponse

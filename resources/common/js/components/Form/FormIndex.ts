@@ -9,3 +9,4 @@ export { default as FormTextarea } from "@common/components/Form/FormTextarea.vu
 export { default as FormSwitchToggle } from "@common/components/Form/FormSwitchToggle.vue";
 export { default as FormSingleImage } from "@common/components/Form/FormSingleImage.vue";
 export { default as FormMultiImage } from "@common/components/Form/FormMultiImage.vue";
+export { default as FormSingleCombo } from "@common/components/Form/FormSingleCombo.vue";
